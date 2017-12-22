@@ -1,5 +1,5 @@
-# GeoEdu
+# VianuEdu
 
 [![Build Status](https://travis-ci.org/CNITV/GeoEdu.svg?branch=master)](https://travis-ci.org/CNITV/GeoEdu)
 
-GeoEdu is a program that offers educational material for geography courses. Testing modules are also included.
+VianuEdu este un program educational care ofera teorie, exercitii si teste la diverse materii, precum geografie, matematica, fizica si multe altele.
