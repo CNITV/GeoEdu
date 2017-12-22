@@ -22,8 +22,8 @@ package VianuEdu.backend;
 import java.util.HashMap;
 
 /**
- * This class provides a method of storing the answeer sheet for any test or exercise.
- *
+ * This class provides a method of storing the answer sheet for any test or exercise.
+ * <p>
  * In general, it stores all the answers in the test or exercise in a HashMap and also allows for methods
  * to upload to the database. This class could've been avoided by directly uploading to the online database,
  * however it is much safer to also have a local backup of the answers should the database malfunction.
@@ -31,7 +31,6 @@ import java.util.HashMap;
  *
  * @author StormFireFox1
  * @since 2017-12-22
- *
  */
 public class AnswerSheet {
 
@@ -43,9 +42,8 @@ public class AnswerSheet {
 	/**
 	 * Constructs and initializes an empty answer sheet.
 	 *
-	 * @param studentName The name of the student currently using the program.
+	 * @param studentName     The name of the student currently using the program.
 	 * @param numberOfAnswers The amount of answers that the current test or exercise can have. The number must be higher than 0.
-	 *
 	 */
 	public AnswerSheet(String studentName, int numberOfAnswers) {
 		if (!(numberOfAnswers > 0)) {
@@ -59,7 +57,7 @@ public class AnswerSheet {
 	 * Adds an answer to the answer sheet. This method will not add answers if the answer sheet is already full.
 	 *
 	 * @param questionNumber The question number. It must be between 1 and the last answer's number.
-	 * @param answer The answer itself. This value must be passed on either plaintext, or formatted accordingly.
+	 * @param answer         The answer itself. This value must be passed on either plaintext, or formatted accordingly.
 	 * @return true if the answer is saved successfully and false if it wasn't added due to the answer exceeding the amount of answers available.
 	 */
 	public boolean addAnswer(Integer questionNumber, String answer) {
@@ -82,7 +80,7 @@ public class AnswerSheet {
 	 * Changes an answer in the answer sheet. This method will fail if the answer does not exist.
 	 *
 	 * @param questionNumber The question number. It must be between 1 and the last answer's number.
-	 * @param answer The answer itself. This value must be passed on either plaintext, or formatted accordingly.
+	 * @param answer         The answer itself. This value must be passed on either plaintext, or formatted accordingly.
 	 * @return true if the answer is changed successfully and never returns false.
 	 */
 	public boolean changeAnswer(Integer questionNumber, String answer) {
@@ -115,13 +113,12 @@ public class AnswerSheet {
 
 	/**
 	 * Adds an answer to the answer sheet from a multiple-choice question.
-	 *
+	 * <p>
 	 * This method is primarily used in order to allow for easy differentiation between a plain textbox answer and
 	 * a multiple-choice question answer, since both are stored as Strings.
 	 *
-	 *
 	 * @param questionNumber The question number. It must be between 1 and the last answer's number.
-	 * @param answer The answer itself. The string must be one letter long.
+	 * @param answer         The answer itself. The string must be one letter long.
 	 * @return true if the answer is saved successfully and false if it wasn't added due to the answer exceeding the amount of answers available.
 	 */
 	public boolean addMultipleChoiceAnswer(Integer questionNumber, String answer) {
@@ -143,6 +140,7 @@ public class AnswerSheet {
 
 	/**
 	 * Gets an answer from the answer sheet.
+	 *
 	 * @param questionNumber The question number. It must be between 1 and the last answer's number.
 	 * @return the answer associated with the question number.
 	 */
@@ -155,5 +153,7 @@ public class AnswerSheet {
 			return answers.get(questionNumber);
 		}
 	}
+
+//	TODO create toString() override in JSON format. Most likely done with GSON (Google JSON).
 
 }
