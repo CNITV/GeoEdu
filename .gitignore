@@ -9,6 +9,7 @@
 # User-specific stuff:
 .idea/**/workspace.xml
 .idea/**/tasks.xml
+.idea/**/GeoEdu.iml
 .idea/dictionaries
 
 # Sensitive or high-churn files:
