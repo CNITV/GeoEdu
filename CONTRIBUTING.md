@@ -1,6 +1,6 @@
 # Contribution Guidelines
 
-Anyone who is willing to participate in the project is permitted to contribute in any way, shape of form with whatever they can. However, they must first send an email to *geoedu@protonmail.com* in order to be admitted into the project.
+Anyone who is willing to participate in the project is permitted to contribute in any way, shape of form with whatever they can. However, they must first send an email to *github@lbi.ro* in order to be admitted into the project.
 Most importantly, however, there are very strict guidelines regarding contributing to this project:
 
 ## The 5 Commandments
@@ -15,7 +15,7 @@ Most importantly, however, there are very strict guidelines regarding contributi
 
 Any commit to this project is allowed to be unnanounced, provided it respects The 5 Commandments. However, it is preffered if such changes are announced through any of the following methods:
 * by e-mailing any of the other contributors
-* by joining our Slack channel. Ask for an invite link by throwing an email at *geoedu@protonmail.com*
+* by joining our Slack channel. Ask for an invite link by throwing an email at *github@lbi.ro*
 
 --
 By StormFireFox1
