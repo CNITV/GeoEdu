@@ -11,6 +11,7 @@
 .idea/**/tasks.xml
 .idea/**/GeoEdu.iml
 .idea/dictionaries
+.idea/copyright
 
 # Sensitive or high-churn files:
 .idea/**/dataSources/
