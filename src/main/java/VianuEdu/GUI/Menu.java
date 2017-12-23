@@ -502,7 +502,7 @@ public class Menu extends JPanel implements ActionListener {
      * @param g is the Graphics component
      * @author Sabin Anton
      */
-
+    @Override
     public void paint(Graphics g) {
         super.paint(g);
         generateBackground(g);
@@ -516,7 +516,7 @@ public class Menu extends JPanel implements ActionListener {
      * @param e is the ActionEvent parameter
      * @author Sabin Anton
      */
-
+    @Override
     public void actionPerformed(ActionEvent e) {
         mouseState();
         Panelstate();
