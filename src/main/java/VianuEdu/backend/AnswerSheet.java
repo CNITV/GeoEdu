@@ -37,19 +37,19 @@ public class AnswerSheet {
 	private HashMap<Integer, String> answers = new HashMap<>();
 	private int numberOfAnswersFilled;
 	private int numberOfAnswers;
-	private String studentName;
+	private Student student;
 
 	/**
 	 * Constructs and initializes an empty answer sheet.
 	 *
-	 * @param studentName     The name of the student currently using the program.
+	 * @param student         The student whose this newly-constructed answer sheet belongs to. Identified by a Student object.
 	 * @param numberOfAnswers The amount of answers that the current test or exercise can have. The number must be higher than 0.
 	 */
-	public AnswerSheet(String studentName, int numberOfAnswers) {
+	public AnswerSheet(Student student, int numberOfAnswers) {
 		if (!(numberOfAnswers > 0)) {
 			throw new IllegalArgumentException("The number of answers has to be higher than 0!");
 		}
-		this.studentName = studentName;
+		this.student = student;
 		this.numberOfAnswers = numberOfAnswers;
 	}
 
@@ -81,16 +81,14 @@ public class AnswerSheet {
 	 *
 	 * @param questionNumber The question number. It must be between 1 and the last answer's number.
 	 * @param answer         The answer itself. This value must be passed on either plaintext, or formatted accordingly.
-	 * @return true if the answer is changed successfully and never returns false.
 	 */
-	public boolean changeAnswer(Integer questionNumber, String answer) {
+	public void changeAnswer(Integer questionNumber, String answer) {
 		if (!answers.keySet().contains(questionNumber)) {
 			throw new IllegalArgumentException("Cannot change a non-existent answer! You can add one using the addAnswer() method.");
 		} else if (!(questionNumber > 0 && questionNumber <= numberOfAnswers)) {
 			throw new IllegalArgumentException("Cannot change an answer that is not between 1 and the last answer!");
 		} else {
 			answers.put(questionNumber, answer);
-			return true;
 		}
 	}
 
@@ -98,16 +96,14 @@ public class AnswerSheet {
 	 * Removes an answer from the answer sheet. This method will fail if the answer does not exist.
 	 *
 	 * @param questionNumber The question number. It must be between 1 and the last answer's number.
-	 * @return true if the answer is changed successfully and never returns false.
 	 */
-	public boolean removeAnswer(Integer questionNumber) {
+	public void removeAnswer(Integer questionNumber) {
 		if (!answers.keySet().contains(questionNumber)) {
 			throw new IllegalArgumentException("Cannot remove a non-existent answer!");
 		} else if (!(questionNumber > 0 && questionNumber <= numberOfAnswers)) {
 			throw new IllegalArgumentException("Cannot change an answer that is not between 1 and the last answer!");
 		} else {
 			answers.remove(questionNumber);
-			return true;
 		}
 	}
 
@@ -132,10 +128,10 @@ public class AnswerSheet {
 	/**
 	 * Gets the student name attached to this answer sheet.
 	 *
-	 * @return the student name attached to this answer sheet.
+	 * @return the student name attached to this answer sheet. This method returns the name differently than the Student class. It is returned in the following formet: "Mihai I. Popescu".
 	 */
 	public String getStudentName() {
-		return studentName;
+		return student.getFirstName() + " " + student.getFathersInitial() + ". " + student.getLastName();
 	}
 
 	/**
