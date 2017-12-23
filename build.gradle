@@ -2,6 +2,9 @@ group 'CNITV'
 version 'v0.1'
 
 apply plugin: 'java'
+apply plugin: 'application'
+
+mainClassName = "VianuEdu.GUI.Window"
 
 sourceCompatibility = 1.8
 
