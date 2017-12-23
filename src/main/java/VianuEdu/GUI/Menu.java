@@ -43,8 +43,6 @@ public class Menu extends JPanel implements ActionListener {
     private static int Y_pressed;
     private static int X_hovered;
     private static int Y_hovered;
-    private static int X_released;
-    private static int Y_released;
     private int currentPressed = 0;
     private boolean Panels_Hidden = false;
     private static boolean MousePressed = false;
@@ -551,8 +549,6 @@ public class Menu extends JPanel implements ActionListener {
         @Override
         public void mouseReleased(MouseEvent e) {
 
-            X_released = e.getX();
-            Y_released = e.getY();
             MousePressed = false;
 
         }
