@@ -26,7 +26,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
@@ -34,16 +33,18 @@ import java.io.IOException;
 public class Menu extends JPanel implements ActionListener {
 
     Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-    private final int ScreenHeight = (int) screenSize.getHeight();
-    private final int ScreenWidth = (int) screenSize.getWidth();
-    private final int PanelWidth = ScreenWidth / 5;
-    private final int PanelHeight = ScreenHeight;
+    private int ScreenHeight = (int) screenSize.getHeight();
+    private int ScreenWidth = (int) screenSize.getWidth();
+    private int PanelWidth = ScreenWidth / 5;
+    private int PanelHeight = ScreenHeight;
     private static int X_leftPanel;
     private static int X_rightPanel;
     private static int X_pressed;
     private static int Y_pressed;
     private static int X_hovered;
     private static int Y_hovered;
+    private int XFrame;
+    private int YFrame;
     private int currentPressed = 0;
     private boolean Panels_Hidden = false;
     private static boolean MousePressed = false;
@@ -69,13 +70,14 @@ public class Menu extends JPanel implements ActionListener {
     public boolean ArrowPressed = false;
     public String Button_name[] = new String[10];
     public Timer timer;
-    public BufferedImage Arrow_unpressed = null;
-    public BufferedImage Arrow_Pressed = null;
-    public BufferedImage TurnedArrow_Unpressed = null;
-    public BufferedImage TurnedArrow_Pressed = null;
-    public BufferedImage Background = null;
+    public Image Arrow_unpressed = null;
+    public Image Arrow_Pressed = null;
+    public Image TurnedArrow_Unpressed = null;
+    public Image TurnedArrow_Pressed = null;
+    public Image Background = null;
 
     ClassLoader loader = Menu.class.getClassLoader();
+    private Image image;
 
     /**
      * This method sets the framerate of the menu.
@@ -87,21 +89,6 @@ public class Menu extends JPanel implements ActionListener {
 
         timer = new Timer(Framerate, this);
         timer.start();
-
-    }
-
-    /**
-     * This method scales an image according to the screen resolution of the computer;
-     *
-     * @param image is the image that will be scaled
-     * @author Sabin Anton
-     */
-
-    public void ScaleImage(BufferedImage image) {
-
-        int newWidth = image.getWidth() * ScreenWidth / 1920;
-        int newHeight = image.getHeight() * ScreenHeight / 1080;
-        image.getScaledInstance(newWidth, newHeight, Image.SCALE_DEFAULT);
 
     }
 
@@ -118,31 +105,44 @@ public class Menu extends JPanel implements ActionListener {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        ScaleImage(Arrow_unpressed);
+        int newWidth = Arrow_unpressed.getWidth(null) * ScreenWidth / 1920;
+        int newHeight = Arrow_unpressed.getHeight(null) * ScreenHeight / 1080;
+        Arrow_unpressed = Arrow_unpressed.getScaledInstance(newWidth, newHeight, Image.SCALE_DEFAULT);
+        ;
         try {
             Arrow_Pressed = ImageIO.read(new File(loader.getResource("gui_assets/PressedDownArrowLeft.png").getFile()));
         } catch (IOException e) {
             e.printStackTrace();
         }
-        ScaleImage(Arrow_Pressed);
+        newWidth = Arrow_Pressed.getWidth(null) * ScreenWidth / 1920;
+        newHeight = Arrow_Pressed.getHeight(null) * ScreenHeight / 1080;
+        Arrow_Pressed = Arrow_Pressed.getScaledInstance(newWidth, newHeight, Image.SCALE_DEFAULT);
+        ;
         try {
             TurnedArrow_Pressed = ImageIO.read(new File(loader.getResource("gui_assets/PressedDownArrowRight.png").getFile()));
         } catch (IOException e) {
             e.printStackTrace();
         }
-        ScaleImage(TurnedArrow_Pressed);
+        newWidth = TurnedArrow_Pressed.getWidth(null) * ScreenWidth / 1920;
+        newHeight = TurnedArrow_Pressed.getHeight(null) * ScreenHeight / 1080;
+        TurnedArrow_Pressed = TurnedArrow_Pressed.getScaledInstance(newWidth, newHeight, Image.SCALE_DEFAULT);
         try {
             TurnedArrow_Unpressed = ImageIO.read(new File(loader.getResource("gui_assets/notPressedDownArrowRight.png").getFile()));
         } catch (IOException e) {
             e.printStackTrace();
         }
-        ScaleImage(TurnedArrow_Unpressed);
+        newWidth = TurnedArrow_Unpressed.getWidth(null) * ScreenWidth / 1920;
+        newHeight = TurnedArrow_Unpressed.getHeight(null) * ScreenHeight / 1080;
+        TurnedArrow_Unpressed = TurnedArrow_Unpressed.getScaledInstance(newWidth, newHeight, Image.SCALE_DEFAULT);
         try {
             Background = ImageIO.read(new File(loader.getResource("gui_assets/Background.jpg").getFile()));
         } catch (IOException e) {
             e.printStackTrace();
         }
-        ScaleImage(Background);
+        newWidth = Background.getWidth(null) * ScreenWidth / 1920;
+        newHeight = Background.getHeight(null) * ScreenHeight / 1080;
+        Background = Background.getScaledInstance(newWidth, newHeight, Image.SCALE_DEFAULT);
+        System.out.println(Background.getWidth(null));
     }
 
     /**
@@ -321,8 +321,8 @@ public class Menu extends JPanel implements ActionListener {
             pressed[i] = false;
             g.setColor(new Color(150, 150, 150));
             g.fillRect(x, y, Width, Height);
-            g.fillRect(x, y, Width, Height / 100);
-            g.fillRect(x, y + 99 * Height / 100, Width, Height / 100);
+            g.fillRect(x, y, Width, 1);
+            g.fillRect(x, y + 99 * Height / 100, Width, 1);
 
 
             Font small = new Font("Futura", Font.PLAIN, Relativesize);
@@ -338,8 +338,8 @@ public class Menu extends JPanel implements ActionListener {
             AnimateFont();
             g.setColor(new Color(138, 114, 23));
             g.fillRect(x, y, Width, Height);
-            g.fillRect(x, y, Width, Height / 100);
-            g.fillRect(x, y + 99 * Height / 100, Width, Height / 100);
+            g.fillRect(x, y, Width, 1);
+            g.fillRect(x, y + 99 * Height / 100, Width, 1);
 
 
             Font small = new Font("Futura", Font.PLAIN, Relativesize);
@@ -353,8 +353,8 @@ public class Menu extends JPanel implements ActionListener {
 
         } else {
             g.setColor(new Color(200, 200, 200));
-            g.fillRect(x, y, Width, Height / 100);
-            g.fillRect(x, y + 99 * Height / 100, Width, Height / 100);
+            g.fillRect(x, y, Width, 1);
+            g.fillRect(x, y + 99 * Height / 100, Width, 1);
 
             Font small = new Font("Futura", Font.PLAIN, Font_size);
             FontMetrics metricsy = g.getFontMetrics(small);
@@ -409,8 +409,8 @@ public class Menu extends JPanel implements ActionListener {
 
     public void mouseState() {
 
-        X_hovered = MouseInfo.getPointerInfo().getLocation().x;
-        Y_hovered = MouseInfo.getPointerInfo().getLocation().y;
+        X_hovered = MouseInfo.getPointerInfo().getLocation().x - XFrame;
+        Y_hovered = MouseInfo.getPointerInfo().getLocation().y - YFrame;
         for (int i = 1; i <= NrButtons; i++) {
             hovered[i] = false;
         }
@@ -518,6 +518,40 @@ public class Menu extends JPanel implements ActionListener {
     }
 
     /**
+     * This method reads the window size and coordinates;
+     *
+     * @author Sabin Anton
+     */
+
+    public void getWindowSize() {
+        int width = Window.frame.getSize().width;
+        int height = Window.frame.getSize().height;
+        XFrame = Window.frame.getX();
+        YFrame = Window.frame.getY();
+        if (height != 0 && width != 0) {
+            ScreenWidth = width;
+            ScreenHeight = height;
+        }
+    }
+
+    /**
+     * This method updates all the dimensions needed in the program accordingly to the screen size and coordinates;
+     *
+     * @author Sabin Anton
+     */
+
+    public void initializeDimensions() {
+
+        PanelWidth = ScreenWidth / 5;
+        PanelHeight = ScreenHeight;
+        ButtonWidth = PanelWidth;
+        ButtonHeight = PanelHeight / NrButtons * 4 / 5;
+        ClassHeight = ButtonHeight / 2;
+        ClassWidth = ButtonWidth * 2 / 3;
+        Font_size = ScreenWidth * 60 / 1920;
+    }
+
+    /**
      * This method creates every component form the screen
      *
      * @param g is the Graphics component
@@ -539,6 +573,8 @@ public class Menu extends JPanel implements ActionListener {
      */
     @Override
     public void actionPerformed(ActionEvent e) {
+        getWindowSize();
+        initializeDimensions();
         mouseState();
         Panelstate();
         repaint();

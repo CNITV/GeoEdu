@@ -28,17 +28,19 @@ import javax.swing.*;
  */
 public class Window extends JFrame {
 
+    public static JFrame frame = new JFrame();
+
     public Window() {
 
-        add(new Menu());
+        frame.add(new Menu());
 
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(1920, 1080);
-        setLocationRelativeTo(null);
-        setTitle("GeoEdu");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(1920, 1080);
+        frame.setLocationRelativeTo(null);
+        frame.setTitle("GeoEdu");
 
-        setResizable(true);
-        setVisible(true);
+        frame.setResizable(true);
+        frame.setVisible(true);
     }
 
     public static void main(String[] args) {
