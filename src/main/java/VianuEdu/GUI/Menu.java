@@ -33,10 +33,11 @@ import java.io.IOException;
 
 public class Menu extends JPanel implements ActionListener {
 
-    private static final int ScreenHeight = 1080;
-    private static final int ScreenWidth = 1920;
-    private static final int PanelWidth = ScreenWidth / 5;
-    private static final int PanelHeight = ScreenHeight;
+    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    private final int ScreenHeight = (int) screenSize.getHeight();
+    private final int ScreenWidth = (int) screenSize.getWidth();
+    private final int PanelWidth = ScreenWidth / 5;
+    private final int PanelHeight = ScreenHeight;
     private static int X_leftPanel;
     private static int X_rightPanel;
     private static int X_pressed;
@@ -90,6 +91,21 @@ public class Menu extends JPanel implements ActionListener {
     }
 
     /**
+     * This method scales an image according to the screen resolution of the computer;
+     *
+     * @param image is the image that will be scaled
+     * @author Sabin Anton
+     */
+
+    public void ScaleImage(BufferedImage image) {
+
+        int newWidth = image.getWidth() * ScreenWidth / 1920;
+        int newHeight = image.getHeight() * ScreenHeight / 1080;
+        image.getScaledInstance(newWidth, newHeight, Image.SCALE_DEFAULT);
+
+    }
+
+    /**
      * This method imports all the images needed in the program
      *
      * @author Sabin Anton
@@ -102,26 +118,31 @@ public class Menu extends JPanel implements ActionListener {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        ScaleImage(Arrow_unpressed);
         try {
             Arrow_Pressed = ImageIO.read(new File(loader.getResource("gui_assets/PressedDownArrowLeft.png").getFile()));
         } catch (IOException e) {
             e.printStackTrace();
         }
+        ScaleImage(Arrow_Pressed);
         try {
             TurnedArrow_Pressed = ImageIO.read(new File(loader.getResource("gui_assets/PressedDownArrowRight.png").getFile()));
         } catch (IOException e) {
             e.printStackTrace();
         }
+        ScaleImage(TurnedArrow_Pressed);
         try {
             TurnedArrow_Unpressed = ImageIO.read(new File(loader.getResource("gui_assets/notPressedDownArrowRight.png").getFile()));
         } catch (IOException e) {
             e.printStackTrace();
         }
+        ScaleImage(TurnedArrow_Unpressed);
         try {
             Background = ImageIO.read(new File(loader.getResource("gui_assets/Background.jpg").getFile()));
         } catch (IOException e) {
             e.printStackTrace();
         }
+        ScaleImage(Background);
     }
 
     /**
