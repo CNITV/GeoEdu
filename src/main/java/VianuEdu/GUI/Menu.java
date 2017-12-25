@@ -20,6 +20,10 @@
 package VianuEdu.GUI;
 
 import javax.imageio.ImageIO;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -28,6 +32,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 
 public class Menu extends JPanel implements ActionListener {
@@ -48,6 +53,7 @@ public class Menu extends JPanel implements ActionListener {
     private int currentPressed = 0;
     private boolean Panels_Hidden = false;
     private static boolean MousePressed = false;
+    private boolean copyMousePressed = false;
     private static int Font_size = 60;
     private int Relativesize = Font_size;
     private int classNumber = 4;
@@ -77,7 +83,6 @@ public class Menu extends JPanel implements ActionListener {
     public Image Background = null;
 
     ClassLoader loader = Menu.class.getClassLoader();
-    private Image image;
 
     /**
      * This method sets the framerate of the menu.
@@ -207,6 +212,39 @@ public class Menu extends JPanel implements ActionListener {
     }
 
     /**
+     * This function imports a sound file
+     *
+     * @author Sabin Anton
+     */
+
+    public void ButtonSound(String name) {
+        File f = new File(loader.getResource("gui_assets/" + name).getFile());
+        try {
+            InputStream audioIn = AudioSystem.getAudioInputStream(f.toURI().toURL());
+        } catch (UnsupportedAudioFileException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Clip clip = null;
+        try {
+            clip = AudioSystem.getClip();
+        } catch (LineUnavailableException e) {
+            e.printStackTrace();
+        }
+        try {
+            clip.open(AudioSystem.getAudioInputStream(f.toURI().toURL()));
+        } catch (LineUnavailableException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (UnsupportedAudioFileException e) {
+            e.printStackTrace();
+        }
+        clip.start();
+    }
+
+    /**
      * This method generates the background image of the menu and the 2 panels;
      *
      * @param g is the graphics component used for generating it
@@ -217,7 +255,7 @@ public class Menu extends JPanel implements ActionListener {
 
         X_leftPanel = AnimateLeftP(dir);
         X_rightPanel = AnimateRightP(dir);
-        g.drawImage(Background, 0, 0, this);
+        g.drawImage(Background, (ScreenWidth - Background.getWidth(null)) / 2, 0, this);
         g.setColor(new Color(10, 10, 10));
         g.fillRect(X_leftPanel, 0, PanelWidth, PanelHeight);
         g.fillRect(X_rightPanel, 0, PanelWidth, PanelHeight);
@@ -238,6 +276,7 @@ public class Menu extends JPanel implements ActionListener {
     public void makeClassButton(Graphics g, int x, int y, int Width, int Height, int clasa) {
 
         if (classPressed[clasa - 9] == true) {
+            if (MousePressed != copyMousePressed) ButtonSound("button_click.wav");
             g.setColor(new Color(250, 250, 250));
             g.fillRect(x, y, Width, Height);
             g.setColor(new Color(50, 50, 50));
@@ -318,6 +357,7 @@ public class Menu extends JPanel implements ActionListener {
         if (pressed[i] == true) {
 
             AnimateFont();
+            if (MousePressed != copyMousePressed) ButtonSound("button_click.wav");
             pressed[i] = false;
             g.setColor(new Color(150, 150, 150));
             g.fillRect(x, y, Width, Height);
@@ -385,6 +425,7 @@ public class Menu extends JPanel implements ActionListener {
         if (Panels_Hidden == false) {
 
             if (ArrowPressed == true && MousePressed == true) {
+                if (MousePressed != copyMousePressed) ButtonSound("button_click.wav");
                 g.drawImage(Arrow_Pressed, x, y, this);
             } else {
                 g.drawImage(Arrow_unpressed, x, y, this);
@@ -392,6 +433,7 @@ public class Menu extends JPanel implements ActionListener {
         } else {
 
             if (ArrowPressed == true && MousePressed == true) {
+                if (MousePressed != copyMousePressed) ButtonSound("button_click.wav");
                 g.drawImage(TurnedArrow_Pressed, x, y, this);
             } else {
                 g.drawImage(TurnedArrow_Unpressed, x, y, this);
@@ -495,6 +537,7 @@ public class Menu extends JPanel implements ActionListener {
 
         }
         makeArrow(g, X_leftPanel + PanelWidth + ArrowWidth / 4, ScreenHeight - 3 * ArrowHeight);
+        copyMousePressed = MousePressed;
     }
 
     /**
@@ -549,6 +592,7 @@ public class Menu extends JPanel implements ActionListener {
         ClassHeight = ButtonHeight / 2;
         ClassWidth = ButtonWidth * 2 / 3;
         Font_size = ScreenWidth * 60 / 1920;
+        Relativesize = Font_size * 5 / 4;
     }
 
     /**
