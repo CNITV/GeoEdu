@@ -19,7 +19,13 @@
 
 package VianuEdu.backend;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+
+import java.io.IOException;
+import java.io.StringWriter;
 import java.util.HashMap;
+
 
 /**
  * This class provides a method of storing the answer sheet for any test or exercise.
@@ -126,15 +132,6 @@ public class AnswerSheet {
 	}
 
 	/**
-	 * Gets the student name attached to this answer sheet.
-	 *
-	 * @return the student name attached to this answer sheet. This method returns the name differently than the Student class. It is returned in the following formet: "Mihai I. Popescu".
-	 */
-	public String getStudentName() {
-		return student.getFirstName() + " " + student.getFathersInitial() + ". " + student.getLastName();
-	}
-
-	/**
 	 * Gets an answer from the answer sheet.
 	 *
 	 * @param questionNumber The question number. It must be between 1 and the last answer's number.
@@ -150,6 +147,58 @@ public class AnswerSheet {
 		}
 	}
 
-//	TODO create toString() override in JSON format. Most likely done with GSON (Google JSON).
+	/**
+	 * Gets the answers inserted in the HashMap.
+	 *
+	 * @return The answers inserted in HashMap form.
+	 */
+	public HashMap<Integer, String> getAnswers() {
+		return answers;
+	}
+
+	/**
+	 * Gets the maximum number of answers allowed in the answer sheet.
+	 *
+	 * @return The maximum number of answers allowed in the answer sheet.
+	 */
+	public int getNumberOfAnswers() {
+		return numberOfAnswers;
+	}
+
+	/**
+	 * Gets the number of answers filled in the answer sheet.
+	 *
+	 * @return The number of answers filled in the answer sheet.
+	 */
+	public int getNumberOfAnswersFilled() {
+		return numberOfAnswersFilled;
+	}
+
+	/**
+	 * Gets the Student object associated with this answer sheet.
+	 *
+	 * @return The Student object associated with this answer sheet.
+	 */
+	public Student getStudent() {
+		return student;
+	}
+
+	/**
+	 * Returns a JSON string with indentation that represents an answer sheet. Uses Jackson JSON library.
+	 *
+	 * @return A JSON string representing an answer sheet object.
+	 */
+	@Override
+	public String toString() {
+		ObjectMapper jsonManager = new ObjectMapper(); // creates an ObjectMapper instance from Jackson
+		jsonManager.configure(SerializationFeature.INDENT_OUTPUT, true); // enables pretty print
+		StringWriter jsonOutput = new StringWriter(); // writeValue() method requires a Writer
+		try {
+			jsonManager.writeValue(jsonOutput, this); // write in jsonOutput the value of an AnswerSheet
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return jsonOutput.toString();
+	}
 
 }

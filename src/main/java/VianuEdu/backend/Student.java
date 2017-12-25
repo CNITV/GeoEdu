@@ -20,6 +20,12 @@
 package VianuEdu.backend;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+
+import java.io.IOException;
+import java.io.StringWriter;
+
 /**
  * A class that represents a student.
  *
@@ -59,11 +65,11 @@ public class Student {
 			throw new IllegalArgumentException("Student must have his/her father's initial given!");
 		} else if (lastName.equals("")) {
 			throw new IllegalArgumentException("Student must have a last name!");
-		} else if (!gender.equals("M") || !gender.equals("F")) {
+		} else if (!gender.equals("M") && !gender.equals("F")) {
 			throw new IllegalArgumentException("Student must be either male (M) or female (F)!");
 		} else if (!(grade > 0 && grade <= 12)) {
 			throw new IllegalArgumentException("Student must be between 1st and 12th grade!");
-		} else if (!"abcdefghijklmnopqrstuvwxys".contains(gradeLetter) || !(gradeLetter.length() == 1)) {
+		} else if (!"ABCDEFGHIJKLMNOPQRSTUVWXYZ".contains(gradeLetter) || !(gradeLetter.length() == 1)) {
 			throw new IllegalArgumentException("The grade letter must be one letter long, between A and Z!");
 		} else if (!(status.equals("active") || status.equals("absent") || status.equals("on vacation") || status.equals("graduated"))) {
 			throw new IllegalArgumentException("Student must be either active, absent, on vacation, or graduated!");
@@ -165,5 +171,23 @@ public class Student {
 		}
 	}
 
-	// TODO create toString() override in JSON format. Most likely done with GSON (Google JSON).
+
+	/**
+	 * Returns a JSON string with indentation that represents a student. Uses Jackson JSON library.
+	 *
+	 * @return A JSON string that represents a Student object.
+	 */
+	@Override
+	public String toString() {
+		ObjectMapper jsonManager = new ObjectMapper(); // creates an ObjectMapper instance from Jackson
+		jsonManager.configure(SerializationFeature.INDENT_OUTPUT, true); // enables pretty print
+		StringWriter jsonOutput = new StringWriter(); // writeValue() method requires a Writer
+		try {
+			jsonManager.writeValue(jsonOutput, this); // write in jsonOutput the value of a Student
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return jsonOutput.toString();
+	}
+
 }

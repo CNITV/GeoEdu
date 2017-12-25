@@ -13,7 +13,7 @@ Most importantly, however, there are very strict guidelines regarding contributi
 
 ## Contact
 
-Any commit to this project is allowed to be unnanounced, provided it respects The 5 Commandments. However, it is preffered if such changes are announced through any of the following methods:
+Any commit to this project is allowed to be unannounced, provided it respects The 5 Commandments. However, it is preferred if such changes are announced through any of the following methods:
 * by e-mailing any of the other contributors
 * by joining our Slack channel. Ask for an invite link by throwing an email at *github@lbi.ro*
 
