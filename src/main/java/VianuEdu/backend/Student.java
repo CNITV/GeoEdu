@@ -187,7 +187,7 @@ public class Student {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return jsonOutput.toString();
+		return jsonOutput.toString().replaceAll("(\\r|\\n|\\r\\n)+", "\\\n");
 	}
 
 }
