@@ -20,10 +20,6 @@
 package VianuEdu.GUI;
 
 import javax.imageio.ImageIO;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -32,30 +28,29 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 
 
 public class Menu extends JPanel implements ActionListener {
 
-    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-    private int ScreenHeight = (int) screenSize.getHeight();
-    private int ScreenWidth = (int) screenSize.getWidth();
+    static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    public static int ScreenHeight = (int) screenSize.getHeight();
+    public static int ScreenWidth = (int) screenSize.getWidth();
     private int PanelWidth = ScreenWidth / 5;
     private int PanelHeight = ScreenHeight;
     private static int X_leftPanel;
     private static int X_rightPanel;
-    private static int X_pressed;
-    private static int Y_pressed;
-    private static int X_hovered;
-    private static int Y_hovered;
-    private int XFrame;
-    private int YFrame;
+    public static int X_pressed;
+    public static int Y_pressed;
+    public static int X_hovered;
+    public static int Y_hovered;
+    public static int XFrame;
+    public static int YFrame;
     private int currentPressed = 0;
     private boolean Panels_Hidden = false;
-    private static boolean MousePressed = false;
-    private boolean copyMousePressed = false;
+    public static boolean MousePressed = false;
+    public static boolean copyMousePressed = false;
     private static int Font_size = 60;
-    private int Relativesize = Font_size;
+    public static int Relativesize = Font_size;
     private int classNumber = 4;
     private int NrButtons = 6;
     private int ButtonWidth = PanelWidth;
@@ -71,7 +66,7 @@ public class Menu extends JPanel implements ActionListener {
     public int Rightpanel = ScreenWidth;
     public boolean classPressed[] = new boolean[10];
     public boolean classHovered[] = new boolean[10];
-    public boolean pressed[] = new boolean[10];
+    public static boolean[] pressed = new boolean[10];
     public boolean hovered[] = new boolean[10];
     public boolean ArrowPressed = false;
     public String Button_name[] = new String[10];
@@ -212,39 +207,6 @@ public class Menu extends JPanel implements ActionListener {
     }
 
     /**
-     * This function imports a sound file
-     *
-     * @author Sabin Anton
-     */
-
-    public void ButtonSound(String name) {
-        File f = new File(loader.getResource("gui_assets/" + name).getFile());
-        try {
-            InputStream audioIn = AudioSystem.getAudioInputStream(f.toURI().toURL());
-        } catch (UnsupportedAudioFileException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Clip clip = null;
-        try {
-            clip = AudioSystem.getClip();
-        } catch (LineUnavailableException e) {
-            e.printStackTrace();
-        }
-        try {
-            clip.open(AudioSystem.getAudioInputStream(f.toURI().toURL()));
-        } catch (LineUnavailableException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (UnsupportedAudioFileException e) {
-            e.printStackTrace();
-        }
-        clip.start();
-    }
-
-    /**
      * This method generates the background image of the menu and the 2 panels;
      *
      * @param g is the graphics component used for generating it
@@ -255,7 +217,7 @@ public class Menu extends JPanel implements ActionListener {
 
         X_leftPanel = AnimateLeftP(dir);
         X_rightPanel = AnimateRightP(dir);
-        g.drawImage(Background, (ScreenWidth - Background.getWidth(null)) / 2, 0, this);
+        g.drawImage(Background, (ScreenWidth - Background.getWidth(null)) / 2 - 8, 0, this);
         g.setColor(new Color(10, 10, 10));
         g.fillRect(X_leftPanel, 0, PanelWidth, PanelHeight);
         g.fillRect(X_rightPanel, 0, PanelWidth, PanelHeight);
@@ -275,8 +237,8 @@ public class Menu extends JPanel implements ActionListener {
 
     public void makeClassButton(Graphics g, int x, int y, int Width, int Height, int clasa) {
 
-        if (classPressed[clasa - 9] == true) {
-            if (MousePressed != copyMousePressed) ButtonSound("button_click.wav");
+        if (Panels_Hidden == false && classPressed[clasa - 9] == true) {
+            if (MousePressed != copyMousePressed) Setari.ButtonSound("button_click.wav");
             g.setColor(new Color(250, 250, 250));
             g.fillRect(x, y, Width, Height);
             g.setColor(new Color(50, 50, 50));
@@ -290,7 +252,7 @@ public class Menu extends JPanel implements ActionListener {
             g.setColor(new Color(250, 250, 250));
             g.setFont(small);
             g.drawString(cls, x + Width / 2 - metricsx.stringWidth(cls) / 2, y + Height / 2 + metricsy.getHeight() / 4);
-        } else if (classHovered[clasa - 9] == true) {
+        } else if (Panels_Hidden == false && classHovered[clasa - 9] == true) {
             g.setColor(new Color(164, 148, 110));
             g.fillRect(x, y, Width, Height);
             g.setColor(new Color(231, 198, 63));
@@ -304,7 +266,7 @@ public class Menu extends JPanel implements ActionListener {
             g.setColor(new Color(255, 231, 170));
             g.setFont(small);
             g.drawString(cls, x + Width / 2 - metricsx.stringWidth(cls) / 2, y + Height / 2 + metricsy.getHeight() / 4);
-        } else {
+        } else if (Panels_Hidden == false) {
             g.setColor(new Color(50, 50, 50));
             g.fillRect(x, y, Width, Height);
             g.setColor(new Color(200, 200, 200));
@@ -357,8 +319,8 @@ public class Menu extends JPanel implements ActionListener {
         if (pressed[i] == true) {
 
             AnimateFont();
-            if (MousePressed != copyMousePressed) ButtonSound("button_click.wav");
-            pressed[i] = false;
+            if (MousePressed != copyMousePressed) Setari.ButtonSound("button_click.wav");
+            //pressed[i] = false;
             g.setColor(new Color(150, 150, 150));
             g.fillRect(x, y, Width, Height);
             g.fillRect(x, y, Width, 1);
@@ -425,7 +387,7 @@ public class Menu extends JPanel implements ActionListener {
         if (Panels_Hidden == false) {
 
             if (ArrowPressed == true && MousePressed == true) {
-                if (MousePressed != copyMousePressed) ButtonSound("button_click.wav");
+                if (MousePressed != copyMousePressed) Setari.ButtonSound("button_click.wav");
                 g.drawImage(Arrow_Pressed, x, y, this);
             } else {
                 g.drawImage(Arrow_unpressed, x, y, this);
@@ -433,7 +395,7 @@ public class Menu extends JPanel implements ActionListener {
         } else {
 
             if (ArrowPressed == true && MousePressed == true) {
-                if (MousePressed != copyMousePressed) ButtonSound("button_click.wav");
+                if (MousePressed != copyMousePressed) Setari.ButtonSound("button_click.wav");
                 g.drawImage(TurnedArrow_Pressed, x, y, this);
             } else {
                 g.drawImage(TurnedArrow_Unpressed, x, y, this);
@@ -471,7 +433,7 @@ public class Menu extends JPanel implements ActionListener {
             currentPressed = (Y_hovered - ButtonHeight / 5) / ButtonHeight;
 
         }
-        if (X_hovered >= Leftpanel + PanelWidth - PanelWidth / 20 && X_hovered <= Leftpanel + PanelWidth + ClassWidth && currentPressed != 0) {
+        if (Panels_Hidden == false && X_hovered >= Leftpanel + PanelWidth - PanelWidth / 20 && X_hovered <= Leftpanel + PanelWidth + ClassWidth && currentPressed != 0) {
 
             if (Y_hovered >= currentPressed * ButtonHeight && Y_hovered <= currentPressed * ButtonHeight + ClassHeight * 4 + ClassHeight / 2 && (hovered[currentPressed] == true || ok == true)) {
                 if ((Y_hovered - currentPressed * ButtonHeight - ClassHeight / 2) / ClassHeight < 0)
@@ -480,7 +442,7 @@ public class Menu extends JPanel implements ActionListener {
                     classHovered[(Y_hovered - currentPressed * ButtonHeight - ClassHeight / 2) / ClassHeight] = true;
             }
         }
-        if (X_hovered >= Leftpanel + PanelWidth - PanelWidth / 20 && X_hovered <= Leftpanel + PanelWidth + ClassWidth && currentPressed != 0) {
+        if (Panels_Hidden == false && X_hovered >= Leftpanel + PanelWidth - PanelWidth / 20 && X_hovered <= Leftpanel + PanelWidth + ClassWidth && currentPressed != 0) {
 
             if (MousePressed == true && Y_hovered >= currentPressed * ButtonHeight - ClassHeight && Y_hovered <= currentPressed * ButtonHeight + ClassHeight * 4 + ClassHeight / 2 && (hovered[currentPressed] == true || ok == true)) {
                 classPressed[(Y_hovered - currentPressed * ButtonHeight - ClassHeight / 2) / ClassHeight] = true;
@@ -518,7 +480,7 @@ public class Menu extends JPanel implements ActionListener {
         Button_name[2] = "Lectii";
         Button_name[3] = "Exercitii";
         Button_name[4] = "Teste";
-        Button_name[5] = "Optiuni";
+        Button_name[5] = "Setari";
 
     }
 
@@ -607,6 +569,7 @@ public class Menu extends JPanel implements ActionListener {
         generateBackground(g);
         initializeButtons();
         GenerateButtons(g);
+        Setari.Settings(g);
     }
 
     /**
@@ -619,8 +582,10 @@ public class Menu extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         getWindowSize();
         initializeDimensions();
-        mouseState();
-        Panelstate();
+        if (Setari.SettingsOn == false) {
+            mouseState();
+            Panelstate();
+        }
         repaint();
     }
 
