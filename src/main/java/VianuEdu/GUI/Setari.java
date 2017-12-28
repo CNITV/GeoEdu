@@ -34,6 +34,8 @@ public class Setari extends JPanel {
     private static boolean copyMousePressed = false;
     private static boolean ExitPressed = false;
     private static boolean ExitHovered = false;
+    public static int FrameBarY = 30;
+    public static int FrameBarX = 6;
 
     static ClassLoader loader = Menu.class.getClassLoader();
 
@@ -144,7 +146,7 @@ public class Setari extends JPanel {
             g.drawLine(x + width / 10, y + height / 10, x + width * 9 / 10, y + height * 9 / 10);
             g.drawLine(x + width * 9 / 10, y + height / 10, x + width / 10, y + height * 9 / 10);
         }
-        if (copyMousePressed != Menu.MousePressed && copyMousePressed == true) {
+        if (copyMousePressed != Menu.MousePressed && copyMousePressed == true && (ExitPressed == true || ExitHovered == true)) {
             ButtonSound("button_click.wav");
             SettingsOn = false;
         }
@@ -163,7 +165,7 @@ public class Setari extends JPanel {
 
         int y = Menu.ScreenHeight / 4 + Menu.ScreenHeight / 5;
 
-        Font small = new Font("Futura", Font.PLAIN, Menu.Relativesize / 2);
+        Font small = new Font("Futura", Font.PLAIN, GeoEduMenu.Relativesize / 2);
         FontMetrics metricsy = g.getFontMetrics(small);
         FontMetrics metricsx = g.getFontMetrics(small);
         g.setColor(new Color(250, 250, 250));
@@ -184,7 +186,7 @@ public class Setari extends JPanel {
         g.setColor(new Color(255, 247, 213));
         g.fillRect(x, y, BarWidth * percentage / 100, BarHeight);
 
-        small = new Font("Consolas", Font.PLAIN, Menu.Relativesize / 2);
+        small = new Font("Consolas", Font.PLAIN, GeoEduMenu.Relativesize / 2);
         metricsy = g.getFontMetrics(small);
         metricsx = g.getFontMetrics(small);
         g.setColor(new Color(250, 250, 250));
@@ -246,11 +248,11 @@ public class Setari extends JPanel {
 
     public static void Exit_Pressed() {
 
-        int X = MouseInfo.getPointerInfo().getLocation().x - Menu.XFrame;
-        int Y = MouseInfo.getPointerInfo().getLocation().y - Menu.YFrame;
+        int X = MouseInfo.getPointerInfo().getLocation().x - Menu.XFrame - FrameBarX;
+        int Y = MouseInfo.getPointerInfo().getLocation().y - Menu.YFrame - FrameBarY;
 
-        if (X >= Menu.ScreenWidth * 3 / 4 - Menu.ScreenWidth / 60 * 3 / 4 && X <= Menu.ScreenWidth * 3 / 4 + Menu.ScreenWidth / 60 / 4) {
-            if (Y >= Menu.ScreenHeight / 4 + Menu.ScreenHeight / 60 * 1920 / 1080 && Y <= Menu.ScreenHeight / 4 + Menu.ScreenHeight / 30 * 1920 / 1080) {
+        if (X >= Menu.ScreenWidth / 4 + Menu.ScreenWidth / 60 * 29 && X <= Menu.ScreenWidth * 3 / 4) {
+            if (Y >= Menu.ScreenHeight / 4 && Y <= Menu.ScreenHeight / 4 + Menu.ScreenWidth / 60) {
 
                 if (Menu.MousePressed == false) {
                     ExitHovered = true;
@@ -285,7 +287,7 @@ public class Setari extends JPanel {
         g.setColor(new Color(50, 50, 50));
         g.fillRect(Menu.ScreenWidth / 4, Menu.ScreenHeight / 4, PanelWidth, PanelHeight);
 
-        Font small = new Font("Futura", Font.PLAIN, Menu.Relativesize);
+        Font small = new Font("Futura", Font.PLAIN, GeoEduMenu.Relativesize);
         FontMetrics metricsy = g.getFontMetrics(small);
         FontMetrics metricsx = g.getFontMetrics(small);
         g.setColor(new Color(250, 250, 250));
@@ -309,10 +311,10 @@ public class Setari extends JPanel {
 
     public static void Settings(Graphics g) {
 
-        if (Menu.pressed[5] == false && copy_pressed == true) {
+        if (GeoEduMenu.pressed[5] == false && copy_pressed == true) {
             SettingsOn = true;
         }
-        copy_pressed = Menu.pressed[5];
+        copy_pressed = GeoEduMenu.pressed[5];
         if (SettingsOn == true) DrawSettings(g);
     }
 }
