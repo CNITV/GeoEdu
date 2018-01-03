@@ -160,7 +160,7 @@ public class GeoEduMenu {
 
     public static void generateBackground(Graphics g) {
 
-        if (clock.millis() - firstStep > 600) {
+        if (clock.millis() - lastStep < 100) {
             X_leftPanel = AnimateLeftP(dir);
             X_rightPanel = AnimateRightP(dir);
         }
@@ -269,7 +269,6 @@ public class GeoEduMenu {
 
             AnimateFont();
             if (MousePressed != copyMousePressed) Setari.ButtonSound("button_click.wav");
-            //pressed[i] = false;
             g.setColor(new Color(150, 150, 150));
             g.fillRect(x, y, Width, Height);
             g.fillRect(x, y, Width, 1);
@@ -510,6 +509,16 @@ public class GeoEduMenu {
 
     }
 
+    public static void returnMenu() {
+
+        if (hovered[1] == true && Menu.MousePressed != copyMousePressed && copyMousePressed == true) {
+            StartMenu.Start_GeoEdu = true;
+            Leftpanel = -PanelWidth;
+            Rightpanel = ScreenWidth + PanelWidth;
+        }
+
+    }
+
     /**
      * This method calls all methods that need to be calld at each frame
      *
@@ -523,7 +532,7 @@ public class GeoEduMenu {
             mouseState();
             Panelstate();
         }
-
+        returnMenu();
     }
 
 }

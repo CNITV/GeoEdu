@@ -67,6 +67,8 @@ public class Menu extends JPanel implements ActionListener {
 
         StartTimer();
         GeoEduMenu.generateImages();
+        StartMenu.initializeButtons();
+        StartMenu.importImages();
         addMouseListener(new Control());
     }
 
@@ -96,7 +98,10 @@ public class Menu extends JPanel implements ActionListener {
     @Override
     public void paint(Graphics g) {
         super.paint(g);
-        GeoEduMenu.Paint(g);
+        if (StartMenu.Start_GeoEdu == true) StartMenu.Paint(g);
+        else {
+            GeoEduMenu.Paint(g);
+        }
     }
 
     /**
@@ -108,7 +113,11 @@ public class Menu extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         getWindowSize();
-        GeoEduMenu.Run();
+        if (StartMenu.Start_GeoEdu == true) {
+            StartMenu.Run();
+        } else {
+            GeoEduMenu.Run();
+        }
         repaint();
     }
 
