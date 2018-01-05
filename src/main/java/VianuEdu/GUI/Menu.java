@@ -40,6 +40,8 @@ public class Menu extends JPanel implements ActionListener {
     public static int YFrame;
     public static int Framerate = 1;
     public static boolean MousePressed = false;
+    public static JTextField username = new JTextField(20);
+    public static JPasswordField password = new JPasswordField(30);
     public Timer timer;
 
     /**
@@ -69,7 +71,9 @@ public class Menu extends JPanel implements ActionListener {
         GeoEduMenu.generateImages();
         StartMenu.initializeButtons();
         StartMenu.importImages();
+        UserImput.ImportImages();
         addMouseListener(new Control());
+
     }
 
     /**
@@ -95,9 +99,11 @@ public class Menu extends JPanel implements ActionListener {
      * @param g is the Graphics component
      * @author Sabin Anton
      */
+
     @Override
-    public void paint(Graphics g) {
-        super.paint(g);
+
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
         if (StartMenu.Start_GeoEdu == true) StartMenu.Paint(g);
         else {
             GeoEduMenu.Paint(g);
@@ -118,7 +124,8 @@ public class Menu extends JPanel implements ActionListener {
         } else {
             GeoEduMenu.Run();
         }
-        repaint();
+        Window.frame.repaint();
+
     }
 
     /**

@@ -33,17 +33,17 @@ public class Window extends JFrame {
     public Window() {
 
         frame.add(new Menu());
-
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(1920, 1080);
         frame.setLocationRelativeTo(null);
         frame.setTitle("GeoEdu");
-
         frame.setResizable(true);
         frame.setVisible(true);
     }
 
     public static void main(String[] args) {
+
         new Window();
+
     }
 }

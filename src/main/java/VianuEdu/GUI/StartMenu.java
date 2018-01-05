@@ -9,11 +9,13 @@ import java.time.Clock;
 public class StartMenu {
 
     public static String Menubutton_name[] = new String[30];
-    public static String Username = "Matei";
+    public static String Username = UserImput.USERNAME;
     public static boolean Bhovered[] = new boolean[30];
     public static boolean Start_GeoEdu = true;
     public static boolean copyMousePressed = false;
     public static boolean copyMousePressed2 = false;
+    public static boolean copyMousePressed3 = false;
+    public static boolean Exithovered = false;
     public static int ScreenWidth = Menu.ScreenWidth;
     public static int ScreenHeight = Menu.ScreenHeight;
     public static int FontSize = 60;
@@ -137,6 +139,12 @@ public class StartMenu {
 
     public static void makeButton(Graphics g, int x, int y, int width, int height, String Name, int i) {
 
+        Menu.X_hovered = MouseInfo.getPointerInfo().getLocation().x - Menu.XFrame - Setari.FrameBarX;
+        Menu.Y_hovered = MouseInfo.getPointerInfo().getLocation().y - Menu.YFrame - Setari.FrameBarY;
+
+        if (Menu.X_hovered >= x && Menu.X_hovered <= x + width && Menu.Y_hovered >= y && Menu.Y_hovered <= y + height)
+            Bhovered[i] = true;
+        ReadButtons();
         if (Menu.MousePressed == true && Bhovered[i] == true) {
             if (copyMousePressed2 != Menu.MousePressed && copyMousePressed2 == false) {
                 Setari.ButtonSound("button_click.wav");
@@ -155,7 +163,6 @@ public class StartMenu {
             g.drawString(String.valueOf(Name), x + width / 2 - metricsx.stringWidth(String.valueOf(Name)) / 2, y + height / 2 + metricsy.getHeight() / 4);
 
         } else if (Bhovered[i] == true) {
-
 
             copyMousePressed = Menu.MousePressed;
             g.setColor(new Color(231, 198, 63));
@@ -186,6 +193,65 @@ public class StartMenu {
         Bhovered[i] = false;
     }
 
+    public static void makeExitButton(Graphics g, int x, int y, int width, int height, String Name) {
+
+
+        Menu.X_hovered = MouseInfo.getPointerInfo().getLocation().x - Menu.XFrame - Setari.FrameBarX;
+        Menu.Y_hovered = MouseInfo.getPointerInfo().getLocation().y - Menu.YFrame - Setari.FrameBarY;
+        if (Menu.X_hovered >= x && Menu.X_hovered <= x + width && Menu.Y_hovered >= y && Menu.Y_hovered <= y + height)
+            Exithovered = true;
+
+        if (Menu.MousePressed == true && Exithovered == true) {
+            if (copyMousePressed3 != Menu.MousePressed && copyMousePressed3 == false) {
+                Setari.ButtonSound("button_click.wav");
+            }
+            g.setColor(new Color(55, 53, 53));
+            g.fillRoundRect(x, y, width, height, 15, 15);
+            g.setColor(new Color(220, 220, 220));
+            //g.drawRect(x, y, width, height);
+
+            Font small = new Font("Futura", Font.PLAIN, FontSize);
+            FontMetrics metricsy = g.getFontMetrics(small);
+            FontMetrics metricsx = g.getFontMetrics(small);
+            g.setColor(new Color(220, 220, 220));
+            g.setFont(small);
+            g.drawString(String.valueOf(Name), x + width / 2 - metricsx.stringWidth(String.valueOf(Name)) / 2, y + height / 2 + metricsy.getHeight() / 4);
+
+        } else if (Exithovered == true) {
+
+            if (Menu.MousePressed == false && copyMousePressed3 == true && Name == "Iesire") System.exit(0);
+            else if (Menu.MousePressed == false && copyMousePressed3 == true && Name == "Deconectare") {
+                button_start = -NrButtons * ButtonHeight;
+                UserImput.Login = true;
+            }
+            g.setColor(new Color(231, 198, 63));
+            g.fillRoundRect(x, y, width, height, 15, 15);
+            g.setColor(new Color(255, 231, 63));
+            //   g.drawRect(x, y, width, height);
+
+            Font small = new Font("Futura", Font.PLAIN, FontSize);
+            FontMetrics metricsy = g.getFontMetrics(small);
+            FontMetrics metricsx = g.getFontMetrics(small);
+            g.setColor(new Color(255, 231, 63));
+            g.setFont(small);
+            g.drawString(String.valueOf(Name), x + width / 2 - metricsx.stringWidth(String.valueOf(Name)) / 2, y + height / 2 + metricsy.getHeight() / 4);
+
+        } else {
+            g.setColor(new Color(255, 253, 253));
+            g.fillRoundRect(x, y, width, height, 15, 15);
+            g.setColor(new Color(0, 0, 0));
+            // g.drawRect(x, y, width, height);
+
+            Font small = new Font("Futura", Font.PLAIN, FontSize);
+            FontMetrics metricsy = g.getFontMetrics(small);
+            FontMetrics metricsx = g.getFontMetrics(small);
+            g.setColor(new Color(0, 0, 0));
+            g.setFont(small);
+            g.drawString(String.valueOf(Name), x + width / 2 - metricsx.stringWidth(String.valueOf(Name)) / 2, y + height / 2 + metricsy.getHeight() / 4);
+        }
+        Exithovered = false;
+    }
+
     /**
      * This method creates the buttons and sets their position and size.
      *
@@ -199,6 +265,9 @@ public class StartMenu {
             makeButton(g, PanelHeight / 200, button_start + ScreenHeight / 10 + i * ButtonHeight, ButtonWidth - PanelHeight / 100, ButtonHeight, Menubutton_name[i + 1], i + 1);
         }
         copyMousePressed2 = Menu.MousePressed;
+        makeExitButton(g, ScreenWidth * 5 / 6, ScreenHeight * 4 / 5, ScreenWidth / 10, ScreenHeight / 12, "Iesire");
+        makeExitButton(g, ScreenWidth / 4 + ScreenWidth / 50, ScreenHeight * 4 / 5, ScreenWidth / 5, ScreenHeight / 12, "Deconectare");
+        copyMousePressed3 = Menu.MousePressed;
     }
 
     /**
@@ -229,11 +298,16 @@ public class StartMenu {
 
     public static void Paint(Graphics g) {
 
-        generateBackground(g);
-        generateTitle(g);
-        generateButtons(g);
-        Draw_Choose(g);
+        if (UserImput.Login == true) {
 
+            UserImput.Paint(g);
+
+        } else {
+            generateBackground(g);
+            generateTitle(g);
+            generateButtons(g);
+            Draw_Choose(g);
+        }
     }
 
     /**
@@ -253,24 +327,7 @@ public class StartMenu {
         if (FontSize > 60 * ScreenHeight / 1080) FontSize = 60 * ScreenHeight / 1080;
         ButtonHeight = ScreenHeight * 8 / 10 / NrButtons;
         if (ButtonHeight > ScreenHeight / 10) ButtonHeight = ScreenHeight / 10;
-    }
-
-    /**
-     * This method reads and interprets the actions of the mouse.
-     *
-     * @author Sabin Anton
-     */
-
-    public static void MouseState() {
-
-        Menu.X_hovered = MouseInfo.getPointerInfo().getLocation().x - Menu.XFrame - Setari.FrameBarX;
-        Menu.Y_hovered = MouseInfo.getPointerInfo().getLocation().y - Menu.YFrame - Setari.FrameBarY;
-        if (Menu.X_hovered >= 0 && Menu.X_hovered <= PanelWidth && Menu.Y_hovered > ScreenHeight / 10) {
-
-            Bhovered[(Menu.Y_hovered - ScreenHeight / 10 - button_start) / ButtonHeight + 1] = true;
-
-        }
-
+        Username = UserImput.USERNAME;
     }
 
     /**
@@ -298,10 +355,26 @@ public class StartMenu {
 
     public static void Run() {
 
-        initializeDimensions();
-        AnimateButtons();
-        MouseState();
-        ReadButtons();
+        if (UserImput.Login == true) {
+
+            UserImput.Run();
+
+        } else {
+            UserImput.username.setVisible(false);
+            UserImput.password.setVisible(false);
+            for (int i = 1; i <= 2; i++) {
+                for (int j = 1; j <= 4; j++) {
+                    if (i == 1) {
+                        UserImput.Tbox[j].setVisible(false);
+                    }
+                    if (i == 2 && j < 3) {
+                        UserImput.Pbox[j].setVisible(false);
+                    }
+                }
+            }
+            initializeDimensions();
+            AnimateButtons();
+        }
     }
 
 }

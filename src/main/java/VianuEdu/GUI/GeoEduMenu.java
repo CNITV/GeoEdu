@@ -28,7 +28,7 @@ public class GeoEduMenu {
     private static int X_leftPanel = -PanelWidth;
     private static int X_rightPanel = ScreenWidth;
     private static int classNumber = 4;
-    private static int NrButtons = 6;
+    private static int NrButtons = 7;
     private static int ButtonWidth = PanelWidth;
     private static int ButtonHeight = PanelHeight / NrButtons * 4 / 5;
     private static int ClassHeight = ButtonHeight / 2;
@@ -365,7 +365,8 @@ public class GeoEduMenu {
         Button_name[2] = "Lectii";
         Button_name[3] = "Exercitii";
         Button_name[4] = "Teste";
-        Button_name[5] = "Setari";
+        Button_name[5] = "Status";
+        Button_name[6] = "Setari";
 
     }
 
