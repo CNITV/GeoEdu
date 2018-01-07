@@ -17,9 +17,12 @@ public class UserImput extends JPanel {
     public static boolean Login = true;
     public static boolean copyMousePressed = false;
     public static boolean copyMousePressed2 = false;
+    public static boolean copyMousePressed3 = false;
     public static boolean Bhovered[] = new boolean[10];
     public static boolean Bpressed[] = new boolean[10];
     public static boolean Submithovered = false;
+    public static boolean optionsShowed[] = new boolean[10];
+    public static boolean Ohovered = false;
     public static String ButtonName[] = new String[10];
     public static String BoxName[] = new String[10];
     public static String PName[] = new String[10];
@@ -27,13 +30,18 @@ public class UserImput extends JPanel {
     public static JPasswordField password = new JPasswordField(30);
     public static JTextField Tbox[] = new JTextField[10];
     public static JPasswordField Pbox[] = new JPasswordField[10];
+    public static String gradeName[] = new String[10];
+    public static String genderName[] = new String[10];
+    public static String TeacherName[] = new String[10];
     public static String USERNAME;
     public static String PASSWORD;
     public static String CPASSWORD;
     public static String FNAME;
     public static String LNAME;
     public static String FINITIALS;
+    public static boolean TEACHER = false;
     public static int GRADE;
+    public static int GENDER;
     public static Image background;
 
     static ClassLoader loader = Menu.class.getClassLoader();
@@ -44,8 +52,24 @@ public class UserImput extends JPanel {
         BoxName[2] = "Prenume:";
         BoxName[3] = "Initiala Tatalui:";
         BoxName[4] = "Clasa:";
-        PName[1] = "Parola:";
-        PName[2] = "Confirma Parola:";
+        BoxName[5] = "Sex:";
+        BoxName[7] = "Esti profesor?";
+        BoxName[6] = "ID Utilizator:";
+        PName[3] = "Parola:";
+        PName[4] = "Confirma Parola:";
+
+    }
+
+    public static void initializeOptions() {
+
+        gradeName[1] = "clasa a 9-a";
+        gradeName[2] = "clasa a 10-a";
+        gradeName[3] = "clasa a 11-a";
+        gradeName[4] = "clasa a 12-a";
+        genderName[1] = "baiat";
+        genderName[2] = "fata";
+        TeacherName[1] = "da";
+        TeacherName[2] = "nu";
 
     }
 
@@ -63,6 +87,7 @@ public class UserImput extends JPanel {
         login();
         register();
         initialzeTBox();
+        initializeOptions();
     }
 
     public static void generateBackground(Graphics g) {
@@ -141,9 +166,9 @@ public class UserImput extends JPanel {
 
         USERNAME = username.getText();
         PASSWORD = String.valueOf(password.getPassword());
-        if (USERNAME.length() <= 5) {
+        if (USERNAME.length() < 1) {
 
-        } else if (PASSWORD.length() <= 5) {
+        } else if (PASSWORD.length() < 1) {
 
         } else {
             Login = false;
@@ -152,6 +177,12 @@ public class UserImput extends JPanel {
     }
 
     public static void makeSubmitButton(Graphics g, int x, int y, int width, int height, String Name) {
+
+        Menu.X_hovered = MouseInfo.getPointerInfo().getLocation().x - Menu.XFrame - Setari.FrameBarX;
+        Menu.Y_hovered = MouseInfo.getPointerInfo().getLocation().y - Menu.YFrame - Setari.FrameBarY;
+
+        if (Menu.X_hovered >= x && Menu.X_hovered <= x + width && Menu.Y_hovered >= y && Menu.Y_hovered <= y + height)
+            Submithovered = true;
 
         if (Menu.MousePressed == false && copyMousePressed2 == true && Submithovered == true) checkData();
 
@@ -197,7 +228,7 @@ public class UserImput extends JPanel {
             FontMetrics metricsx = g.getFontMetrics(small);
             g.setColor(new Color(0, 0, 0));
             g.setFont(small);
-            g.drawString(String.valueOf(Name), x + width / 2 - metricsx.stringWidth(String.valueOf("Autentificate")) / 2, y + height / 2 + metricsy.getHeight() / 4);
+            g.drawString(String.valueOf(Name), x + width / 2 - metricsx.stringWidth(String.valueOf(Name)) / 2, y + height / 2 + metricsy.getHeight() / 4);
         }
         Submithovered = false;
         copyMousePressed2 = Menu.MousePressed;
@@ -219,16 +250,22 @@ public class UserImput extends JPanel {
 
         Font f = new Font("Consolas", Font.PLAIN, FontSize / 3);
         for (int i = 1; i <= 2; i++) {
-            for (int j = 1; j <= 4; j++) {
+            for (int j = 1; j <= 5; j++) {
                 if (i == 1) {
                     Tbox[j] = new JTextField(30);
-                    Tbox[j].setBounds(ScreenWidth / 2 - ScreenWidth / 8, ScreenHeight / 4 + ScreenHeight / 50 + j * ScreenHeight / 10, ScreenWidth / 12, ScreenHeight / 30);
+                    Tbox[j].setBounds(ScreenWidth / 2 - ScreenWidth / 8, ScreenHeight / 4 + ScreenHeight / 40 + j * ScreenHeight / 13, ScreenWidth / 12, ScreenHeight / 30);
                     Tbox[j].setFont(f);
                     Window.frame.add(Tbox[j]);
                     Tbox[j].setVisible(false);
-                } else if (i == 2 && j < 3) {
+                } else if (i == 2 && j <= 2) {
+                    Tbox[5 + j] = new JTextField(30);
+                    Tbox[5 + j].setBounds(ScreenWidth * 3 / 4 - ScreenWidth / 8, ScreenHeight / 4 + ScreenHeight / 40 + j * ScreenHeight / 13, ScreenWidth / 12, ScreenHeight / 30);
+                    Tbox[5 + j].setFont(f);
+                    Window.frame.add(Tbox[5 + j]);
+                    Tbox[5 + j].setVisible(false);
+                } else if (i == 2 && j < 5) {
                     Pbox[j] = new JPasswordField(30);
-                    Pbox[j].setBounds(ScreenWidth * 3 / 4 - ScreenWidth / 8, ScreenHeight / 4 + ScreenHeight / 50 + j * ScreenHeight / 10, ScreenWidth / 12, ScreenHeight / 30);
+                    Pbox[j].setBounds(ScreenWidth * 3 / 4 - ScreenWidth / 8, ScreenHeight / 4 + ScreenHeight / 40 + j * ScreenHeight / 13, ScreenWidth / 12, ScreenHeight / 30);
                     Pbox[j].setFont(f);
                     Window.frame.add(Pbox[j]);
                     Pbox[j].setVisible(false);
@@ -236,6 +273,106 @@ public class UserImput extends JPanel {
             }
         }
 
+    }
+
+    public static void makeOptionsButton(Graphics g, int x, int y, int width, int height, String Name, int i) {
+
+        Menu.X_hovered = MouseInfo.getPointerInfo().getLocation().x - Menu.XFrame - Setari.FrameBarX;
+        Menu.Y_hovered = MouseInfo.getPointerInfo().getLocation().y - Menu.YFrame - Setari.FrameBarY;
+
+        if (Menu.X_hovered >= x && Menu.X_hovered <= x + width && Menu.Y_hovered >= y && Menu.Y_hovered <= y + height)
+            Ohovered = true;
+
+        if (Menu.MousePressed == true && Ohovered == true) {
+            if (copyMousePressed3 != Menu.MousePressed && copyMousePressed3 == false) {
+                Setari.ButtonSound("button_click.wav");
+            }
+            g.setColor(new Color(55, 53, 53));
+            g.fill3DRect(x, y, width, height, true);
+            g.setColor(new Color(220, 220, 220));
+            //g.drawRect(x, y, width, height);
+
+            Font small = new Font("Futura", Font.PLAIN, FontSize / 3);
+            FontMetrics metricsy = g.getFontMetrics(small);
+            FontMetrics metricsx = g.getFontMetrics(small);
+            g.setColor(new Color(220, 220, 220));
+            g.setFont(small);
+            g.drawString(String.valueOf(Name), x + width / 2 - metricsx.stringWidth(String.valueOf(Name)) / 2, y + height / 2 + metricsy.getHeight() / 4);
+
+            if (optionsShowed[1] == true) {
+                GRADE = i + 8;
+                Tbox[4].setText(gradeName[i]);
+            } else if (optionsShowed[2] == true) {
+                GENDER = i;
+                Tbox[5].setText(genderName[i]);
+            } else if (optionsShowed[3] == true) {
+                if (i == 1) TEACHER = true;
+                else TEACHER = false;
+                Tbox[7].setText(TeacherName[i]);
+
+            }
+
+        } else if (Ohovered == true) {
+
+            if (Menu.MousePressed == false && copyMousePressed == true) System.exit(0);
+            g.setColor(new Color(231, 198, 63));
+            g.fill3DRect(x, y, width, height, true);
+            g.setColor(new Color(255, 231, 63));
+            //   g.drawRect(x, y, width, height);
+
+            Font small = new Font("Futura", Font.PLAIN, FontSize / 3);
+            FontMetrics metricsy = g.getFontMetrics(small);
+            FontMetrics metricsx = g.getFontMetrics(small);
+            g.setColor(new Color(255, 231, 63));
+            g.setFont(small);
+            g.drawString(String.valueOf(Name), x + width / 2 - metricsx.stringWidth(String.valueOf(Name)) / 2, y + height / 2 + metricsy.getHeight() / 4);
+
+        } else {
+            g.setColor(new Color(255, 253, 253));
+            g.fill3DRect(x, y, width, height, false);
+            g.setColor(new Color(0, 0, 0));
+            // g.drawRect(x, y, width, height);
+
+            Font small = new Font("Futura", Font.PLAIN, FontSize / 3);
+            FontMetrics metricsy = g.getFontMetrics(small);
+            FontMetrics metricsx = g.getFontMetrics(small);
+            g.setColor(new Color(0, 0, 0));
+            g.setFont(small);
+            g.drawString(String.valueOf(Name), x + width / 2 - metricsx.stringWidth(String.valueOf(Name)) / 2, y + height / 2 + metricsy.getHeight() / 4);
+        }
+
+        Ohovered = false;
+    }
+
+    public static void createOptions(Graphics g, int x, int y, int NrOptions, String Name[], int i) {
+
+        int X_hovered = MouseInfo.getPointerInfo().getLocation().x - Menu.XFrame - Setari.FrameBarX;
+        int Y_hovered = MouseInfo.getPointerInfo().getLocation().y - Menu.YFrame - Setari.FrameBarY;
+
+        if (X_hovered >= x && X_hovered <= x + ScreenWidth / 12 && Y_hovered >= y && Y_hovered <= y + ScreenHeight / 30) {
+
+            optionsShowed[i] = true;
+        }
+        if (optionsShowed[1] == true) {
+            optionsShowed[2] = false;
+            Tbox[5].setVisible(false);
+        }
+        if (optionsShowed[3] == true) {
+            Pbox[3].setVisible(false);
+        }
+        if (optionsShowed[i] == true) {
+            System.out.println(NrOptions);
+            if (X_hovered >= x && X_hovered <= x + ScreenWidth / 12 && Y_hovered >= y && Y_hovered <= y + ScreenHeight / 30 * (NrOptions + 1)) {
+                for (int j = 1; j <= NrOptions; j++) {
+
+                    makeOptionsButton(g, x, y + j * ScreenHeight / 30, ScreenWidth / 12, ScreenHeight / 30, Name[j], j);
+                }
+                copyMousePressed3 = Menu.MousePressed;
+            } else {
+                optionsShowed[i] = false;
+            }
+
+        }
     }
 
     public static void generateButtons(Graphics g) {
@@ -247,17 +384,18 @@ public class UserImput extends JPanel {
         if (Bpressed[1] == true)
             makeSubmitButton(g, ScreenWidth * 3 / 4 - ScreenWidth / 6, ScreenHeight * 3 / 4 - ScreenHeight / 8, ScreenWidth / 10, ScreenHeight / 15, "Autentificare");
         else if (Bpressed[2] == true)
-            makeSubmitButton(g, ScreenWidth * 3 / 4 - ScreenWidth / 6, ScreenHeight * 3 / 4 - ScreenHeight / 8, ScreenWidth / 10, ScreenHeight / 15, "Inregistrare");
+            makeSubmitButton(g, ScreenWidth * 3 / 4 - ScreenWidth / 6, ScreenHeight * 3 / 4 - ScreenHeight / 11, ScreenWidth / 10, ScreenHeight / 15, "Inregistrare");
     }
 
     public static void updateTextboxes(Graphics g) {
 
         for (int i = 1; i <= 2; i++) {
-            for (int j = 1; j <= 4; j++) {
+            for (int j = 1; j <= 5; j++) {
                 if (i == 1) {
                     Tbox[j].setVisible(false);
-                }
-                if (i == 2 && j < 3) {
+                } else if (i == 2 && j <= 2) {
+                    Tbox[j + 5].setVisible(false);
+                } else if (i == 2 && j < 5) {
                     Pbox[j].setVisible(false);
                 }
             }
@@ -288,20 +426,42 @@ public class UserImput extends JPanel {
         g.setFont(small);
 
         for (int i = 1; i <= 2; i++) {
-            for (int j = 1; j <= 4; j++) {
+            for (int j = 1; j <= 5; j++) {
                 if (i == 1) {
-                    g.drawString(String.valueOf(BoxName[j]), ScreenWidth / 2 - ScreenWidth / 7 - metricsx.stringWidth(String.valueOf(BoxName[j])), ScreenHeight / 4 + ScreenHeight / 50 + j * ScreenHeight / 10 + metricsy.getHeight() / 2 * 4 / 3);
+                    g.drawString(String.valueOf(BoxName[j]), ScreenWidth / 2 - ScreenWidth / 7 - metricsx.stringWidth(String.valueOf(BoxName[j])), ScreenHeight / 4 + ScreenHeight / 40 + j * ScreenHeight / 13 + metricsy.getHeight() / 2 * 4 / 3);
                     Tbox[j].setVisible(true);
-                    Tbox[j].setBounds(ScreenWidth / 2 - ScreenWidth / 8, ScreenHeight / 4 + ScreenHeight / 50 + j * ScreenHeight / 10, ScreenWidth / 12, ScreenHeight / 30);
-                    Tbox[j].revalidate();
-                    Tbox[j].repaint();
-                } else if (i == 2 && j < 3) {
-                    g.drawString(String.valueOf(PName[j]), ScreenWidth * 3 / 4 - ScreenWidth / 7 - metricsx.stringWidth(String.valueOf(PName[j])), ScreenHeight / 4 + ScreenHeight / 50 + j * ScreenHeight / 10 + metricsy.getHeight() / 2 * 4 / 3);
+                    Tbox[j].setBounds(ScreenWidth / 2 - ScreenWidth / 8, ScreenHeight / 4 + ScreenHeight / 50 + j * ScreenHeight / 13, ScreenWidth / 12, ScreenHeight / 30);
+                    // Tbox[j].revalidate();
+                    // Tbox[j].repaint();
+                } else if (i == 2 && j <= 2) {
+                    Tbox[5 + j].setVisible(true);
+                    g.drawString(String.valueOf(BoxName[5 + j]), ScreenWidth * 3 / 4 - ScreenWidth / 7 - metricsx.stringWidth(String.valueOf(BoxName[5 + j])), ScreenHeight / 4 + ScreenHeight / 40 + j * ScreenHeight / 13 + metricsy.getHeight() / 2 * 4 / 3);
+                    Tbox[5 + j].setBounds(ScreenWidth * 3 / 4 - ScreenWidth / 8, ScreenHeight / 4 + ScreenHeight / 50 + j * ScreenHeight / 13, ScreenWidth / 12, ScreenHeight / 30);
+
+                    //Tbox[j+5].revalidate();
+                    // Tbox[j+5].repaint();
+                } else if (i == 2 && j < 5) {
+                    g.drawString(String.valueOf(PName[j]), ScreenWidth * 3 / 4 - ScreenWidth / 7 - metricsx.stringWidth(String.valueOf(PName[j])), ScreenHeight / 4 + ScreenHeight / 40 + j * ScreenHeight / 13 + metricsy.getHeight() / 2 * 4 / 3);
                     Pbox[j].setVisible(true);
-                    Pbox[j].setBounds(ScreenWidth * 3 / 4 - ScreenWidth / 8, ScreenHeight / 4 + ScreenHeight / 50 + j * ScreenHeight / 10, ScreenWidth / 12, ScreenHeight / 30);
-                    Pbox[j].revalidate();
-                    Pbox[j].repaint();
+                    Pbox[j].setBounds(ScreenWidth * 3 / 4 - ScreenWidth / 8, ScreenHeight / 4 + ScreenHeight / 50 + j * ScreenHeight / 13, ScreenWidth / 12, ScreenHeight / 30);
+                    //Pbox[j].revalidate();
+                    //Pbox[j].repaint();
                 }
+            }
+        }
+
+    }
+
+    public static void callOptions(Graphics g) {
+
+        for (int i = 1; i <= 2; i++) {
+            for (int j = 1; j <= 5; j++) {
+                if (i == 1 && j == 4)
+                    createOptions(g, ScreenWidth / 2 - ScreenWidth / 8, ScreenHeight / 4 + ScreenHeight / 50 + j * ScreenHeight / 13, 4, gradeName, 1);
+                else if (i == 1 && j == 5)
+                    createOptions(g, ScreenWidth / 2 - ScreenWidth / 8, ScreenHeight / 4 + ScreenHeight / 50 + j * ScreenHeight / 13, 2, genderName, 2);
+                else if (i == 2 && j == 2)
+                    createOptions(g, ScreenWidth * 3 / 4 - ScreenWidth / 8, ScreenHeight / 4 + ScreenHeight / 50 + j * ScreenHeight / 13, 2, TeacherName, 3);
             }
         }
 
@@ -321,6 +481,7 @@ public class UserImput extends JPanel {
             username.setVisible(false);
             password.setVisible(false);
             updateRegister(g);
+            callOptions(g);
 
         }
     }
@@ -347,15 +508,6 @@ public class UserImput extends JPanel {
             }
 
         }
-
-        if (Menu.X_hovered >= ScreenWidth * 3 / 4 - ScreenWidth / 6 && Menu.X_hovered <= ScreenWidth * 3 / 4 - ScreenWidth / 6 + ScreenWidth / 10) {
-
-            if (Menu.Y_hovered >= ScreenHeight * 3 / 4 - ScreenHeight / 8 && Menu.Y_hovered <= ScreenHeight * 3 / 4 - ScreenHeight / 8 + ScreenHeight / 15) {
-                Submithovered = true;
-            }
-
-        }
-
     }
 
     public static void Run() {

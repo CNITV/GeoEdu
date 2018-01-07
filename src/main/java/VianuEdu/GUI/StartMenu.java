@@ -19,7 +19,7 @@ public class StartMenu {
     public static int ScreenWidth = Menu.ScreenWidth;
     public static int ScreenHeight = Menu.ScreenHeight;
     public static int FontSize = 60;
-    public static int NrButtons = 4;
+    public static int NrButtons = 3;
     public static int PanelWidth = ScreenWidth / 4;
     public static int PanelHeight = ScreenHeight;
     public static int ButtonHeight = ScreenHeight / 10;
@@ -363,11 +363,12 @@ public class StartMenu {
             UserImput.username.setVisible(false);
             UserImput.password.setVisible(false);
             for (int i = 1; i <= 2; i++) {
-                for (int j = 1; j <= 4; j++) {
+                for (int j = 1; j <= 5; j++) {
                     if (i == 1) {
                         UserImput.Tbox[j].setVisible(false);
-                    }
-                    if (i == 2 && j < 3) {
+                    } else if (i == 2 && j <= 2) {
+                        UserImput.Tbox[5 + j].setVisible(false);
+                    } else if (i == 2 && j < 5) {
                         UserImput.Pbox[j].setVisible(false);
                     }
                 }
