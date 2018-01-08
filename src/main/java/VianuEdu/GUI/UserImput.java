@@ -32,14 +32,12 @@ public class UserImput extends JPanel {
     public static JPasswordField Pbox[] = new JPasswordField[10];
     public static String gradeName[] = new String[10];
     public static String genderName[] = new String[10];
-    public static String TeacherName[] = new String[10];
     public static String USERNAME;
     public static String PASSWORD;
     public static String CPASSWORD;
     public static String FNAME;
     public static String LNAME;
     public static String FINITIALS;
-    public static boolean TEACHER = false;
     public static int GRADE;
     public static int GENDER;
     public static Image background;
@@ -53,10 +51,9 @@ public class UserImput extends JPanel {
         BoxName[3] = "Initiala Tatalui:";
         BoxName[4] = "Clasa:";
         BoxName[5] = "Sex:";
-        BoxName[7] = "Esti profesor?";
         BoxName[6] = "ID Utilizator:";
-        PName[3] = "Parola:";
-        PName[4] = "Confirma Parola:";
+        PName[2] = "Parola:";
+        PName[3] = "Confirma Parola:";
 
     }
 
@@ -68,8 +65,6 @@ public class UserImput extends JPanel {
         gradeName[4] = "clasa a 12-a";
         genderName[1] = "baiat";
         genderName[2] = "fata";
-        TeacherName[1] = "da";
-        TeacherName[2] = "nu";
 
     }
 
@@ -173,7 +168,7 @@ public class UserImput extends JPanel {
         } else {
             Login = false;
         }
-        System.out.println(USERNAME);
+
     }
 
     public static void makeSubmitButton(Graphics g, int x, int y, int width, int height, String Name) {
@@ -257,13 +252,13 @@ public class UserImput extends JPanel {
                     Tbox[j].setFont(f);
                     Window.frame.add(Tbox[j]);
                     Tbox[j].setVisible(false);
-                } else if (i == 2 && j <= 2) {
+                } else if (i == 2 && j <= 1) {
                     Tbox[5 + j] = new JTextField(30);
                     Tbox[5 + j].setBounds(ScreenWidth * 3 / 4 - ScreenWidth / 8, ScreenHeight / 4 + ScreenHeight / 40 + j * ScreenHeight / 13, ScreenWidth / 12, ScreenHeight / 30);
                     Tbox[5 + j].setFont(f);
                     Window.frame.add(Tbox[5 + j]);
                     Tbox[5 + j].setVisible(false);
-                } else if (i == 2 && j < 5) {
+                } else if (i == 2 && j < 4) {
                     Pbox[j] = new JPasswordField(30);
                     Pbox[j].setBounds(ScreenWidth * 3 / 4 - ScreenWidth / 8, ScreenHeight / 4 + ScreenHeight / 40 + j * ScreenHeight / 13, ScreenWidth / 12, ScreenHeight / 30);
                     Pbox[j].setFont(f);
@@ -305,11 +300,6 @@ public class UserImput extends JPanel {
             } else if (optionsShowed[2] == true) {
                 GENDER = i;
                 Tbox[5].setText(genderName[i]);
-            } else if (optionsShowed[3] == true) {
-                if (i == 1) TEACHER = true;
-                else TEACHER = false;
-                Tbox[7].setText(TeacherName[i]);
-
             }
 
         } else if (Ohovered == true) {
@@ -361,7 +351,6 @@ public class UserImput extends JPanel {
             Pbox[3].setVisible(false);
         }
         if (optionsShowed[i] == true) {
-            System.out.println(NrOptions);
             if (X_hovered >= x && X_hovered <= x + ScreenWidth / 12 && Y_hovered >= y && Y_hovered <= y + ScreenHeight / 30 * (NrOptions + 1)) {
                 for (int j = 1; j <= NrOptions; j++) {
 
@@ -384,7 +373,7 @@ public class UserImput extends JPanel {
         if (Bpressed[1] == true)
             makeSubmitButton(g, ScreenWidth * 3 / 4 - ScreenWidth / 6, ScreenHeight * 3 / 4 - ScreenHeight / 8, ScreenWidth / 10, ScreenHeight / 15, "Autentificare");
         else if (Bpressed[2] == true)
-            makeSubmitButton(g, ScreenWidth * 3 / 4 - ScreenWidth / 6, ScreenHeight * 3 / 4 - ScreenHeight / 11, ScreenWidth / 10, ScreenHeight / 15, "Inregistrare");
+            makeSubmitButton(g, ScreenWidth * 3 / 4 - ScreenWidth / 6, ScreenHeight * 3 / 4 - ScreenHeight / 7, ScreenWidth / 10, ScreenHeight / 15, "Inregistrare");
     }
 
     public static void updateTextboxes(Graphics g) {
@@ -393,9 +382,9 @@ public class UserImput extends JPanel {
             for (int j = 1; j <= 5; j++) {
                 if (i == 1) {
                     Tbox[j].setVisible(false);
-                } else if (i == 2 && j <= 2) {
+                } else if (i == 2 && j <= 1) {
                     Tbox[j + 5].setVisible(false);
-                } else if (i == 2 && j < 5) {
+                } else if (i == 2 && j < 4) {
                     Pbox[j].setVisible(false);
                 }
             }
@@ -433,14 +422,14 @@ public class UserImput extends JPanel {
                     Tbox[j].setBounds(ScreenWidth / 2 - ScreenWidth / 8, ScreenHeight / 4 + ScreenHeight / 50 + j * ScreenHeight / 13, ScreenWidth / 12, ScreenHeight / 30);
                     // Tbox[j].revalidate();
                     // Tbox[j].repaint();
-                } else if (i == 2 && j <= 2) {
+                } else if (i == 2 && j <= 1) {
                     Tbox[5 + j].setVisible(true);
                     g.drawString(String.valueOf(BoxName[5 + j]), ScreenWidth * 3 / 4 - ScreenWidth / 7 - metricsx.stringWidth(String.valueOf(BoxName[5 + j])), ScreenHeight / 4 + ScreenHeight / 40 + j * ScreenHeight / 13 + metricsy.getHeight() / 2 * 4 / 3);
                     Tbox[5 + j].setBounds(ScreenWidth * 3 / 4 - ScreenWidth / 8, ScreenHeight / 4 + ScreenHeight / 50 + j * ScreenHeight / 13, ScreenWidth / 12, ScreenHeight / 30);
 
                     //Tbox[j+5].revalidate();
                     // Tbox[j+5].repaint();
-                } else if (i == 2 && j < 5) {
+                } else if (i == 2 && j < 4) {
                     g.drawString(String.valueOf(PName[j]), ScreenWidth * 3 / 4 - ScreenWidth / 7 - metricsx.stringWidth(String.valueOf(PName[j])), ScreenHeight / 4 + ScreenHeight / 40 + j * ScreenHeight / 13 + metricsy.getHeight() / 2 * 4 / 3);
                     Pbox[j].setVisible(true);
                     Pbox[j].setBounds(ScreenWidth * 3 / 4 - ScreenWidth / 8, ScreenHeight / 4 + ScreenHeight / 50 + j * ScreenHeight / 13, ScreenWidth / 12, ScreenHeight / 30);
@@ -460,8 +449,6 @@ public class UserImput extends JPanel {
                     createOptions(g, ScreenWidth / 2 - ScreenWidth / 8, ScreenHeight / 4 + ScreenHeight / 50 + j * ScreenHeight / 13, 4, gradeName, 1);
                 else if (i == 1 && j == 5)
                     createOptions(g, ScreenWidth / 2 - ScreenWidth / 8, ScreenHeight / 4 + ScreenHeight / 50 + j * ScreenHeight / 13, 2, genderName, 2);
-                else if (i == 2 && j == 2)
-                    createOptions(g, ScreenWidth * 3 / 4 - ScreenWidth / 8, ScreenHeight / 4 + ScreenHeight / 50 + j * ScreenHeight / 13, 2, TeacherName, 3);
             }
         }
 
