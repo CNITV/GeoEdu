@@ -1,4 +1,44 @@
 /*
+ *
+ *  This file is part of VianuEdu.
+ *
+ *       VianuEdu is free software: you can redistribute it and/or modify
+ *       it under the terms of the GNU General Public License as published by
+ *       the Free Software Foundation, either version 3 of the License, or
+ *       (at your option) any later version.
+ *
+ *       VianuEdu is distributed in the hope that it will be useful,
+ *       but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *       GNU General Public License for more details.
+ *
+ *       You should have received a copy of the GNU General Public License
+ *       along with VianuEdu.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *       Developed by Matei Gardus <matei@gardus.eu>
+ */
+
+/*
+ *
+ *  This file is part of VianuEdu.
+ *
+ *       VianuEdu is free software: you can redistribute it and/or modify
+ *       it under the terms of the GNU General Public License as published by
+ *       the Free Software Foundation, either version 3 of the License, or
+ *       (at your option) any later version.
+ *
+ *       VianuEdu is distributed in the hope that it will be useful,
+ *       but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *       GNU General Public License for more details.
+ *
+ *       You should have received a copy of the GNU General Public License
+ *       along with VianuEdu.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *       Developed by Matei Gardus <matei@gardus.eu>
+ */
+
+/*
  * This file is part of VianuEdu.
  *
  *     VianuEdu is free software: you can redistribute it and/or modify
@@ -17,8 +57,9 @@
  *     Developed by Matei Gardus <matei@gardus.eu>
  */
 
-package VianuEdu.backend;
+package VianuEdu.backend.TestLibrary;
 
+import VianuEdu.backend.Identification.Student;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
@@ -43,19 +84,22 @@ public class AnswerSheet {
 	private HashMap<Integer, String> answers = new HashMap<>();
 	private int numberOfAnswersFilled;
 	private int numberOfAnswers;
+	private int testID;
 	private Student student;
 
 	/**
 	 * Constructs and initializes an empty answer sheet.
 	 *
 	 * @param student         The student whose this newly-constructed answer sheet belongs to. Identified by a Student object.
+	 * @param testID		  The answer sheet's test ID. This is associated either with a test or an exercise.
 	 * @param numberOfAnswers The amount of answers that the current test or exercise can have. The number must be higher than 0.
 	 */
-	public AnswerSheet(Student student, int numberOfAnswers) {
+	public AnswerSheet(Student student, int testID, int numberOfAnswers) {
 		if (!(numberOfAnswers > 0)) {
 			throw new IllegalArgumentException("The number of answers has to be higher than 0!");
 		}
 		this.student = student;
+		this.testID = testID;
 		this.numberOfAnswers = numberOfAnswers;
 	}
 
@@ -181,6 +225,15 @@ public class AnswerSheet {
 	 */
 	public Student getStudent() {
 		return student;
+	}
+
+	/**
+	 * Gets the answer sheet's test ID.
+	 *
+	 * @return the answer sheet's test ID.
+	 */
+	public int getTestID() {
+		return testID;
 	}
 
 	/**

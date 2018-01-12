@@ -17,8 +17,8 @@
  *     Developed by Matei Gardus <matei@gardus.eu>
  */
 
-import VianuEdu.backend.AnswerSheet;
-import VianuEdu.backend.Student;
+import VianuEdu.backend.TestLibrary.AnswerSheet;
+import VianuEdu.backend.Identification.Student;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -35,6 +35,7 @@ public class AnswerSheetTests {
 				"  },\n" +
 				"  \"numberOfAnswersFilled\" : 3,\n" +
 				"  \"numberOfAnswers\" : 3,\n" +
+				"  \"testID\" : 462,\n" +
 				"  \"student\" : {\n" +
 				"    \"firstName\" : \"John\",\n" +
 				"    \"fathersInitial\" : \"I\",\n" +
@@ -42,12 +43,14 @@ public class AnswerSheetTests {
 				"    \"gender\" : \"M\",\n" +
 				"    \"grade\" : 10,\n" +
 				"    \"gradeLetter\" : \"F\",\n" +
-				"    \"status\" : \"active\"\n" +
+				"    \"status\" : \"active\",\n" +
+				"    \"userName\" : \"username\",\n" +
+				"    \"password\" : \"password\"\n" +
 				"  }\n" +
 				"}";
 
-		Student testStudent = new Student("John", "I", "Doe", "M", 10, "F", "active");
-		AnswerSheet testAnswerSheet = new AnswerSheet(testStudent, 3);
+		Student testStudent = new Student("John", "I", "Doe", "M", 10, "F", "active", "username", "password");
+		AnswerSheet testAnswerSheet = new AnswerSheet(testStudent, 462, 3);
 
 		testAnswerSheet.addAnswer(1, "gdisf");
 		testAnswerSheet.addAnswer(2, "lol");

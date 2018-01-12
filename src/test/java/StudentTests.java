@@ -17,7 +17,7 @@
  *     Developed by Matei Gardus <matei@gardus.eu>
  */
 
-import VianuEdu.backend.Student;
+import VianuEdu.backend.Identification.Student;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -32,10 +32,12 @@ public class StudentTests {
 				"  \"gender\" : \"M\",\n" +
 				"  \"grade\" : 10,\n" +
 				"  \"gradeLetter\" : \"F\",\n" +
-				"  \"status\" : \"active\"\n" +
+				"  \"status\" : \"active\",\n" +
+				"  \"userName\" : \"username\",\n" +
+				"  \"password\" : \"password\"\n" +
 				"}";
 
-		Student testStudent = new Student("John", "I", "Doe", "M", 10, "F", "active");
+		Student testStudent = new Student("John", "I", "Doe", "M", 10, "F", "active", "username", "password");
 
 		Assert.assertEquals(studentSupposedOutput, testStudent.toString());
 	}

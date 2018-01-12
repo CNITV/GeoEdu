@@ -17,7 +17,7 @@
  *     Developed by Matei Gardus <matei@gardus.eu>
  */
 
-package VianuEdu.backend;
+package VianuEdu.backend.Identification;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -42,9 +42,11 @@ public class Student {
 	private String fathersInitial;
 	private String lastName;
 	private String gender;
-	private Integer grade;
+	private int grade;
 	private String gradeLetter;
 	private String status;
+	private String userName;
+	private String password;
 
 
 	/**
@@ -57,8 +59,10 @@ public class Student {
 	 * @param grade          The student's grade. Must be between 1 and 12.
 	 * @param gradeLetter    The student's grade letter. Must be one letter long and belong to the English alphabet.
 	 * @param status         The student's status. Must be one of the following: "active", "absent", "on vacation", or "graduated".
+	 * @param userName		 The student's user name. Must not be empty.
+	 * @param password		 The student's password. Must not be empty.
 	 */
-	public Student(String firstName, String fathersInitial, String lastName, String gender, Integer grade, String gradeLetter, String status) {
+	public Student(String firstName, String fathersInitial, String lastName, String gender, int grade, String gradeLetter, String status, String userName, String password) {
 		if (firstName.equals("")) {
 			throw new IllegalArgumentException("Student must have a first name!");
 		} else if (fathersInitial.equals("")) {
@@ -73,6 +77,10 @@ public class Student {
 			throw new IllegalArgumentException("The grade letter must be one letter long, between A and Z!");
 		} else if (!(status.equals("active") || status.equals("absent") || status.equals("on vacation") || status.equals("graduated"))) {
 			throw new IllegalArgumentException("Student must be either active, absent, on vacation, or graduated!");
+		} else if (userName.equals("")) {
+			throw new IllegalArgumentException("Student must have a user name!");
+		} else if (password.equals("")) {
+			throw new IllegalArgumentException("Student must have a password!!");
 		}
 		this.firstName = firstName;
 		this.fathersInitial = fathersInitial;
@@ -81,6 +89,8 @@ public class Student {
 		this.grade = grade;
 		this.gradeLetter = gradeLetter;
 		this.status = status;
+		this.userName = userName;
+		this.password = password;
 	}
 
 	/**
@@ -136,7 +146,7 @@ public class Student {
 	 *
 	 * @return The student's grade.
 	 */
-	public Integer getGrade() {
+	public int getGrade() {
 		return grade;
 	}
 
@@ -156,6 +166,24 @@ public class Student {
 	 */
 	public String getStatus() {
 		return status;
+	}
+
+	/**
+	 * Gets the student's user name.
+	 *
+	 * @return The student's user name.
+	 */
+	public String getUserName() {
+		return userName;
+	}
+
+	/**
+	 * Gets the student's password.
+	 *
+	 * @return the student's password.
+	 */
+	public String getPassword() {
+		return password;
 	}
 
 	/**
