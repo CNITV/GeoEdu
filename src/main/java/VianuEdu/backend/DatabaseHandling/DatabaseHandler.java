@@ -62,18 +62,18 @@ public class DatabaseHandler {
 		this.databaseURL = databaseURL;
 		this.courseName = courseName;
 		Class.forName(databaseDriver);
-		currentConnection = DriverManager.getConnection(databaseURL, userName, password);
+		currentConnection = DriverManager.getConnection(databaseURL, "Connector", "Connector"); // user and pass might change
 	}
 
 	/**
 	 * Queries the database using a SQL statement given and returns the results in the result set of the database handler. The previous result set cannot be recovered.
 	 *
-	 * @param statement       The SQL statement used to query the database.
+	 * @param query       The SQL statement used to query the database.
 	 * @throws SQLException   Exception most likely thrown when statement is invalid or there is nothing to query.
 	 */
-	public void queryDatabase(String statement) throws SQLException {
-		Statement currentStatement = currentConnection.createStatement();
-		currentResultSet = currentStatement.executeQuery(statement);
+	private void queryDatabase(String query) throws SQLException {
+			Statement currentStatement = currentConnection.createStatement();
+			currentResultSet = currentStatement.executeQuery(query);
 	}
 
 	/**
@@ -133,5 +133,13 @@ public class DatabaseHandler {
 		newInsertion.setArray(4, currentConnection.createArrayOf("text", answerArray)); // put it in statement
 		newInsertion.executeUpdate(); // insert value
 		// Oh my god, that was annoying. I mostly made this for whoever else reads this. Hope you can understand.
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public String getPassword() {
+		return password;
 	}
 }

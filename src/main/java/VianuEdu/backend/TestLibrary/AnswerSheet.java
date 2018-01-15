@@ -82,7 +82,7 @@ import java.util.HashMap;
 public class AnswerSheet {
 
 	private HashMap<Integer, String> answers = new HashMap<>();
-	private int numberOfAnswersFilled;
+	private int numberOfAnswersFilled = 0;
 	private int numberOfAnswers;
 	private int testID;
 	private Student student;
