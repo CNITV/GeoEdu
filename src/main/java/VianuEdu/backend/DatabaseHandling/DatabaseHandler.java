@@ -135,10 +135,20 @@ public class DatabaseHandler {
 		// Oh my god, that was annoying. I mostly made this for whoever else reads this. Hope you can understand.
 	}
 
+	/**
+	 * Gets the user name currently associated with the database handler.
+	 *
+	 * @return The user name.
+	 */
 	public String getUserName() {
 		return userName;
 	}
 
+	/**
+	 * Gets the password currently associated with the database handler.
+	 *
+	 * @return The password.
+	 */
 	public String getPassword() {
 		return password;
 	}
