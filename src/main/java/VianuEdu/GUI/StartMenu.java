@@ -366,9 +366,9 @@ public class StartMenu {
                 for (int j = 1; j <= 5; j++) {
                     if (i == 1) {
                         UserImput.Tbox[j].setVisible(false);
-                    } else if (i == 2 && j <= 2) {
+                    } else if (i == 2 && j <= 1) {
                         UserImput.Tbox[5 + j].setVisible(false);
-                    } else if (i == 2 && j < 5) {
+                    } else if (i == 2 && j < 4) {
                         UserImput.Pbox[j].setVisible(false);
                     }
                 }
