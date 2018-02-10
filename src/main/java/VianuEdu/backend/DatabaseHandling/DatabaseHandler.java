@@ -68,7 +68,7 @@ public class DatabaseHandler {
 	/**
 	 * Queries the database using a SQL statement given and returns the results in the result set of the database handler. The previous result set cannot be recovered.
 	 *
-	 * @param query       The SQL statement used to query the database.
+	 * @param query           The SQL statement used to query the database.
 	 * @throws SQLException   Exception most likely thrown when statement is invalid or there is nothing to query.
 	 */
 	private void queryDatabase(String query) throws SQLException {
@@ -102,8 +102,8 @@ public class DatabaseHandler {
 		newInsertion.setInt(6, value.getGrade());
 		newInsertion.setString(7, value.getGradeLetter());
 		newInsertion.setString(8, value.getStatus());
-		newInsertion.setString(9, value.getUserName());
-		newInsertion.setString(10, value.getPassword());
+		newInsertion.setString(9, value.getAccount().getUserName());
+		newInsertion.setString(10, value.getAccount().getPassword());
 		newInsertion.executeUpdate();
 	}
 
@@ -119,9 +119,8 @@ public class DatabaseHandler {
 				"\t\"ID\", \"testID\", \"studentID\", answers)\n" +
 				"\tVALUES (?, ?, ?, ?);"; // First, we make a specific statement, might change over time.
 		PreparedStatement newInsertion = currentConnection.prepareStatement(sqlStatement);
-		newInsertion.setInt(2, value.getTestID()); // add test ID first, since ID is self-genned
 		this.queryDatabase("SELECT * FROM \"Students\".\"Accounts\"\n" +
-				"WHERE \"userName\" = \"" + value.getStudent().getUserName() + "\""); // get student ID
+				"WHERE \"userName\" = \"" + value.getStudent().getAccount().getUserName() + "\""); // get student ID
 		ResultSet tempResultSet = this.getCurrentResultSet(); // most likely going to be only one, since we'll check if usernames already exist
 		newInsertion.setInt(3, tempResultSet.getInt("ID")); // add it to statement
 		List<String> answerList = new ArrayList<>(); // create list first in order to convert to SQL array later
