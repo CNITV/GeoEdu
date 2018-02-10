@@ -1,0 +1,120 @@
+/*
+ *
+ *  This file is part of VianuEdu.
+ *
+ *       VianuEdu is free software: you can redistribute it and/or modify
+ *       it under the terms of the GNU General Public License as published by
+ *       the Free Software Foundation, either version 3 of the License, or
+ *       (at your option) any later version.
+ *
+ *       VianuEdu is distributed in the hope that it will be useful,
+ *       but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *       GNU General Public License for more details.
+ *
+ *       You should have received a copy of the GNU General Public License
+ *       along with VianuEdu.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *       Developed by Matei Gardus <matei@gardus.eu>
+ */
+
+package VianuEdu.backend.Identification;
+
+import VianuEdu.backend.DatabaseHandling.JSONManager;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+/**
+ * A class that represents a teacher.
+ *
+ * Primarily used to identify the teacher in the database. The amount of parameters required to construct a Teacher object
+ * are enough to differentiate two potentially similar teacher. It also keeps track of the permissions that a specific teacher
+ * may have (i.e. what students he/she can give grades to).
+ *
+ * @author StormFireFox1
+ * @since 2018-2-10
+ */
+public class Teacher {
+
+	private String firstName;
+	private String lastName;
+	private String gender;
+	private String course;
+	private Account account;
+
+	/**
+	 * Consttructs and intializes a Teacher object.
+	 *
+	 * @param firstName The first name of the teacher. Must not be empty.
+	 * @param lastName  The last name of the teacher. Must not be empty.
+	 * @param gender    The gender of the teacher. Must be either male (M) or female (F).
+	 * @param course    The course the teacher offers. Must be supported by VianuEdu. Currently only geography, physics and mathematics are supported.
+	 * @param account   The account of the teacher.
+	 */
+	public Teacher(String firstName, String lastName, String gender, String course, Account account) {
+		if (firstName.equals("")) {
+			throw new IllegalArgumentException("First name must not be empty!");
+		} else if (lastName.equals("")) {
+			throw new IllegalArgumentException("Last name must not be empty!");
+		} else if (!gender.equals("M") && !gender.equals("F")) {
+			throw new IllegalArgumentException("Teacher must be either male (M) or female (F)!");
+		} else if (!(course.equals("Geo") || course.equals("Phi") || course.equals("Math"))) {
+			throw new IllegalArgumentException("Teacher must teach a VianuEdu-compatible course!");
+		}
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.gender = gender;
+		this.course = course;
+		this.account = account;
+	}
+
+	/**
+	 * Gets the teacher's first name.
+	 *
+	 * @return The teacher's first name.
+	 */
+	public String getFirstName() {
+		return firstName;
+	}
+
+	/**
+	 * Gets the teacher's last name.
+	 *
+	 * @return The teacher's last name.
+	 */
+	public String getLastName() {
+		return lastName;
+	}
+
+	/**
+	 * Gets the teacher's gender.
+	 *
+	 * @return The teacher's gender.
+	 */
+	public String getGender() {
+		return gender;
+	}
+
+	/**
+	 * Gets the teacher's gender.
+	 *
+	 * @return The teacher's gender.
+	 */
+	public String getCourse() {
+		return course;
+	}
+
+	public Account getAccount() {
+		return account;
+	}
+
+	/**
+	 * Returns a JSON string with indentation that represents a teacher. Uses Gson JSON library.
+	 *
+	 * @return A JSON string representing a Teacher object.
+	 */
+	@Override
+	public String toString() {
+		return JSONManager.toIndentedJSON(this);
+	}
+}

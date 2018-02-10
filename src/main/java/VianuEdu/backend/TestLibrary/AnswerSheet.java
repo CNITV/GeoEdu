@@ -59,14 +59,10 @@
 
 package VianuEdu.backend.TestLibrary;
 
+import VianuEdu.backend.DatabaseHandling.JSONManager;
 import VianuEdu.backend.Identification.Student;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 
-import java.io.IOException;
-import java.io.StringWriter;
 import java.util.HashMap;
-
 
 /**
  * This class provides a method of storing the answer sheet for any test or exercise.
@@ -84,19 +80,21 @@ public class AnswerSheet {
 	private HashMap<Integer, String> answers = new HashMap<>();
 	private int numberOfAnswersFilled = 0;
 	private int numberOfAnswers;
-	private int testID;
+	private String testID;
 	private Student student;
 
 	/**
 	 * Constructs and initializes an empty answer sheet.
 	 *
 	 * @param student         The student whose this newly-constructed answer sheet belongs to. Identified by a Student object.
-	 * @param testID		  The answer sheet's test ID. This is associated either with a test or an exercise.
+	 * @param testID		  The answer sheet's test ID. This is associated either with a test or an exercise. Must not be empty and differentiate between test and exercise.
 	 * @param numberOfAnswers The amount of answers that the current test or exercise can have. The number must be higher than 0.
 	 */
-	public AnswerSheet(Student student, int testID, int numberOfAnswers) {
+	public AnswerSheet(Student student, String testID, int numberOfAnswers) {
 		if (!(numberOfAnswers > 0)) {
 			throw new IllegalArgumentException("The number of answers has to be higher than 0!");
+		} else if (testID.matches("T-([0123456789])\\w+") || testID.matches("E-([0123456789])\\w+")) {
+			throw new IllegalArgumentException("Test ID must be of specific VianuEdu format! (i.e. ID for tests are T-00001 and for exercises are E-00001");
 		}
 		this.student = student;
 		this.testID = testID;
@@ -232,26 +230,19 @@ public class AnswerSheet {
 	 *
 	 * @return the answer sheet's test ID.
 	 */
-	public int getTestID() {
+	public String getTestID() {
 		return testID;
 	}
 
 	/**
-	 * Returns a JSON string with indentation that represents an answer sheet. Uses Jackson JSON library.
+	 * Returns a JSON string with indentation that represents an answer sheet. Uses Gson JSON library.
 	 *
-	 * @return A JSON string representing an answer sheet object.
+	 * @return A JSON string representing an AnswerSheet object.
 	 */
 	@Override
 	public String toString() {
-		ObjectMapper jsonManager = new ObjectMapper(); // creates an ObjectMapper instance from Jackson
-		jsonManager.configure(SerializationFeature.INDENT_OUTPUT, true); // enables pretty print
-		StringWriter jsonOutput = new StringWriter(); // writeValue() method requires a Writer
-		try {
-			jsonManager.writeValue(jsonOutput, this); // write in jsonOutput the value of an AnswerSheet
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return jsonOutput.toString().replaceAll("(\\r|\\n|\\r\\n)+", "\\\n");
+		return JSONManager.toIndentedJSON(this);
+
 	}
 
 }
