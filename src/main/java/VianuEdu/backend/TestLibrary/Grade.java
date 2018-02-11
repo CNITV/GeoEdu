@@ -20,6 +20,8 @@
 
 package VianuEdu.backend.TestLibrary;
 
+import VianuEdu.backend.DatabaseHandling.JSONManager;
+
 import java.util.ArrayList;
 
 /**
@@ -51,6 +53,11 @@ public class Grade {
 		this.gradeScoreDistribution = MAXIMUM_GRADE / answerKey.getNumberOfAnswers();
 	}
 
+	/**
+	 * Calculates the grade that the paper has. Due to physical limitations, the grade will not be fully calculated if the answer sheet
+	 * contains any answer that is not multiple choice, as those must be evaluated manually by the teacher in question.
+	 *
+	 */
 	public void calculateGrade() {
 		for (int i = 1; i <= studentAnswerSheet.getNumberOfAnswers(); i++) { // iterate through each answer
 			String answer = studentAnswerSheet.getAnswer(i); // get the answer
@@ -65,6 +72,11 @@ public class Grade {
 		}
 	}
 
+	/**
+	 * Returns the indices for the answers that must be evaluated by the teacher.
+	 *
+	 * @return An ArrayList with in indices.
+	 */
 	public ArrayList<Integer> getAnswersToEvaluate() {
 		ArrayList<Integer> returnValue = new ArrayList<>();
 
@@ -77,20 +89,53 @@ public class Grade {
 		return returnValue;
 	}
 
+	/**
+	 * Manually evaluate an answer.
+	 *
+	 * @param questionNumber The indice of the question number.
+	 * @param percentageGiven The percentage given. The number must be between 0 and 100.
+	 */
 	public void EvaluateAnswer(Integer questionNumber, Double percentageGiven) {
+		if (percentageGiven < 0 || percentageGiven > 100) {
+			throw new IllegalArgumentException("Percentage must be between 0 and 100!");
+		}
 		currentGrade += (percentageGiven / 100) * gradeScoreDistribution; // add that score to the grade
 		studentAnswerSheet.changeAnswer(questionNumber, studentAnswerSheet.getAnswer(questionNumber).split(" ", 1)[1]); // Remove the "[EVALUATE]" part of the answer in the student sheet
 	}
 
+	/**
+	 * Gets the current grade.
+	 *
+	 * @return The current grade.
+	 */
 	public Double getCurrentGrade() {
 		return currentGrade;
 	}
 
+	/**
+	 * Gets the student's answer sheet from the grade.
+	 *
+	 * @return The student's answer sheet.
+	 */
 	public AnswerSheet getStudentAnswerSheet() {
 		return studentAnswerSheet;
 	}
 
+	/**
+	 * Gets the answer key from the grade.
+	 *
+	 * @return The answer key.
+	 */
 	public AnswerSheet getAnswerKey() {
 		return answerKey;
+	}
+	/**
+	 * Returns a JSON string with indentation that represents a grade. Uses Gson JSON library.
+	 *
+	 * @return A JSON string representing a Grade object.
+	 */
+	@Override
+	public String toString() {
+		return JSONManager.toIndentedJSON(this);
 	}
 }
