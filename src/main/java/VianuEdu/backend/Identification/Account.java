@@ -21,6 +21,7 @@
 package VianuEdu.backend.Identification;
 
 import VianuEdu.backend.DatabaseHandling.JSONManager;
+import com.sun.istack.internal.NotNull;
 
 /**
  * A class that represents a VianuEdu account.
