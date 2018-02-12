@@ -25,6 +25,8 @@ import VianuEdu.backend.DatabaseHandling.JSONManager;
 import java.util.ArrayList;
 
 /**
+ * This class represents a grade.
+ *
  * This is an object used to easily calculate and submit grades once completing a test in order to save them for later
  * use and analysis. The Grade object was primarily created in order to give teachers the ability to correct some parts
  * of tests themselves, considering a machine is incapable of clearly evaluating a written answer, compared to what a
@@ -44,8 +46,8 @@ public class Grade {
 	/**
 	 * Constructs and initializes a Grade object. This takes the answer sheet to correct, and gets the answer key required.
 	 *
-	 * @param studentAnswerSheet     The answer sheet that will be given a grade.
-	 * @param answerKey				 The answer key to evaluate the given answer sheet on.
+	 * @param studentAnswerSheet The answer sheet that will be given a grade.
+	 * @param answerKey          The answer key to evaluate the given answer sheet on.
 	 */
 	public Grade(AnswerSheet studentAnswerSheet, AnswerSheet answerKey) {
 		this.studentAnswerSheet = studentAnswerSheet;
@@ -56,7 +58,6 @@ public class Grade {
 	/**
 	 * Calculates the grade that the paper has. Due to physical limitations, the grade will not be fully calculated if the answer sheet
 	 * contains any answer that is not multiple choice, as those must be evaluated manually by the teacher in question.
-	 *
 	 */
 	public void calculateGrade() {
 		for (int i = 1; i <= studentAnswerSheet.getNumberOfAnswers(); i++) { // iterate through each answer
@@ -92,7 +93,7 @@ public class Grade {
 	/**
 	 * Manually evaluate an answer.
 	 *
-	 * @param questionNumber The indice of the question number.
+	 * @param questionNumber  The indice of the question number.
 	 * @param percentageGiven The percentage given. The number must be between 0 and 100.
 	 */
 	public void EvaluateAnswer(Integer questionNumber, Double percentageGiven) {
@@ -129,6 +130,7 @@ public class Grade {
 	public AnswerSheet getAnswerKey() {
 		return answerKey;
 	}
+
 	/**
 	 * Returns a JSON string with indentation that represents a grade. Uses Gson JSON library.
 	 *

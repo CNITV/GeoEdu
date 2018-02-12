@@ -37,7 +37,6 @@ public class JSONManager {
 	 * Serializes an object to JSON format.
 	 *
 	 * @param object The object to be serialized.
-	 *
 	 * @return JSON string that represents passed object.
 	 */
 	public static String toJSON(Object object) {
@@ -49,7 +48,6 @@ public class JSONManager {
 	 * Serializes an object to JSON format with indentation.
 	 *
 	 * @param object The object to be serialized.
-	 *
 	 * @return JSON string that represents passed object with indentation.
 	 */
 	public static String toIndentedJSON(Object object) {

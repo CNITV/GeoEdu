@@ -20,18 +20,20 @@
 
 package VianuEdu.backend.DatabaseHandling;
 
-import VianuEdu.backend.TestLibrary.AnswerSheet;
 import VianuEdu.backend.Identification.Student;
+import VianuEdu.backend.TestLibrary.AnswerSheet;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This is the class that handles all of the connections to the VianuEdu database. This is a class that will not be
- * directly accessed by anything. This will be the foundation for all of the functions that might be related to the
- * database, such as test collection and account management. NEVER USE THIS CLASS TO DIRECTLY ACCESS THE DATABASE, SINCE
- * ANY ACTION COMMITTED HERE IS NOT DIRECTLY CONTROLLED BY ANYONE.
+ * This is the class that handles all of the connections to the VianuEdu database.
+ *
+ * This is a class that will not be directly accessed by anything. This will be the foundation for all of the functions
+ * that might be related to the database, such as test collection and account management.
+ * NEVER USE THIS CLASS TO DIRECTLY ACCESS THE DATABASE, SINCE ANY ACTION COMMITTED HERE IS NOT DIRECTLY
+ * CONTROLLED BY ANYONE.
  *
  * @author StormFireFox1
  * @since 2018-01-03
@@ -49,12 +51,12 @@ public class DatabaseHandler {
 	/**
 	 * This constructs and initializes a database handler.
 	 *
-	 * @param userName				   The user name for accessing the database.
-	 * @param password				   The password for accessing the database.
-	 * @param databaseURL              The database URL.
-	 * @param courseName               The course name. Primarily used to differentiate from which schema to access. i.e. "GeoEdu"
-	 * @throws ClassNotFoundException  It's highly unlikely this method will ever throw this exception due to the fact that there is only one driver going to be used, hardcoded in the object.
-	 * @throws SQLException			   Exception most likely thrown when method is called on faulty database connections.
+	 * @param userName    The user name for accessing the database.
+	 * @param password    The password for accessing the database.
+	 * @param databaseURL The database URL.
+	 * @param courseName  The course name. Primarily used to differentiate from which schema to access. i.e. "GeoEdu"
+	 * @throws ClassNotFoundException It's highly unlikely this method will ever throw this exception due to the fact that there is only one driver going to be used, hardcoded in the object.
+	 * @throws SQLException           Exception most likely thrown when method is called on faulty database connections.
 	 */
 	public DatabaseHandler(String userName, String password, String databaseURL, String courseName) throws ClassNotFoundException, SQLException {
 		this.userName = userName;
@@ -68,16 +70,17 @@ public class DatabaseHandler {
 	/**
 	 * Queries the database using a SQL statement given and returns the results in the result set of the database handler. The previous result set cannot be recovered.
 	 *
-	 * @param query           The SQL statement used to query the database.
-	 * @throws SQLException   Exception most likely thrown when statement is invalid or there is nothing to query.
+	 * @param query The SQL statement used to query the database.
+	 * @throws SQLException Exception most likely thrown when statement is invalid or there is nothing to query.
 	 */
 	private void queryDatabase(String query) throws SQLException {
-			Statement currentStatement = currentConnection.createStatement();
-			currentResultSet = currentStatement.executeQuery(query);
+		Statement currentStatement = currentConnection.createStatement();
+		currentResultSet = currentStatement.executeQuery(query);
 	}
 
 	/**
 	 * Gets the current result set saved.
+	 *
 	 * @return The current result set saved.
 	 */
 	public ResultSet getCurrentResultSet() {
@@ -87,8 +90,8 @@ public class DatabaseHandler {
 	/**
 	 * Inserts a student account in the database.
 	 *
-	 * @param value           The student that will be inserted in the database.
-	 * @throws SQLException   Exception most likely thrown when object cannot be inserted in database.
+	 * @param value The student that will be inserted in the database.
+	 * @throws SQLException Exception most likely thrown when object cannot be inserted in database.
 	 */
 	public void InsertValue(Student value) throws SQLException {
 		String sqlStatement = "INSERT INTO \"Students\".\"Accounts\"(\n" +
@@ -110,8 +113,8 @@ public class DatabaseHandler {
 	/**
 	 * Inserts a answer sheet in the database.
 	 *
-	 * @param value           The answer sheet that will be inserted in the database.
-	 * @throws SQLException   Exception most likely thrown when object cannot be inserted in database.
+	 * @param value The answer sheet that will be inserted in the database.
+	 * @throws SQLException Exception most likely thrown when object cannot be inserted in database.
 	 */
 	public void InsertValue(AnswerSheet value) throws SQLException {
 		// This is going to be tough. Woohoo! Here we go. Welcome to the depths of hell in SQL. Hope you enjoy.

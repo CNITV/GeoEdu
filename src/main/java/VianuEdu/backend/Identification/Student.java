@@ -48,7 +48,7 @@ public class Student {
 	/**
 	 * Constructs and initializes a Student object.
 	 *
-	 * @param firstName		 The student's first name. Must not be empty.
+	 * @param firstName      The student's first name. Must not be empty.
 	 * @param fathersInitial The student's father's first name initial. Used to further identify a student. Must not be empty.
 	 * @param lastName       The student's last name. Must not be empty.
 	 * @param gender         The student's gender. Must be either male (M) or female (F).
@@ -85,7 +85,7 @@ public class Student {
 
 	/**
 	 * Advances a student's grade by one.
-	 *
+	 * <p>
 	 * If the student is already in the 12th grade, it will not advance, but instead throw an exception.
 	 */
 	public void advanceGrade() {
@@ -116,6 +116,7 @@ public class Student {
 
 	/**
 	 * Gets the student's last name.
+	 *
 	 * @return The student's last name.
 	 */
 	public String getLastName() {

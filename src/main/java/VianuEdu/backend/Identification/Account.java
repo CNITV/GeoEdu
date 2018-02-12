@@ -21,14 +21,12 @@
 package VianuEdu.backend.Identification;
 
 import VianuEdu.backend.DatabaseHandling.JSONManager;
-import com.sun.istack.internal.NotNull;
 
 /**
  * A class that represents a VianuEdu account.
  *
  * A mere container for a username and password and nothing more. Constructed to avoid creating too much boilerplate code
  * and for the ability to potentially commit changes to username and password.
- *
  *
  * @author StromFireFox1
  * @since 2018-2-10

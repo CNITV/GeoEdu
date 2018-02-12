@@ -21,12 +21,10 @@
 package VianuEdu.backend.Identification;
 
 import VianuEdu.backend.DatabaseHandling.JSONManager;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 /**
  * A class that represents a teacher.
- *
+ * <p>
  * Primarily used to identify the teacher in the database. The amount of parameters required to construct a Teacher object
  * are enough to differentiate two potentially similar teacher. It also keeps track of the permissions that a specific teacher
  * may have (i.e. what students he/she can give grades to).
