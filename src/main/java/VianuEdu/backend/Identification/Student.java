@@ -20,6 +20,7 @@
 package VianuEdu.backend.Identification;
 
 
+import VianuEdu.backend.DatabaseHandling.JSONManager;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -44,6 +45,23 @@ public class Student {
 	private String status;
 	private Account account;
 
+
+	/**
+	 * Creates a generic student object that will be used to attach to test answer keys.
+	 *
+	 * Name inspired from a rather helpful significant other and an amazing play that everyone knows.
+	 * And no, this student does NOT have a father who is an innkeeper and works at Vascauti.
+	 */
+	public Student() {
+		this.firstName = "Dexter";
+		this.fathersInitial = "Z";
+		this.lastName = "Iftode";
+		this.gender = "M";
+		this.grade = 12;
+		this.gradeLetter = "Z";
+		this.status = "graduated";
+		this.account = new Account("IfDex22", "parolasecreta");
+	}
 
 	/**
 	 * Constructs and initializes a Student object.
@@ -189,9 +207,7 @@ public class Student {
 	 */
 	@Override
 	public String toString() {
-		Gson jsonManager = new GsonBuilder().setPrettyPrinting().create();
-		return jsonManager.toJson(this).replaceAll("(\\r|\\n|\\r\\n)+", "\\\n");
-
+		return JSONManager.toIndentedJSON(this);
 	}
 
 }

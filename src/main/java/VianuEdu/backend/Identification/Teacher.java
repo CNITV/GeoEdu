@@ -41,12 +41,26 @@ public class Teacher {
 	private Account account;
 
 	/**
-	 * Consttructs and intializes a Teacher object.
+	 * Creates a generic teacher object that will be used to attach to test answer keys.
+	 *
+	 * I'm sorry for the teachers that might recognize themselves upon finding this little fragment of code, but alas,
+	 * I had no ideas for names, quite frankly.
+	 */
+	public Teacher() {
+		this.firstName = "Acob";
+		this.lastName = "Ucsene";
+		this.gender = "F";
+		this.course = "Info";
+		this.account = new Account("ucsene_the_student_slayer", "SpaghettiBrokenCode22");
+	}
+
+	/**
+	 * Constructs and initialises a Teacher object.
 	 *
 	 * @param firstName The first name of the teacher. Must not be empty.
 	 * @param lastName  The last name of the teacher. Must not be empty.
 	 * @param gender    The gender of the teacher. Must be either male (M) or female (F).
-	 * @param course    The course the teacher offers. Must be supported by VianuEdu. Currently only geography, physics and mathematics are supported.
+	 * @param course    The course the teacher offers. Must be supported by VianuEdu. Currently only geography, physics, informatics and mathematics are supported. (Written as, "Geo", "Phi", "Info" and "Math")
 	 * @param account   The account of the teacher.
 	 */
 	public Teacher(String firstName, String lastName, String gender, String course, Account account) {
@@ -56,7 +70,7 @@ public class Teacher {
 			throw new IllegalArgumentException("Last name must not be empty!");
 		} else if (!gender.equals("M") && !gender.equals("F")) {
 			throw new IllegalArgumentException("Teacher must be either male (M) or female (F)!");
-		} else if (!(course.equals("Geo") || course.equals("Phi") || course.equals("Math"))) {
+		} else if (!(course.equals("Geo") || course.equals("Phi") || course.equals("Info") || course.equals("Math"))) {
 			throw new IllegalArgumentException("Teacher must teach a VianuEdu-compatible course!");
 		}
 		this.firstName = firstName;
