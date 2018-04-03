@@ -93,7 +93,7 @@ public class AnswerSheet {
 	public AnswerSheet(Student student, String testID, int numberOfAnswers) {
 		if (!(numberOfAnswers > 0)) {
 			throw new IllegalArgumentException("The number of answers has to be higher than 0!");
-		} else if (testID.matches("T-([0123456789])\\w+") || testID.matches("E-([0123456789])\\w+")) {
+		} else if (!(testID.matches("T-([0123456789])\\w+") || testID.matches("E-([0123456789])\\w+"))) {
 			throw new IllegalArgumentException("Test ID must be of specific VianuEdu format! (i.e. ID for tests are T-00001 and for exercises are E-00001");
 		}
 		this.student = student;

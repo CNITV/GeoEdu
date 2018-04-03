@@ -21,6 +21,7 @@
 package VianuEdu.backend.TestLibrary;
 
 import VianuEdu.backend.DatabaseHandling.JSONManager;
+import VianuEdu.backend.Identification.Teacher;
 
 import java.util.ArrayList;
 
@@ -42,27 +43,31 @@ public class Grade {
 	private Double gradeScoreDistribution;
 	private AnswerSheet studentAnswerSheet;
 	private AnswerSheet answerKey;
+	private Teacher teacher;
 
 	/**
 	 * Constructs and initializes a Grade object. This takes the answer sheet to correct, and gets the answer key required.
 	 *
 	 * @param studentAnswerSheet The answer sheet that will be given a grade.
 	 * @param answerKey          The answer key to evaluate the given answer sheet on.
+	 * @param teacher			 The teacher that will evaluate the grade.
 	 */
-	public Grade(AnswerSheet studentAnswerSheet, AnswerSheet answerKey) {
+	public Grade(AnswerSheet studentAnswerSheet, AnswerSheet answerKey, Teacher teacher) {
 		this.studentAnswerSheet = studentAnswerSheet;
 		this.answerKey = answerKey;
+		this.teacher = teacher;
 		this.gradeScoreDistribution = MAXIMUM_GRADE / answerKey.getNumberOfAnswers();
+		this.calculateGrade();
 	}
 
 	/**
 	 * Calculates the grade that the paper has. Due to physical limitations, the grade will not be fully calculated if the answer sheet
 	 * contains any answer that is not multiple choice, as those must be evaluated manually by the teacher in question.
 	 */
-	public void calculateGrade() {
+	private void calculateGrade() {
 		for (int i = 1; i <= studentAnswerSheet.getNumberOfAnswers(); i++) { // iterate through each answer
 			String answer = studentAnswerSheet.getAnswer(i); // get the answer
-			String answerType = answer.split(" ", 1)[0]; // see what kind of answer it is, if it is something
+			String answerType = answer.substring(0, 17);
 			if (answerType.equals("[MULTIPLE_ANSWER]")) { // if it is multiple choice type, we can evaluate, so ...
 				if (studentAnswerSheet.getAnswer(i).equals(answerKey.getAnswer(i))) { // see if it is the same, and if so...
 					currentGrade += gradeScoreDistribution; // ...add that score up.
@@ -83,7 +88,7 @@ public class Grade {
 
 		for (int i = 1; i <= studentAnswerSheet.getNumberOfAnswers(); i++) {
 			//we are going to take every answer, split it, take the tag at the beginning if any, and see if it is marked for evaluation.
-			if (studentAnswerSheet.getAnswer(i).split(" ", 1)[0].equals("[EVALUATE]")) { // if so...
+			if (studentAnswerSheet.getAnswer(i).substring(0, 10).equals("[EVALUATE]")) { // if so...
 				returnValue.add(i); // add it to the return.
 			}
 		}
@@ -100,8 +105,11 @@ public class Grade {
 		if (percentageGiven < 0 || percentageGiven > 100) {
 			throw new IllegalArgumentException("Percentage must be between 0 and 100!");
 		}
-		currentGrade += (percentageGiven / 100) * gradeScoreDistribution; // add that score to the grade
-		studentAnswerSheet.changeAnswer(questionNumber, studentAnswerSheet.getAnswer(questionNumber).split(" ", 1)[1]); // Remove the "[EVALUATE]" part of the answer in the student sheet
+		if (!studentAnswerSheet.getAnswer(questionNumber).substring(0, 10).equals("[EVALUATE]")) {
+			throw new IllegalArgumentException("Question must be up for evaluation, you cannot evaluate a multiple choice answer!");
+		}
+		currentGrade += (percentageGiven / 100.0) * gradeScoreDistribution; // add that score to the grade
+		studentAnswerSheet.changeAnswer(questionNumber, studentAnswerSheet.getAnswer(questionNumber).substring(10)); // Remove the "[EVALUATE]" part of the answer in the student sheet
 	}
 
 	/**
@@ -129,6 +137,15 @@ public class Grade {
 	 */
 	public AnswerSheet getAnswerKey() {
 		return answerKey;
+	}
+
+	/**
+	 * Gets the teacher that will evaluate the grade.
+	 *
+	 * @return The teacher object.
+	 */
+	public Teacher getTeacher() {
+		return teacher;
 	}
 
 	/**
