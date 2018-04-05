@@ -20,12 +20,13 @@
 
 package VianuEdu.backend.DatabaseHandling;
 
-import VianuEdu.backend.Identification.Student;
-import VianuEdu.backend.TestLibrary.AnswerSheet;
 
-import java.sql.*;
+import VianuEdu.backend.Identification.Account;
+import okhttp3.*;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
+import java.util.Properties;
 
 /**
  * This is the class that handles all of the connections to the VianuEdu database.
@@ -35,9 +36,118 @@ import java.util.List;
  * NEVER USE THIS CLASS TO DIRECTLY ACCESS THE DATABASE, SINCE ANY ACTION COMMITTED HERE IS NOT DIRECTLY
  * CONTROLLED BY ANYONE.
  *
+ * This database is accessed via a middle-man HTTP REST API, written in Golang by the author of this handler.
+ * To understand the intricacies of said server, view its source code at:
+ *
+ * http://www.github.com/CNITV/VianuEdu-Server
+ *
  * @author StormFireFox1
- * @since 2018-01-03
+ * @since 2018-04-03
  */
 public class DatabaseHandler {
 
+	private String serverURL;
+
+	public DatabaseHandler() {
+
+		Properties properties = new Properties();
+		try {
+			properties.load(this.getClass().getClassLoader().getResourceAsStream("database.properties"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		this.serverURL = properties.getProperty("serverURL");
+	}
+
+	public String studentLogin(Account account) throws IOException {
+		OkHttpClient client = new OkHttpClient();
+
+		MediaType mediaType = MediaType.parse("application/json");
+		RequestBody body = RequestBody.create(mediaType, "{\n" +
+				"\t\"userName\": \"" + account.getUserName() + "\",\n" +
+				"\t\"password\": \"" + account.getPassword() + "\"\n" +
+				"}");
+		Request request = new Request.Builder()
+				.url(serverURL + "/api/findStudentID")
+				.post(body)
+				.build();
+
+		Response response = client.newCall(request).execute();
+
+		if (response.code() == 404) {
+			throw new IllegalAccessError("Invalid username and password combination!");
+		}
+		return response.body().string();
+	}
+
+	public String teacherLogin(Account account) throws IOException {
+		OkHttpClient client = new OkHttpClient();
+
+		MediaType mediaType = MediaType.parse("application/json");
+		RequestBody body = RequestBody.create(mediaType, "{\n" +
+				"\t\"userName\": \"" + account.getUserName() + "\",\n" +
+				"\t\"password\": \"" + account.getPassword() + "\"\n" +
+				"}");
+		Request request = new Request.Builder()
+				.url(serverURL + "/api/findTeacherID")
+				.post(body)
+				.build();
+
+		Response response = client.newCall(request).execute();
+
+		if (response.code() == 404) {
+			throw new IllegalAccessError("Invalid username and password combination!");
+		}
+		return response.body().string();
+	}
+
+	public String getStudent(String cookie) throws IOException {
+		OkHttpClient client = new OkHttpClient();
+
+		Request request = new Request.Builder()
+				.url(serverURL + "/api/getStudent/" + cookie)
+				.get()
+				.build();
+
+		Response response = client.newCall(request).execute();
+
+		if (response.code() == 404) {
+			throw new IllegalAccessError("Cookie invalid! (Possibly wrong ID)");
+		}
+		return response.body().string();
+	}
+
+	public String getTeacher(String cookie) throws IOException {
+		OkHttpClient client = new OkHttpClient();
+
+		Request request = new Request.Builder()
+				.url(serverURL + "/api/getTeacher/" + cookie)
+				.get()
+				.build();
+
+		Response response = client.newCall(request).execute();
+
+		if (response.code() == 404) {
+			throw new IllegalAccessError("Cookie invalid! (Possibly wrong ID)");
+		}
+		return response.body().string();
+	}
+
+	public ArrayList<String> listLessons(Integer grade) throws IOException {
+		if (grade < 1 || grade > 12) {
+			throw new IllegalArgumentException("Grade must be valid!");
+		}
+		OkHttpClient client = new OkHttpClient();
+
+		Request request = new Request.Builder()
+				.url(serverURL + "/api/listLessons/" + grade)
+				.get()
+				.build();
+
+		Response response = client.newCall(request).execute();
+
+		String body = response.body().string();
+
+		return new ArrayList<>(Arrays.asList(body.split("\n")));
+	}
 }
