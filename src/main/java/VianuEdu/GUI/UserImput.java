@@ -161,13 +161,7 @@ public class UserImput extends JPanel {
 
         USERNAME = username.getText();
         PASSWORD = String.valueOf(password.getPassword());
-        if (USERNAME.length() < 1) {
-
-        } else if (PASSWORD.length() < 1) {
-
-        } else {
-            Login = false;
-        }
+       
 
     }
 

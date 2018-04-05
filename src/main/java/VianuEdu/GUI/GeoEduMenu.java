@@ -13,8 +13,8 @@ public class GeoEduMenu {
 
     public static int Leftpanel = -ScreenWidth / 5;
     public static int Rightpanel = ScreenWidth;
-    private static int PanelWidth = ScreenWidth / 5;
-    private static int PanelHeight = ScreenHeight;
+    public static int PanelWidth = ScreenWidth / 5;
+    public static int PanelHeight = ScreenHeight;
     private static int Font_size = 60;
     public static int Relativesize = Font_size;
     public static boolean[] classPressed = new boolean[10];
@@ -506,6 +506,7 @@ public class GeoEduMenu {
         GeoEduMenu.generateBackground(g);
         GeoEduMenu.initializeButtons();
         GeoEduMenu.GenerateButtons(g);
+        ContentBrowser.Paint(g);
         Setari.Settings(g);
 
     }
@@ -529,6 +530,7 @@ public class GeoEduMenu {
     public static void Run() {
 
         initializeDimensions();
+        ContentBrowser.initialiseDimensions();
         if (Setari.SettingsOn == false) {
             mouseState();
             Panelstate();
