@@ -38,7 +38,7 @@ public class DatabaseHandlerTests {
 		try {
 			String cookie = handler.studentLogin(new Account("IfDex22", "parolasecreta"));
 			assertEquals("5a9586212d22263268dcd282", cookie);
-		} catch (IOException e) {
+		} catch (IOException | IllegalAccessException e) {
 			e.printStackTrace();
 		}
 	}
@@ -50,7 +50,7 @@ public class DatabaseHandlerTests {
 		try {
 			String cookie = handler.teacherLogin(new Account("ucsene_the_student_slayer", "SpaghettiBrokenCode22"));
 			assertEquals("5aa1012a9e2e662978a3bcad", cookie);
-		} catch (IOException e) {
+		} catch (IOException | IllegalAccessException e) {
 			e.printStackTrace();
 		}
 	}
@@ -62,7 +62,7 @@ public class DatabaseHandlerTests {
 		try {
 			Student student = handler.getStudent("5a9586212d22263268dcd282");
 			assertEquals(new Student().toString(), student.toString());
-		} catch (IOException e) {
+		} catch (IOException | IllegalAccessException e) {
 			e.printStackTrace();
 		}
 	}
@@ -74,7 +74,7 @@ public class DatabaseHandlerTests {
 		try {
 			Teacher teacher = handler.getTeacher("5aa1012a9e2e662978a3bcad");
 			assertEquals(new Teacher().toString(), teacher.toString());
-		} catch (IOException e) {
+		} catch (IOException | IllegalAccessException e) {
 			e.printStackTrace();
 		}
 	}
