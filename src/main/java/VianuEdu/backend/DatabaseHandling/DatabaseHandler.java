@@ -28,9 +28,11 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import okhttp3.*;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Properties;
 
 /**
@@ -214,6 +216,66 @@ public class DatabaseHandler {
 		String body = response.body().string();
 
 		return new ArrayList<>(Arrays.asList(body.split("\n")));
+	}
+
+	/**
+	 * Uploads a lesson provided by a teacher.
+	 *
+	 * @param grade   The grade for which this lesson should be uploaded.
+	 * @param file    The lesson to upload.
+	 * @param teacher The teacher who is uploading this file.
+	 * @return True if lesson has been uploaded successfully, false if otherwise.
+	 * @throws IOException Most likely thrown if the device doesn't have a connection.
+	 */
+	public boolean uploadLesson(Integer grade, File file, Teacher teacher) throws IOException {
+		String fileType;
+		if (file.getName().length() < 4) {
+			fileType = file.getName();
+		} else {
+			fileType = file.getName().substring(file.getName().length() - 4);
+		}
+
+		if (!fileType.equals(".pdf")) {
+			throw new IllegalArgumentException("File is not a PDF!");
+		}
+
+		OkHttpClient client = new OkHttpClient();
+
+		MediaType mediaType = MediaType.parse("application/pdf");
+		RequestBody body = RequestBody.create(mediaType, file);
+		Request request = new Request.Builder()
+				.url(serverURL + "/api/uploadLesson/" + grade)
+				.post(body)
+				.addHeader("content-type", "application/pdf")
+				.addHeader("filename", file.getName())
+				.addHeader("authorization", "Basic " + Arrays.toString(Base64.getEncoder().encode((teacher.getAccount().getUserName() + ":" + teacher.getAccount().getPassword()).getBytes())))
+				.build();
+
+		Response response = client.newCall(request).execute();
+		return response.code() == 200;
+	}
+
+	/**
+	 * Downloads a lesson from the server.
+	 * <p>
+	 * This currently returns a byte-slice until we can figure out a way to save the lessons in a non-invasive manner.
+	 *
+	 * @param grade    The grade for which the lesson exists.
+	 * @param filename The name of the lesson.
+	 * @return A byte-slice containing the lesson that has been downloaded.
+	 * @throws IOException Most likely thrown if the device doesn't have a connection, or if the lesson doesn't exist.
+	 */
+	public byte[] downloadLesson(Integer grade, String filename) throws IOException {
+		OkHttpClient client = new OkHttpClient();
+		Request request = new Request.Builder()
+				.url(serverURL + "/lessons/" + grade + "/" + filename + ".pdf")
+				.get()
+				.build();
+		Response response = client.newCall(request).execute();
+		if (response.code() == 404) {
+			throw new IOException("404 file not found");
+		}
+		return response.body().bytes();
 	}
 
 	/**
