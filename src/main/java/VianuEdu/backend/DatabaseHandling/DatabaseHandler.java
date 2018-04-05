@@ -80,7 +80,7 @@ public class DatabaseHandler {
 	 * @return A cookie that represents the ID of the student in the database.
 	 * @throws IOException Most likely thrown if the device doesn't have a connection.
 	 */
-	public String studentLogin(Account account) throws IOException {
+	public String studentLogin(Account account) throws IOException, IllegalAccessException {
 		OkHttpClient client = new OkHttpClient();
 
 		MediaType mediaType = MediaType.parse("application/json");
@@ -96,7 +96,7 @@ public class DatabaseHandler {
 		Response response = client.newCall(request).execute();
 
 		if (response.code() == 404) {
-			throw new IllegalAccessError("Invalid username and password combination!");
+			throw new IllegalAccessException("Invalid username and password combination!");
 		}
 		return response.body().string();
 	}
@@ -111,7 +111,7 @@ public class DatabaseHandler {
 	 * @return A cookie that represents the ID of the teacher in the database.
 	 * @throws IOException Most likely thrown if the device doesn't have a connection.
 	 */
-	public String teacherLogin(Account account) throws IOException {
+	public String teacherLogin(Account account) throws IOException, IllegalAccessException {
 		OkHttpClient client = new OkHttpClient();
 
 		MediaType mediaType = MediaType.parse("application/json");
@@ -127,7 +127,7 @@ public class DatabaseHandler {
 		Response response = client.newCall(request).execute();
 
 		if (response.code() == 404) {
-			throw new IllegalAccessError("Invalid username and password combination!");
+			throw new IllegalAccessException("Invalid username and password combination!");
 		}
 		return response.body().string();
 	}
@@ -139,7 +139,7 @@ public class DatabaseHandler {
 	 * @throws IOException Most likely thrown if the device doesn't have a connection.
 	 * @return The Student object associated with the provided cookie.
 	 */
-	public Student getStudent(String cookie) throws IOException {
+	public Student getStudent(String cookie) throws IOException, IllegalAccessException {
 		OkHttpClient client = new OkHttpClient();
 
 		Request request = new Request.Builder()
@@ -150,7 +150,7 @@ public class DatabaseHandler {
 		Response response = client.newCall(request).execute();
 
 		if (response.code() == 404) {
-			throw new IllegalAccessError("Cookie invalid! (Possibly wrong ID)");
+			throw new IllegalAccessException("Cookie invalid! (Possibly wrong ID)");
 		}
 
 		JsonObject object = new JsonParser().parse(response.body().string()).getAsJsonObject();
@@ -167,7 +167,7 @@ public class DatabaseHandler {
 	 * @throws IOException Most likely thrown if the device doesn't have a connection.
 	 * @return The Teacher object associated with the provided cookie.
 	 */
-	public Teacher getTeacher(String cookie) throws IOException {
+	public Teacher getTeacher(String cookie) throws IOException, IllegalAccessException {
 		OkHttpClient client = new OkHttpClient();
 
 		Request request = new Request.Builder()
@@ -178,7 +178,7 @@ public class DatabaseHandler {
 		Response response = client.newCall(request).execute();
 
 		if (response.code() == 404) {
-			throw new IllegalAccessError("Cookie invalid! (Possibly wrong ID)");
+			throw new IllegalAccessException("Cookie invalid! (Possibly wrong ID)");
 		}
 
 		JsonObject object = new JsonParser().parse(response.body().string()).getAsJsonObject();
