@@ -23,7 +23,7 @@ import java.util.HashMap;
 
 /**
  * This class provides a method of storing the answer sheet for any test or exercise.
- * <p>
+ * 
  * In general, it stores all the answers in the test or exercise in a HashMap and also allows for methods
  * to upload to the database. This class could've been avoided by directly uploading to the online database,
  * however it is much safer to also have a local backup of the answers should the database malfunction.
@@ -109,7 +109,7 @@ public class AnswerSheet {
 
 	/**
 	 * Adds an answer to the answer sheet from a multiple-choice question.
-	 * <p>
+	 *
 	 * This method is primarily used in order to allow for easy differentiation between a plain textbox answer and
 	 * a multiple-choice question answer, since both are stored as Strings.
 	 *
