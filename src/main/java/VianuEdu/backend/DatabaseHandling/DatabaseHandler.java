@@ -136,8 +136,8 @@ public class DatabaseHandler {
 	 * Gets the student from the database, using the student's cookie.
 	 *
 	 * @param cookie The cookie representing the ID of the student.
-	 * @throws IOException Most likely thrown if the device doesn't have a connection.
 	 * @return The Student object associated with the provided cookie.
+	 * @throws IOException Most likely thrown if the device doesn't have a connection.
 	 */
 	public Student getStudent(String cookie) throws IOException, IllegalAccessException {
 		OkHttpClient client = new OkHttpClient();
@@ -164,8 +164,8 @@ public class DatabaseHandler {
 	 * Gets the teacher from the database, using the teacher's cookie.
 	 *
 	 * @param cookie The cookie representing the ID of the teacher.
-	 * @throws IOException Most likely thrown if the device doesn't have a connection.
 	 * @return The Teacher object associated with the provided cookie.
+	 * @throws IOException Most likely thrown if the device doesn't have a connection.
 	 */
 	public Teacher getTeacher(String cookie) throws IOException, IllegalAccessException {
 		OkHttpClient client = new OkHttpClient();
@@ -190,13 +190,13 @@ public class DatabaseHandler {
 
 	/**
 	 * Gets the list of lessons for the current grade in which this method is called.
-	 *
+	 * <p>
 	 * The ArrayList returned can later be used in order to download a specific lesson from the server.
 	 * Essentially, it's just a specialized TokenSerializer.
 	 *
 	 * @param grade The grade for which to get the list of lessons for.
 	 * @return An ArrayList<String> which contains the list of lessons called for.
-	 * @throws IOException
+	 * @throws IOException Most likely thrown if the device doesn't have a connection.
 	 */
 	public ArrayList<String> listLessons(Integer grade) throws IOException {
 		if (grade < 1 || grade > 12) {
@@ -214,5 +214,51 @@ public class DatabaseHandler {
 		String body = response.body().string();
 
 		return new ArrayList<>(Arrays.asList(body.split("\n")));
+	}
+
+	/**
+	 * Registers a student into the database.
+	 *
+	 * @param student The student that will be registered into the database.
+	 * @return An ID which represents the student in the database.
+	 * @throws IOException Most likely thrown if the device doesn't have a connection.
+	 */
+	public String registerStudent(Student student) throws IOException {
+		OkHttpClient client = new OkHttpClient();
+
+		MediaType mediaType = MediaType.parse("application/json");
+		RequestBody body = RequestBody.create(mediaType, student.toString());
+
+		Request request = new Request.Builder()
+				.url(serverURL + "/api/registerStudent")
+				.post(body)
+				.build();
+
+		Response response = client.newCall(request).execute();
+
+		return response.body().string();
+	}
+
+	/**
+	 * Registers a teacher into the database.
+	 *
+	 * @param teacher The teacher that will be registered into the database.
+	 * @return An ID which represents the teacher in the database.
+	 * @throws IOException Most likely thrown if the device doesn't have a connection.
+	 */
+	public String registerTeacher(Teacher teacher) throws IOException {
+		OkHttpClient client = new OkHttpClient();
+
+		MediaType mediaType = MediaType.parse("application/json");
+		RequestBody body = RequestBody.create(mediaType, teacher.toString());
+
+		Request request = new Request.Builder()
+				.url(serverURL + "/api/registerTeacher")
+				.post(body)
+				.build();
+
+		Response response = client.newCall(request).execute();
+
+		return response.body().string();
 	}
 }
