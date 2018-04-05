@@ -21,6 +21,8 @@
 package VianuEdu.backend.DatabaseHandling;
 
 import VianuEdu.backend.Identification.Account;
+import VianuEdu.backend.Identification.Student;
+import VianuEdu.backend.Identification.Teacher;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -46,9 +48,35 @@ public class DatabaseHandlerTests {
 		DatabaseHandler handler = new DatabaseHandler();
 
 		try {
-			String cookie = handler.teacherLogin(new Account("uscene_the_student_slayer", "SpaghettiBrokenCode22"));
+			String cookie = handler.teacherLogin(new Account("ucsene_the_student_slayer", "SpaghettiBrokenCode22"));
+			assertEquals("5aa1012a9e2e662978a3bcad", cookie);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
+
+	@Test
+	public void getStudentWorks() {
+		DatabaseHandler handler = new DatabaseHandler();
+
+		try {
+			Student student = handler.getStudent("5a9586212d22263268dcd282");
+			assertEquals(new Student().toString(), student.toString());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Test
+	public void getTeacherWorks() {
+		DatabaseHandler handler = new DatabaseHandler();
+
+		try {
+			Teacher teacher = handler.getTeacher("5aa1012a9e2e662978a3bcad");
+			assertEquals(new Teacher().toString(), teacher.toString());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 }

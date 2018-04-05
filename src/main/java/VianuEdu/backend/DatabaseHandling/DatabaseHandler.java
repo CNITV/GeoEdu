@@ -22,7 +22,12 @@ package VianuEdu.backend.DatabaseHandling;
 
 
 import VianuEdu.backend.Identification.Account;
+import VianuEdu.backend.Identification.Student;
+import VianuEdu.backend.Identification.Teacher;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import okhttp3.*;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,15 +35,15 @@ import java.util.Properties;
 
 /**
  * This is the class that handles all of the connections to the VianuEdu database.
- *
+ * <p>
  * This is a class that will not be directly accessed by anything. This will be the foundation for all of the functions
  * that might be related to the database, such as test collection and account management.
  * NEVER USE THIS CLASS TO DIRECTLY ACCESS THE DATABASE, SINCE ANY ACTION COMMITTED HERE IS NOT DIRECTLY
  * CONTROLLED BY ANYONE.
- *
+ * <p>
  * This database is accessed via a middle-man HTTP REST API, written in Golang by the author of this handler.
  * To understand the intricacies of said server, view its source code at:
- *
+ * <p>
  * http://www.github.com/CNITV/VianuEdu-Server
  *
  * @author StormFireFox1
@@ -48,6 +53,12 @@ public class DatabaseHandler {
 
 	private String serverURL;
 
+	/**
+	 * Initializes and constructs a DatabaseHandler instance.
+	 * <p>
+	 * This should only be initialised once in any given moment, as to reduce the number of connections to the server.
+	 * This will read the configuration file database.properties, and apply necessary changes to the handler.
+	 */
 	public DatabaseHandler() {
 
 		Properties properties = new Properties();
@@ -59,6 +70,16 @@ public class DatabaseHandler {
 		this.serverURL = properties.getProperty("serverURL");
 	}
 
+	/**
+	 * Logs in a Student by reading its Account object.
+	 * <p>
+	 * This will throw an IllegalAccessError should the username and password combination belong to no student in the
+	 * database.
+	 *
+	 * @param account The account for which to log in.
+	 * @return A cookie that represents the ID of the student in the database.
+	 * @throws IOException Most likely thrown if the device doesn't have a connection.
+	 */
 	public String studentLogin(Account account) throws IOException {
 		OkHttpClient client = new OkHttpClient();
 
@@ -80,6 +101,16 @@ public class DatabaseHandler {
 		return response.body().string();
 	}
 
+	/**
+	 * Logs in a Teacher by reading its Account object.
+	 * <p>
+	 * This will throw an IllegalAccessError should the username and password combination belong to no teacher in the
+	 * database.
+	 *
+	 * @param account The account for which to log in.
+	 * @return A cookie that represents the ID of the teacher in the database.
+	 * @throws IOException Most likely thrown if the device doesn't have a connection.
+	 */
 	public String teacherLogin(Account account) throws IOException {
 		OkHttpClient client = new OkHttpClient();
 
@@ -101,7 +132,14 @@ public class DatabaseHandler {
 		return response.body().string();
 	}
 
-	public String getStudent(String cookie) throws IOException {
+	/**
+	 * Gets the student from the database, using the student's cookie.
+	 *
+	 * @param cookie The cookie representing the ID of the student.
+	 * @throws IOException Most likely thrown if the device doesn't have a connection.
+	 * @return The Student object associated with the provided cookie.
+	 */
+	public Student getStudent(String cookie) throws IOException {
 		OkHttpClient client = new OkHttpClient();
 
 		Request request = new Request.Builder()
@@ -114,10 +152,22 @@ public class DatabaseHandler {
 		if (response.code() == 404) {
 			throw new IllegalAccessError("Cookie invalid! (Possibly wrong ID)");
 		}
-		return response.body().string();
+
+		JsonObject object = new JsonParser().parse(response.body().string()).getAsJsonObject();
+
+		object.remove("_id");
+
+		return JSONManager.fromJSONToStudent(object.toString());
 	}
 
-	public String getTeacher(String cookie) throws IOException {
+	/**
+	 * Gets the teacher from the database, using the teacher's cookie.
+	 *
+	 * @param cookie The cookie representing the ID of the teacher.
+	 * @throws IOException Most likely thrown if the device doesn't have a connection.
+	 * @return The Teacher object associated with the provided cookie.
+	 */
+	public Teacher getTeacher(String cookie) throws IOException {
 		OkHttpClient client = new OkHttpClient();
 
 		Request request = new Request.Builder()
@@ -130,9 +180,24 @@ public class DatabaseHandler {
 		if (response.code() == 404) {
 			throw new IllegalAccessError("Cookie invalid! (Possibly wrong ID)");
 		}
-		return response.body().string();
+
+		JsonObject object = new JsonParser().parse(response.body().string()).getAsJsonObject();
+
+		object.remove("_id");
+
+		return JSONManager.fromJSONtoTeacher(object.toString());
 	}
 
+	/**
+	 * Gets the list of lessons for the current grade in which this method is called.
+	 *
+	 * The ArrayList returned can later be used in order to download a specific lesson from the server.
+	 * Essentially, it's just a specialized TokenSerializer.
+	 *
+	 * @param grade The grade for which to get the list of lessons for.
+	 * @return An ArrayList<String> which contains the list of lessons called for.
+	 * @throws IOException
+	 */
 	public ArrayList<String> listLessons(Integer grade) throws IOException {
 		if (grade < 1 || grade > 12) {
 			throw new IllegalArgumentException("Grade must be valid!");

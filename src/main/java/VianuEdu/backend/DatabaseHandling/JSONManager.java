@@ -20,6 +20,8 @@
 
 package VianuEdu.backend.DatabaseHandling;
 
+import VianuEdu.backend.Identification.Student;
+import VianuEdu.backend.Identification.Teacher;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -55,4 +57,13 @@ public class JSONManager {
 		return json.toJson(object);
 	}
 
+	public static Student fromJSONToStudent(String jsonString) {
+		Gson json = new GsonBuilder().setPrettyPrinting().create();
+		return json.fromJson(jsonString, Student.class);
+	}
+
+	public static Teacher fromJSONtoTeacher(String jsonString ) {
+		Gson json = new GsonBuilder().setPrettyPrinting().create();
+		return json.fromJson(jsonString, Teacher.class);
+	}
 }
