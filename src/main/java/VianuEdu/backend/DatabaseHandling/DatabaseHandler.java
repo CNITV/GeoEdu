@@ -235,18 +235,18 @@ public class DatabaseHandler {
 			fileType = file.getName().substring(file.getName().length() - 4);
 		}
 
-		if (!fileType.equals(".pdf")) {
-			throw new IllegalArgumentException("File is not a PDF!");
+		if (!fileType.equals(".png")) {
+			throw new IllegalArgumentException("File is not a PNG!");
 		}
 
 		OkHttpClient client = new OkHttpClient();
 
-		MediaType mediaType = MediaType.parse("application/pdf");
+		MediaType mediaType = MediaType.parse("image/png");
 		RequestBody body = RequestBody.create(mediaType, file);
 		Request request = new Request.Builder()
 				.url(serverURL + "/api/uploadLesson/" + grade)
 				.post(body)
-				.addHeader("content-type", "application/pdf")
+				.addHeader("content-type", "image/png")
 				.addHeader("filename", file.getName())
 				.addHeader("authorization", "Basic " + Arrays.toString(Base64.getEncoder().encode((teacher.getAccount().getUserName() + ":" + teacher.getAccount().getPassword()).getBytes())))
 				.build();
@@ -268,7 +268,7 @@ public class DatabaseHandler {
 	public byte[] downloadLesson(Integer grade, String filename) throws IOException {
 		OkHttpClient client = new OkHttpClient();
 		Request request = new Request.Builder()
-				.url(serverURL + "/lessons/" + grade + "/" + filename + ".pdf")
+				.url(serverURL + "/lessons/" + grade + "/" + filename + ".png")
 				.get()
 				.build();
 		Response response = client.newCall(request).execute();
