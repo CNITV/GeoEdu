@@ -30,7 +30,7 @@ import VianuEdu.backend.DatabaseHandling.JSONManager;
  * may have (i.e. what students he/she can give grades to).
  *
  * @author StormFireFox1
- * @since 2018-2-10
+ * @since 2018-02-10
  */
 public class Teacher {
 
