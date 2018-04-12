@@ -196,18 +196,19 @@ public class DatabaseHandler {
 	 * The ArrayList returned can later be used in order to download a specific lesson from the server.
 	 * Essentially, it's just a specialized TokenSerializer.
 	 *
-	 * @param grade The grade for which to get the list of lessons for.
+	 * @param grade   The grade for which to get the list of lessons for.
+	 * @param subject The subject for which to get the list of lessons for.
 	 * @return An ArrayList<String> which contains the list of lessons called for.
 	 * @throws IOException Most likely thrown if the device doesn't have a connection.
 	 */
-	public ArrayList<String> listLessons(Integer grade) throws IOException {
+	public ArrayList<String> listLessons(String subject, Integer grade) throws IOException {
 		if (grade < 1 || grade > 12) {
 			throw new IllegalArgumentException("Grade must be valid!");
 		}
 		OkHttpClient client = new OkHttpClient();
 
 		Request request = new Request.Builder()
-				.url(serverURL + "/api/listLessons/" + grade)
+				.url(serverURL + "/api/listLessons/" + subject + "/" + grade)
 				.get()
 				.build();
 
@@ -222,12 +223,13 @@ public class DatabaseHandler {
 	 * Uploads a lesson provided by a teacher.
 	 *
 	 * @param grade   The grade for which this lesson should be uploaded.
+	 * @param subject The subject for which this lesson should be uploaded.
 	 * @param file    The lesson to upload.
 	 * @param teacher The teacher who is uploading this file.
 	 * @return True if lesson has been uploaded successfully, false if otherwise.
 	 * @throws IOException Most likely thrown if the device doesn't have a connection.
 	 */
-	public boolean uploadLesson(Integer grade, File file, Teacher teacher) throws IOException {
+	public boolean uploadLesson(String subject, Integer grade, File file, Teacher teacher) throws IOException {
 		String fileType;
 		if (file.getName().length() < 4) {
 			fileType = file.getName();
@@ -244,7 +246,7 @@ public class DatabaseHandler {
 		MediaType mediaType = MediaType.parse("image/png");
 		RequestBody body = RequestBody.create(mediaType, file);
 		Request request = new Request.Builder()
-				.url(serverURL + "/api/uploadLesson/" + grade)
+				.url(serverURL + "/api/uploadLesson/" + subject + "/" + grade)
 				.post(body)
 				.addHeader("content-type", "image/png")
 				.addHeader("filename", file.getName())
@@ -262,13 +264,14 @@ public class DatabaseHandler {
 	 *
 	 * @param grade    The grade for which the lesson exists.
 	 * @param filename The name of the lesson.
+	 * @param subject  The subject for which the lesson exists.
 	 * @return A byte-slice containing the lesson that has been downloaded.
 	 * @throws IOException Most likely thrown if the device doesn't have a connection, or if the lesson doesn't exist.
 	 */
-	public byte[] downloadLesson(Integer grade, String filename) throws IOException {
+	public byte[] downloadLesson(String subject, Integer grade, String filename) throws IOException {
 		OkHttpClient client = new OkHttpClient();
 		Request request = new Request.Builder()
-				.url(serverURL + "/lessons/" + grade + "/" + filename + ".png")
+				.url(serverURL + "/lessons/" + subject + "/" + grade + "/" + filename + ".png")
 				.get()
 				.build();
 		Response response = client.newCall(request).execute();
