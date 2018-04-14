@@ -21,6 +21,7 @@
 package VianuEdu.backend.TestLibrary;
 
 import VianuEdu.backend.DatabaseHandling.JSONManager;
+import VianuEdu.backend.Identification.Student;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -48,7 +49,7 @@ public class Test {
 	private Date startTime;
 	private Date endTime;
 	private String grade;
-	private HashMap<Integer, HashMap<String, String>> contents;
+	private HashMap<Integer, Question> contents;
 
 	/**
 	 * Constructs and initializes a test.
@@ -61,7 +62,7 @@ public class Test {
 	 * @param grade     The grade for which the test will be administered.
 	 * @param contents  The contents of the test. A HashMap which contains the question and the answer key for the test.
 	 */
-	public Test(String testID, String testName, String course, Date startTime, Date endTime, String grade, HashMap<Integer, HashMap<String, String>> contents) {
+	public Test(String testID, String testName, String course, Date startTime, Date endTime, String grade, HashMap<Integer, Question> contents) {
 		if (!(testID.matches("T-([0123456789])\\w+"))) {
 			throw new IllegalArgumentException("Test ID must be of specific VianuEdu format! (i.e. ID for tests are T-00001)");
 		} else if (testName.isEmpty()) {
@@ -72,10 +73,11 @@ public class Test {
 			throw new IllegalArgumentException("Cannot dispense a test in the past! (Back to the future?)");
 		} else if (endTime.before(startTime)) {
 			throw new IllegalArgumentException("Cannot have a test finish before it even started! (Stop time travelling, god dammit!)");
-		} else if (grade.matches("([0-9])\\w([A-Z])") || grade.matches("([0-9])([A-Z])")) {
+		} else if (!(grade.matches("([0-9])\\w([A-Z])") || grade.matches("([0-9])([A-Z])"))) {
 			throw new IllegalArgumentException("This is not a class! Deal with it!");
 		}
 		this.testID = testID;
+		this.testName = testName;
 		this.course = course;
 		this.startTime = startTime;
 		this.endTime = endTime;
@@ -142,7 +144,7 @@ public class Test {
 	 *
 	 * @return The contents of the test in RAW format.
 	 */
-	public HashMap<Integer, HashMap<String, String>> getContents() {
+	public HashMap<Integer, Question> getContents() {
 		return contents;
 	}
 
@@ -154,16 +156,7 @@ public class Test {
 	 * @return True if it is a multiple-choice question, false if otherwise.
 	 */
 	public boolean isMultipleAnswer(Integer questionNumber) {
-		String answer = null;
-
-		for (String value :
-				contents.get(questionNumber).values()) {
-			answer = value;
-		}
-
-		assert answer != null;
-		String answerType = answer.substring(0, 17);
-		return answerType.equals("[MULTIPLE_ANSWER]");
+		return contents.get(questionNumber).getQuestionType().equals("multiple-choice");
 	}
 
 	/**
@@ -173,25 +166,34 @@ public class Test {
 	 * @return The multiple choices in an ArrayList<String>.
 	 */
 	public ArrayList<String> getMultipleChoices(Integer questionNumber) {
-		String question = null;
-
 		if (this.isMultipleAnswer(questionNumber)) {
 			throw new IllegalArgumentException("Question is not a multiple-choice question!");
 		}
-
-		for (String value :
-				contents.get(questionNumber).keySet()) {
-			question = value;
-		}
-
-		assert question != null;
-		String[] questionFragments = question.split("\\R");
-		ArrayList<String> multipleChoices = new ArrayList<>();
-		for (Integer i = 1; i <= questionFragments.length; ++i) {
-			multipleChoices.add(questionFragments[i].substring(17, questionFragments[i].length() - 1));
-		}
-		return multipleChoices;
+		return contents.get(questionNumber).getQuestionChoices();
 	}
+
+	/**
+	 * Gets the answer key for the test.
+	 *
+	 * Essentialy, this parses the content and only extracts the answers for each of the questions in the test.
+	 * @return An AnswerSheet object containing all of the answers for the test.
+	 */
+	public AnswerSheet getAnswerKey() {
+		AnswerSheet result = new AnswerSheet(new Student(), this.testID, contents.size());
+
+		Integer questionNumber = 1;
+
+		for (Question question : contents.values()) {
+			if (question.getQuestionType().equals("multiple-choice")) {
+				result.addAnswer(questionNumber, question.getAnswer().substring(0, 19));
+			} else {
+				result.addAnswer(questionNumber, question.getAnswer());
+			}
+			questionNumber++;
+		}
+		return result;
+	}
+
 
 	/**
 	 * Returns a JSON string with indentation that represents a test. Uses Gson JSON library.
