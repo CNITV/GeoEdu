@@ -24,16 +24,20 @@ package VianuEdu.backend.DatabaseHandling;
 import VianuEdu.backend.Identification.Account;
 import VianuEdu.backend.Identification.Student;
 import VianuEdu.backend.Identification.Teacher;
+import VianuEdu.backend.TestLibrary.Test;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import okhttp3.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * This is the class that handles all of the connections to the VianuEdu database.
@@ -326,4 +330,108 @@ public class DatabaseHandler {
 
 		return response.body().string();
 	}
+
+	/**
+	 * Gets a test from the server by querying for a test ID.
+	 *
+	 * @param testID The test ID of the test you wish to get.
+	 * @return A Test object attached to that specific test ID.
+	 * @throws IOException            Most likely thrown if the device doesn't have a connection.
+	 * @throws IllegalAccessException Thrown if there isn't a test attached to that test ID
+	 */
+	public Test getTest(String testID) throws IOException, IllegalAccessException {
+		OkHttpClient client = new OkHttpClient();
+
+		Request request = new Request.Builder()
+				.url(serverURL + "/api/getTest/" + testID)
+				.get()
+				.build();
+
+		Response response = client.newCall(request).execute();
+		if (response.code() == 404) {
+			throw new IllegalAccessException("404 test not found!");
+		}
+
+		JsonObject object = new JsonParser().parse(response.body().string()).getAsJsonObject();
+
+		object.remove("_id");
+
+		return JSONManager.fromJSONToTest(object.toString());
+	}
+
+	/**
+	 * Gets the tests that a student might have to take by using his ID.
+	 *
+	 * @param subject   The subject for which the student has tests.
+	 * @param studentID The student ID for which this method will search tests for.
+	 * @return An ArrayList<String> containing the test ID's of each test that the student might have to take.
+	 * @throws IOException Most likely thrown if the device doesn't have a connection.
+	 */
+	public ArrayList<String> getTestQueue(String subject, String studentID) throws IOException {
+		if (!(subject.equals("Geo") || subject.equals("Phi") || subject.equals("Info") || subject.equals("Math"))) {
+			throw new IllegalArgumentException("Subject must be a VianuEdu-compatible course!");
+		}
+
+		OkHttpClient client = new OkHttpClient();
+
+		Request request = new Request.Builder()
+				.url(serverURL + "/api/getTestQueue/" + subject + "/" + studentID)
+				.get()
+				.build();
+
+		Response response = client.newCall(request).execute();
+
+		String body = response.body().string();
+
+		return new ArrayList<>(Arrays.asList(body.split("\n")));
+
+	}
+
+	/**
+	 * Adds a new test to the database.
+	 *
+	 * @param test    The Test object to add to the database.
+	 * @param teacher The teacher who will upload the test.
+	 * @return The test ID of the newly-added test.
+	 * @throws IOException Most likely thrown if the device doesn't have a connection.
+	 */
+	public String createTest(Test test, Teacher teacher) throws IOException {
+		OkHttpClient client = new OkHttpClient();
+
+		MediaType mediaType = MediaType.parse("application/json");
+		RequestBody body = RequestBody.create(mediaType, test.toString());
+		Request request = new Request.Builder()
+				.url(serverURL + "/api/createTest/" + teacher.getCourse())
+				.post(body)
+				.addHeader("content-type", "application/json")
+				.addHeader("authorization", "Basic" + Arrays.toString(Base64.getEncoder().encode((teacher.getAccount().getUserName() + ":" + teacher.getAccount().getPassword()).getBytes())))
+				.build();
+
+		Response response = client.newCall(request).execute();
+
+		if (response.code() == 400) {
+			throw new IllegalArgumentException("Test provided has an invalid test ID! Extract valid test ID from getNextTestID server endpoint!");
+		}
+
+		Pattern pattern = Pattern.compile("T-([0-9])\\w+");
+		Matcher matcher = pattern.matcher(response.body().string());
+		if (!matcher.find()) {
+			throw new RemoteException("Something didn't work at the server! Sorry!");
+		}
+		return matcher.group(1);
+	}
+
+	public String getNextTestID() throws IOException {
+		OkHttpClient client = new OkHttpClient();
+
+		Request request = new Request.Builder()
+				.url(serverURL + "/api/getNextTestID")
+				.get()
+				.build();
+
+		Response response = client.newCall(request).execute();
+
+		return response.body().string();
+	}
+
 }

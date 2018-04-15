@@ -22,8 +22,10 @@ package VianuEdu.backend.DatabaseHandling;
 
 import VianuEdu.backend.Identification.Student;
 import VianuEdu.backend.Identification.Teacher;
+import VianuEdu.backend.TestLibrary.Test;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import okhttp3.ResponseBody;
 
 /**
  * A class to serialize/deserialize JSON quickly.
@@ -62,8 +64,13 @@ public class JSONManager {
 		return json.fromJson(jsonString, Student.class);
 	}
 
-	public static Teacher fromJSONtoTeacher(String jsonString ) {
+	public static Teacher fromJSONtoTeacher(String jsonString) {
 		Gson json = new GsonBuilder().setPrettyPrinting().create();
 		return json.fromJson(jsonString, Teacher.class);
+	}
+
+	public static Test fromJSONToTest(String jsonString) {
+		Gson json = new GsonBuilder().setPrettyPrinting().create();
+		return json.fromJson(jsonString, Test.class);
 	}
 }
