@@ -24,6 +24,8 @@ package VianuEdu.backend.DatabaseHandling;
 import VianuEdu.backend.Identification.Account;
 import VianuEdu.backend.Identification.Student;
 import VianuEdu.backend.Identification.Teacher;
+import VianuEdu.backend.TestLibrary.AnswerSheet;
+import VianuEdu.backend.TestLibrary.Grade;
 import VianuEdu.backend.TestLibrary.Test;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -404,7 +406,7 @@ public class DatabaseHandler {
 				.url(serverURL + "/api/createTest/" + teacher.getCourse())
 				.post(body)
 				.addHeader("content-type", "application/json")
-				.addHeader("authorization", "Basic" + Arrays.toString(Base64.getEncoder().encode((teacher.getAccount().getUserName() + ":" + teacher.getAccount().getPassword()).getBytes())))
+				.addHeader("authorization", "Basic " + Arrays.toString(Base64.getEncoder().encode((teacher.getAccount().getUserName() + ":" + teacher.getAccount().getPassword()).getBytes())))
 				.build();
 
 		Response response = client.newCall(request).execute();
@@ -421,6 +423,12 @@ public class DatabaseHandler {
 		return matcher.group(1);
 	}
 
+	/**
+	 * Gets the next test ID for submission.
+	 *
+	 * @return The next test ID for submission.
+	 * @throws IOException Most likely thrown if the device doesn't have a connection.
+	 */
 	public String getNextTestID() throws IOException {
 		OkHttpClient client = new OkHttpClient();
 
@@ -432,6 +440,120 @@ public class DatabaseHandler {
 		Response response = client.newCall(request).execute();
 
 		return response.body().string();
+	}
+
+	/**
+	 * Gets an answer sheet to evaluate from the database.
+	 *
+	 * @param testID    The test ID for which to find an answer sheet for.
+	 * @param studentID The student ID for which to find an answer sheet for.
+	 * @return An AnswerSheet object associated to the provided test ID and student ID.
+	 * @throws IOException            Most likely thrown if the device doesn't have a connection.
+	 * @throws IllegalAccessException Thrown if no answer sheet is found.
+	 */
+	public AnswerSheet getAnswerSheet(String testID, String studentID) throws IOException, IllegalAccessException {
+		OkHttpClient client = new OkHttpClient();
+
+		Request request = new Request.Builder()
+				.url(serverURL + "/api/getAnswerSheet/" + studentID + "/" + testID)
+				.get()
+				.build();
+
+		Response response = client.newCall(request).execute();
+		if (response.code() == 404) {
+			throw new IllegalAccessException("404 answer sheet not found!");
+		}
+
+
+		JsonObject object = new JsonParser().parse(response.body().string()).getAsJsonObject();
+
+		object.remove("_id");
+
+		return JSONManager.fromJSONToAnswerSheet(object.toString());
+	}
+
+	/**
+	 * Gets the student ID's for the answer sheets that must be evaluated for the provided test ID.
+	 *
+	 * @param testID The test ID for which to find answer sheets for.
+	 * @return An ArrayList<String> which contains the student ID of each answer sheet to be evaluated.
+	 * @throws IOException            Most likely thrown if the device doesn't have a connection.
+	 * @throws IllegalAccessException Thrown if no answer sheets are found.
+	 */
+	public ArrayList<String> getAnswerSheetsForTest(String testID) throws IOException, IllegalAccessException {
+		OkHttpClient client = new OkHttpClient();
+
+		Request request = new Request.Builder()
+				.url(serverURL + "/api/getAnswerSheetsForTest/" + testID)
+				.get()
+				.build();
+
+		Response response = client.newCall(request).execute();
+		if (response.code() == 404) {
+			throw new IllegalAccessException("404 answer sheets for test not found!");
+		} else if (response.code() == 500) {
+			throw new RemoteException("Something didn't work at the server! Sorry!");
+		}
+
+		String body = response.body().string();
+
+		return new ArrayList<>(Arrays.asList(body.split("\n")));
+
+	}
+
+	/**
+	 * Submits a new grade to the database.
+	 *
+	 * @param grade The grade to be submitted.
+	 * @throws IOException            Most likely thrown if the device doesn't have a connection.
+	 * @throws IllegalAccessException Thrown if submission is unsuccessful, reason is included in the exception message.
+	 */
+	public void submitGrade(Grade grade) throws IOException, IllegalAccessException {
+		OkHttpClient client = new OkHttpClient();
+
+		MediaType mediaType = MediaType.parse("application/json");
+		RequestBody body = RequestBody.create(mediaType, grade.toString());
+		Request request = new Request.Builder()
+				.url(serverURL + "/api/submitGrade/" + grade.getAnswerKey().getTestID())
+				.post(body)
+				.addHeader("content-type", "application/json")
+				.addHeader("authorization", "Basic " + Arrays.toString(Base64.getEncoder().encode((grade.getTeacher().getAccount().getUserName() + ":" + grade.getTeacher().getAccount().getPassword()).getBytes())))
+				.build();
+
+		Response response = client.newCall(request).execute();
+
+		if (!(response.isSuccessful())) {
+			throw new IllegalAccessException(response.code() + " submission not successful! Reason: " + response.body().string());
+		}
+	}
+
+	/**
+	 * Gets a grade from the database.
+	 *
+	 * @param studentID The student ID for which to get the grade for.
+	 * @param testID    The test ID for which to get the grade for.
+	 * @return The Grade object associated with the provided student ID and test ID.
+	 * @throws IOException            Most likely thrown if the device doesn't have a connection.
+	 * @throws IllegalAccessException Thrown if no grade is found in the database.
+	 */
+	public Grade getGrade(String studentID, String testID) throws IOException, IllegalAccessException {
+		OkHttpClient client = new OkHttpClient();
+
+		Request request = new Request.Builder()
+				.url(serverURL + "/api/getGrade/" + studentID + "/" + testID)
+				.get()
+				.build();
+
+		Response response = client.newCall(request).execute();
+		if (response.code() == 404) {
+			throw new IllegalAccessException("404 grade not found!");
+		}
+
+		JsonObject object = new JsonParser().parse(response.body().string()).getAsJsonObject();
+
+		object.remove("_id");
+
+		return JSONManager.fromJSONToGrade(object.toString());
 	}
 
 }
