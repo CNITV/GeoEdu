@@ -101,6 +101,7 @@ public class StartMenu {
             }
             lastStep = clock.millis();
         }
+        if (button_start > 0) button_start = 0;
     }
 
     /**
@@ -278,6 +279,8 @@ public class StartMenu {
      */
 
     public static void generateTitle(Graphics g) {
+
+        Username = UserImput.student.getFirstName() + " " + UserImput.student.getLastName();
 
         Font small = new Font("Futura", Font.BOLD, FontSize * 2);
         FontMetrics metricsy = g.getFontMetrics(small);

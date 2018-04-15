@@ -27,8 +27,8 @@ public class GeoEduMenu {
     public static String[] Button_name = new String[10];
     private static int X_leftPanel = -PanelWidth;
     private static int X_rightPanel = ScreenWidth;
-    private static int classNumber = 4;
-    private static int NrButtons = 7;
+    public static int classNumber = 4;
+    private static int NrButtons = 6;
     private static int ButtonWidth = PanelWidth;
     private static int ButtonHeight = PanelHeight / NrButtons * 4 / 5;
     private static int ClassHeight = ButtonHeight / 2;
@@ -37,6 +37,9 @@ public class GeoEduMenu {
     private static int ArrowHeight = 45;
     public static int currentPressed = 0;
     public static int copyScreenWidth = ScreenWidth;
+    public static int copyScreenHeight = ScreenHeight;
+    public static int arrowW;
+    public static int arrowH;
     private static int dir = 1;
     public static Image Arrow_unpressed = null;
     public static Image Arrow_Pressed = null;
@@ -64,6 +67,8 @@ public class GeoEduMenu {
         }
         int newWidth = Arrow_unpressed.getWidth(null) * ScreenWidth / 1920;
         int newHeight = Arrow_unpressed.getHeight(null) * ScreenHeight / 1080;
+        arrowW = Arrow_unpressed.getWidth(null);
+        arrowH = Arrow_unpressed.getHeight(null);
         Arrow_unpressed = Arrow_unpressed.getScaledInstance(newWidth, newHeight, Image.SCALE_DEFAULT);
         ;
         try {
@@ -164,12 +169,44 @@ public class GeoEduMenu {
             X_leftPanel = AnimateLeftP(dir);
             X_rightPanel = AnimateRightP(dir);
         }
-        copyScreenWidth = ScreenWidth;
         lastStep = clock.millis();
         g.drawImage(Background, (ScreenWidth - Background.getWidth(null)) / 2 - 8, 0, null);
         g.setColor(new Color(10, 10, 10));
         g.fillRect(X_leftPanel, 0, PanelWidth, PanelHeight);
         g.fillRect(X_rightPanel, 0, PanelWidth, PanelHeight);
+       /* if (copyScreenWidth != ScreenWidth) {
+            if (ScreenWidth > copyScreenWidth || ScreenHeight > copyScreenHeight) {
+                try {
+                    Arrow_unpressed = ImageIO.read(new File(loader.getResource("gui_assets/notPressedDownArrowLeft.png").getFile()));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    Arrow_Pressed = ImageIO.read(new File(loader.getResource("gui_assets/PressedDownArrowLeft.png").getFile()));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    TurnedArrow_Pressed = ImageIO.read(new File(loader.getResource("gui_assets/PressedDownArrowRight.png").getFile()));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    TurnedArrow_Unpressed = ImageIO.read(new File(loader.getResource("gui_assets/notPressedDownArrowRight.png").getFile()));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            int newWidth = ScreenWidth * arrowW / 1920;
+            int newHeight = ScreenHeight * arrowH / 1080;
+
+            Arrow_unpressed = Arrow_unpressed.getScaledInstance(newWidth, newHeight, Image.SCALE_FAST);
+            Arrow_Pressed = Arrow_Pressed.getScaledInstance(newWidth, newHeight, Image.SCALE_FAST);
+            TurnedArrow_Unpressed = TurnedArrow_Unpressed.getScaledInstance(newWidth, newHeight, Image.SCALE_FAST);
+            TurnedArrow_Pressed = TurnedArrow_Pressed.getScaledInstance(newWidth, newHeight, Image.SCALE_FAST);
+        }*/
+        copyScreenWidth = ScreenWidth;
+        copyScreenHeight = ScreenHeight;
     }
 
     /**
@@ -184,10 +221,12 @@ public class GeoEduMenu {
      * @author Sabin Anton
      */
 
-    public static void makeClassButton(Graphics g, int x, int y, int Width, int Height, int clasa) {
+    public static void makeClassButton(Graphics g, int x, int y, int Width, int Height, int clasa, int button) {
 
-        if (Panels_Hidden == false && classPressed[clasa - 9] == true) {
-            if (MousePressed != copyMousePressed) Setari.ButtonSound("button_click.wav");
+        if (Panels_Hidden == false && classHovered[clasa - 9] == true && MousePressed == true) {
+            if (MousePressed != copyMousePressed && MousePressed == true) {
+                Setari.ButtonSound("button_click.wav");
+            }
             g.setColor(new Color(250, 250, 250));
             g.fillRect(x, y, Width, Height);
             g.setColor(new Color(50, 50, 50));
@@ -201,6 +240,7 @@ public class GeoEduMenu {
             g.setColor(new Color(250, 250, 250));
             g.setFont(small);
             g.drawString(cls, x + Width / 2 - metricsx.stringWidth(cls) / 2, y + Height / 2 + metricsy.getHeight() / 4);
+
         } else if (Panels_Hidden == false && classHovered[clasa - 9] == true) {
             g.setColor(new Color(164, 148, 110));
             g.fillRect(x, y, Width, Height);
@@ -215,6 +255,7 @@ public class GeoEduMenu {
             g.setColor(new Color(255, 231, 170));
             g.setFont(small);
             g.drawString(cls, x + Width / 2 - metricsx.stringWidth(cls) / 2, y + Height / 2 + metricsy.getHeight() / 4);
+
         } else if (Panels_Hidden == false) {
             g.setColor(new Color(50, 50, 50));
             g.fillRect(x, y, Width, Height);
@@ -243,9 +284,9 @@ public class GeoEduMenu {
 
     public static void showClasses(Graphics g, int x) {
 
-        if (x <= 4 && x >= 2 && currentPressed == x) {
+        if (x <= 3 && x >= 2 && currentPressed == x) {
             for (int i = 0; i < classNumber; i++) {
-                makeClassButton(g, Leftpanel + PanelWidth, x * ButtonHeight + i * ClassHeight, ClassWidth, ClassHeight, i + 9);
+                makeClassButton(g, Leftpanel + PanelWidth, x * ButtonHeight + i * ClassHeight, ClassWidth, ClassHeight, i + 9, x);
             }
         }
     }
@@ -265,10 +306,11 @@ public class GeoEduMenu {
 
     public static void makeButton(Graphics g, int x, int y, int Width, int Height, String Name, int i) {
 
-        if (pressed[i] == true) {
+        if (hovered[i] == true && MousePressed == true) {
 
             AnimateFont();
-            if (MousePressed != copyMousePressed) Setari.ButtonSound("button_click.wav");
+            if (MousePressed != copyMousePressed && MousePressed == true) Setari.ButtonSound("button_click.wav");
+
             g.setColor(new Color(150, 150, 150));
             g.fillRect(x, y, Width, Height);
             g.fillRect(x, y, Width, 1);
@@ -284,7 +326,7 @@ public class GeoEduMenu {
             currentPressed = i;
             showClasses(g, i);
         } else if (hovered[i] == true) {
-
+            if (MousePressed == false && copyMousePressed == true && i == 1) returnMenu();
             AnimateFont();
             g.setColor(new Color(138, 114, 23));
             g.fillRect(x, y, Width, Height);
@@ -335,7 +377,7 @@ public class GeoEduMenu {
         if (Panels_Hidden == false) {
 
             if (ArrowPressed == true && MousePressed == true) {
-                if (MousePressed != copyMousePressed) Setari.ButtonSound("button_click.wav");
+                if (copyMousePressed == false) Setari.ButtonSound("button_click.wav");
                 g.drawImage(Arrow_Pressed, x, y, null);
             } else {
                 g.drawImage(Arrow_unpressed, x, y, null);
@@ -343,7 +385,7 @@ public class GeoEduMenu {
         } else {
 
             if (ArrowPressed == true && MousePressed == true) {
-                if (MousePressed != copyMousePressed) Setari.ButtonSound("button_click.wav");
+                if (copyMousePressed == false) Setari.ButtonSound("button_click.wav");
                 g.drawImage(TurnedArrow_Pressed, x, y, null);
             } else {
                 g.drawImage(TurnedArrow_Unpressed, x, y, null);
@@ -362,11 +404,10 @@ public class GeoEduMenu {
     public static void initializeButtons() {
 
         Button_name[1] = "Meniu";
-        Button_name[2] = "Lectii";
-        Button_name[3] = "Exercitii";
-        Button_name[4] = "Teste";
-        Button_name[5] = "Status";
-        Button_name[6] = "Setari";
+        Button_name[2] = "Exercitii";
+        Button_name[3] = "Teste";
+        Button_name[4] = "Status";
+        Button_name[5] = "Setari";
 
     }
 
@@ -504,6 +545,7 @@ public class GeoEduMenu {
     public static void Paint(Graphics g) {
 
         GeoEduMenu.generateBackground(g);
+        if (ContentBrowser.showTest == true) Tests.Paint(g);
         GeoEduMenu.initializeButtons();
         GeoEduMenu.GenerateButtons(g);
         ContentBrowser.Paint(g);
@@ -513,12 +555,9 @@ public class GeoEduMenu {
 
     public static void returnMenu() {
 
-        if (hovered[1] == true && Menu.MousePressed != copyMousePressed && copyMousePressed == true) {
             StartMenu.Start_GeoEdu = true;
             Leftpanel = -PanelWidth;
             Rightpanel = ScreenWidth + PanelWidth;
-        }
-
     }
 
     /**
@@ -530,12 +569,12 @@ public class GeoEduMenu {
     public static void Run() {
 
         initializeDimensions();
-        ContentBrowser.initialiseDimensions();
+        ContentBrowser.Run();
         if (Setari.SettingsOn == false) {
             mouseState();
             Panelstate();
         }
-        returnMenu();
+
     }
 
 }

@@ -19,12 +19,13 @@
 
 package VianuEdu.GUI;
 
+import VianuEdu.backend.DatabaseHandling.DatabaseHandler;
+
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.event.*;
+
+
 
 
 public class Menu extends JPanel implements ActionListener {
@@ -40,9 +41,11 @@ public class Menu extends JPanel implements ActionListener {
     public static int YFrame;
     public static int Framerate = 1;
     public static boolean MousePressed = false;
+    public static boolean ENTER = false;
     public static JTextField username = new JTextField(20);
     public static JPasswordField password = new JPasswordField(30);
     public Timer timer;
+    public static DatabaseHandler Maner = new DatabaseHandler();
 
     /**
      * This method sets the framerate of the menu.
@@ -67,13 +70,14 @@ public class Menu extends JPanel implements ActionListener {
 
     public Menu() {
 
+        addKeyListener(new KeyControl());
         StartTimer();
         GeoEduMenu.generateImages();
         StartMenu.initializeButtons();
         StartMenu.importImages();
         UserImput.ImportImages();
         addMouseListener(new Control());
-
+        setFocusable(true);
     }
 
     /**
@@ -146,9 +150,9 @@ public class Menu extends JPanel implements ActionListener {
         public void mousePressed(MouseEvent e) {
 
             X_pressed = e.getX();
+            System.out.println("DA");
             Y_pressed = e.getY();
             MousePressed = true;
-
         }
 
         @Override
@@ -171,5 +175,32 @@ public class Menu extends JPanel implements ActionListener {
 
     }
 
+    private class KeyControl implements KeyListener {
+
+        @Override
+        public void keyTyped(KeyEvent e) {
+
+        }
+
+        @Override
+        public void keyPressed(KeyEvent e) {
+
+            int key = e.getKeyCode();
+            if (key == KeyEvent.VK_ENTER) {
+                ENTER = true;
+                System.out.println("DA");
+            }
+
+        }
+
+        @Override
+        public void keyReleased(KeyEvent e) {
+
+            if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                ENTER = false;
+            }
+
+        }
+    }
 
 }

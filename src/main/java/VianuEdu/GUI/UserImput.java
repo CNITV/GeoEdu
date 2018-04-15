@@ -1,11 +1,20 @@
 package VianuEdu.GUI;
 
 
+import VianuEdu.backend.DatabaseHandling.DatabaseHandler;
+import VianuEdu.backend.Identification.Account;
+import VianuEdu.backend.Identification.Student;
+import VianuEdu.backend.Identification.Teacher;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
+
+import static VianuEdu.GUI.StartMenu.clock;
 
 
 public class UserImput extends JPanel {
@@ -15,6 +24,8 @@ public class UserImput extends JPanel {
     public static int NrButtons = 2;
     public static int FontSize = 60 * ScreenWidth / 1920;
     public static boolean Login = true;
+    public static boolean showMessage = false;
+    public static boolean Register = true;
     public static boolean copyMousePressed = false;
     public static boolean copyMousePressed2 = false;
     public static boolean copyMousePressed3 = false;
@@ -34,12 +45,11 @@ public class UserImput extends JPanel {
     public static String genderName[] = new String[10];
     public static String USERNAME;
     public static String PASSWORD;
-    public static String CPASSWORD;
-    public static String FNAME;
-    public static String LNAME;
-    public static String FINITIALS;
-    public static int GRADE;
-    public static int GENDER;
+    public static String dialogText;
+    public static String cookie = "a", cookie2 = "a";
+    public static long startMessage = 0;
+    public static Student student;
+    public static Teacher teacher;
     public static Image background;
 
     static ClassLoader loader = Menu.class.getClassLoader();
@@ -49,11 +59,23 @@ public class UserImput extends JPanel {
         BoxName[1] = "Nume:";
         BoxName[2] = "Prenume:";
         BoxName[3] = "Initiala Tatalui:";
-        BoxName[4] = "Clasa:";
+        BoxName[4] = "Clasa (+litera):";
         BoxName[5] = "Sex:";
         BoxName[6] = "ID Utilizator:";
+        BoxName[7] = "Esti Profesor?";
         PName[2] = "Parola:";
         PName[3] = "Confirma Parola:";
+
+    }
+
+    public static void DialogBox(Graphics g, String Message, int x, int y) {
+
+        Font small = new Font("Futura", Font.PLAIN, FontSize / 2);
+        FontMetrics metricsy = g.getFontMetrics(small);
+        FontMetrics metricsx = g.getFontMetrics(small);
+        g.setColor(new Color(255, 247, 33));
+        g.setFont(small);
+        g.drawString(String.valueOf(Message), x - metricsx.stringWidth(String.valueOf(Message)) / 2, y + metricsy.getHeight() / 2);
 
     }
 
@@ -63,8 +85,8 @@ public class UserImput extends JPanel {
         gradeName[2] = "clasa a 10-a";
         gradeName[3] = "clasa a 11-a";
         gradeName[4] = "clasa a 12-a";
-        genderName[1] = "baiat";
-        genderName[2] = "fata";
+        genderName[1] = "M";
+        genderName[2] = "F";
 
     }
 
@@ -157,12 +179,89 @@ public class UserImput extends JPanel {
         ButtonName[2] = "Inregistrare";
     }
 
-    public static void checkData() {
+    public static void checkData(Graphics g) {
 
-        USERNAME = username.getText();
-        PASSWORD = String.valueOf(password.getPassword());
-       
+        if (Bpressed[1] == true) {
+            USERNAME = username.getText();
+            PASSWORD = String.valueOf(password.getPassword());
 
+            Login = false;
+            if (USERNAME.length() < 1 || PASSWORD.length() < 1) Login = true;
+            else {
+                try {
+                    cookie = Menu.Maner.studentLogin(new Account(USERNAME, PASSWORD));
+
+                    student = Menu.Maner.getStudent(cookie);
+                } catch (IOException e) {
+                    //e.printStackTrace();
+                    // afiseaza ca nu e net
+                } catch (IllegalAccessException e) {
+                    try {
+                        cookie2 = Menu.Maner.teacherLogin(new Account(USERNAME, PASSWORD));
+                        teacher = Menu.Maner.getTeacher(cookie2);
+
+                    } catch (IOException e1) {
+                        //continue
+                    } catch (IllegalAccessException e1) {
+                        Login = true;
+                    }
+                }
+                try {
+                    StartMenu.Username = student.getFirstName() + " " + student.getLastName();
+
+
+                } catch (java.lang.NullPointerException e) {
+                    showMessage = true;
+                    startMessage = clock.millis();
+                    dialogText = "ID utilizator sau parola incorecta!";
+                    Login = true;
+                }
+
+                if (cookie2.length() < 9 && cookie.length() < 9) {
+                    showMessage = true;
+                    startMessage = clock.millis();
+                    dialogText = "ID utilizator sau parola incorecta!";
+                    Login = true;
+                }
+            }
+        } else {
+
+            Register = true;
+            for (int i = 1; i <= 6; i++) {
+                if (Tbox[i].getText().length() < 1) Register = false;
+            }
+            for (int i = 2; i <= 3; i++) {
+                if (Pbox[i].getPassword().length < 1) Register = false;
+            }
+            if (Register == true) {
+                String clasa = Tbox[4].getText();
+
+                int grade = 0;
+                String letter = String.valueOf(clasa.charAt(clasa.length() - 1));
+                for (int i = clasa.length() - 1; i >= 0; i--) {
+                    if (clasa.charAt(i) >= '0' && clasa.charAt(i) <= '9') {
+                        grade = grade * 10 + clasa.charAt(i) - '0';
+                    }
+                }
+                String password = new String(Pbox[2].getPassword());
+
+                Student elev2 = new Student(Tbox[1].getText(), Tbox[3].getText(), Tbox[2].getText(), Tbox[5].getText(), grade, letter, "active", new Account(Tbox[6].getText(), password));
+                DatabaseHandler Maner = new DatabaseHandler();
+
+                try {
+                    Maner.registerStudent(elev2);
+                } catch (IOException e) {
+
+                }
+                Bpressed[1] = true;
+                Bpressed[2] = false;
+                showMessage = true;
+                startMessage = clock.millis();
+                dialogText = "Inregistrare reusita!";
+            }
+
+
+        }
     }
 
     public static void makeSubmitButton(Graphics g, int x, int y, int width, int height, String Name) {
@@ -173,7 +272,10 @@ public class UserImput extends JPanel {
         if (Menu.X_hovered >= x && Menu.X_hovered <= x + width && Menu.Y_hovered >= y && Menu.Y_hovered <= y + height)
             Submithovered = true;
 
-        if (Menu.MousePressed == false && copyMousePressed2 == true && Submithovered == true) checkData();
+        if (((Menu.MousePressed == false && copyMousePressed2 == true && Submithovered == true) || Menu.ENTER == true) && Login == true) {
+
+            checkData(g);
+        }
 
         if (Menu.MousePressed == true && Submithovered == true) {
             if (copyMousePressed2 != Menu.MousePressed && copyMousePressed2 == false) {
@@ -193,7 +295,7 @@ public class UserImput extends JPanel {
 
         } else if (Submithovered == true) {
 
-            if (Menu.MousePressed == false && copyMousePressed == true) System.exit(0);
+
             g.setColor(new Color(231, 198, 63));
             g.fillRoundRect(x, y, width, height, 15, 15);
             g.setColor(new Color(255, 231, 63));
@@ -231,6 +333,23 @@ public class UserImput extends JPanel {
         username.setFont(f);
         password.setBounds(ScreenWidth / 2, ScreenHeight / 4 + ScreenHeight / 6, ScreenWidth / 5, ScreenHeight / 40);
         password.setFont(f);
+        password.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                super.keyPressed(e);
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    Menu.ENTER = true;
+                }
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                super.keyReleased(e);
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    Menu.ENTER = false;
+                }
+            }
+        });
         Window.frame.add(username);
         Window.frame.add(password);
     }
@@ -289,10 +408,10 @@ public class UserImput extends JPanel {
             g.drawString(String.valueOf(Name), x + width / 2 - metricsx.stringWidth(String.valueOf(Name)) / 2, y + height / 2 + metricsy.getHeight() / 4);
 
             if (optionsShowed[1] == true) {
-                GRADE = i + 8;
+                //GRADE = i + 8;
                 Tbox[4].setText(gradeName[i]);
             } else if (optionsShowed[2] == true) {
-                GENDER = i;
+                // GENDER = i;
                 Tbox[5].setText(genderName[i]);
             }
 
@@ -448,6 +567,16 @@ public class UserImput extends JPanel {
 
     }
 
+    public static void showDialog(Graphics g, String Message) {
+
+        if (showMessage == true && clock.millis() - startMessage < 1000) {
+            DialogBox(g, Message, Menu.ScreenWidth / 2, Menu.ScreenHeight / 6);
+        } else {
+            showMessage = false;
+            startMessage = 0;
+        }
+    }
+
     public static void Paint(Graphics g) {
 
         generateBackground(g);
@@ -463,8 +592,8 @@ public class UserImput extends JPanel {
             password.setVisible(false);
             updateRegister(g);
             callOptions(g);
-
         }
+        showDialog(g, dialogText);
     }
 
     public static void initilaizeDimensions() {

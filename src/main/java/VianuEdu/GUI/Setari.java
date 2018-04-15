@@ -311,10 +311,11 @@ public class Setari extends JPanel {
 
     public static void Settings(Graphics g) {
 
-        if (GeoEduMenu.pressed[6] == false && copy_pressed == true) {
+        if (GeoEduMenu.pressed[5] == false && copy_pressed == true) {
             SettingsOn = true;
+            GeoEduMenu.hovered[5] = false;
         }
-        copy_pressed = GeoEduMenu.pressed[6];
+        copy_pressed = GeoEduMenu.pressed[5];
         if (SettingsOn == true) DrawSettings(g);
     }
 }
