@@ -48,7 +48,8 @@ public class Test {
 	private String course;
 	private Date startTime;
 	private Date endTime;
-	private String grade;
+	private Integer grade;
+	private String gradeLetter;
 	private HashMap<Integer, Question> contents;
 
 	/**
@@ -62,7 +63,7 @@ public class Test {
 	 * @param grade     The grade for which the test will be administered.
 	 * @param contents  The contents of the test. A HashMap which contains the question and the answer key for the test.
 	 */
-	public Test(String testID, String testName, String course, Date startTime, Date endTime, String grade, HashMap<Integer, Question> contents) {
+	public Test(String testID, String testName, String course, Date startTime, Date endTime, Integer grade, String gradeLetter, HashMap<Integer, Question> contents) {
 		if (!(testID.matches("T-([0123456789])\\w+"))) {
 			throw new IllegalArgumentException("Test ID must be of specific VianuEdu format! (i.e. ID for tests are T-00001)");
 		} else if (testName.isEmpty()) {
@@ -73,7 +74,7 @@ public class Test {
 			throw new IllegalArgumentException("Cannot dispense a test in the past! (Back to the future?)");
 		} else if (endTime.before(startTime)) {
 			throw new IllegalArgumentException("Cannot have a test finish before it even started! (Stop time travelling, god dammit!)");
-		} else if (!(grade.matches("([0-9])\\w([A-Z])") || grade.matches("([0-9])([A-Z])"))) {
+		} else if (grade < 9 || grade > 12 || !"ABCDEFGHIJKLMNOPQRSTUVWXYZ".contains(gradeLetter) || gradeLetter.length() != 1) {
 			throw new IllegalArgumentException("This is not a class! Deal with it!");
 		}
 		this.testID = testID;
@@ -82,6 +83,7 @@ public class Test {
 		this.startTime = startTime;
 		this.endTime = endTime;
 		this.grade = grade;
+		this.gradeLetter = gradeLetter;
 		this.contents = contents;
 	}
 
@@ -136,7 +138,7 @@ public class Test {
 	 * @return The class for which the test is administered.
 	 */
 	public String getGrade() {
-		return grade;
+		return grade + gradeLetter;
 	}
 
 	/**
@@ -185,7 +187,7 @@ public class Test {
 
 		for (Question question : contents.values()) {
 			if (question.getQuestionType().equals("multiple-choice")) {
-				result.addAnswer(questionNumber, question.getAnswer().substring(0, 19));
+				result.addAnswer(questionNumber, "[MULTIPLE_ANSWER] " + question.getAnswer().substring(0, 1));
 			} else {
 				result.addAnswer(questionNumber, question.getAnswer());
 			}
@@ -193,7 +195,6 @@ public class Test {
 		}
 		return result;
 	}
-
 
 	/**
 	 * Returns a JSON string with indentation that represents a test. Uses Gson JSON library.

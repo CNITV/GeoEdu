@@ -67,8 +67,7 @@ public class Grade {
 	private void calculateGrade() {
 		for (int i = 1; i <= studentAnswerSheet.getNumberOfAnswers(); i++) { // iterate through each answer
 			String answer = studentAnswerSheet.getAnswer(i); // get the answer
-			String answerType = answer.substring(0, 17);
-			if (answerType.equals("[MULTIPLE_ANSWER]")) { // if it is multiple choice type, we can evaluate, so ...
+			if (answer.contains("[MULTIPLE_ANSWER]")) { // if it is multiple choice type, we can evaluate, so ...
 				if (studentAnswerSheet.getAnswer(i).equals(answerKey.getAnswer(i))) { // see if it is the same, and if so...
 					currentGrade += gradeScoreDistribution; // ...add that score up.
 				}
@@ -88,7 +87,7 @@ public class Grade {
 
 		for (int i = 1; i <= studentAnswerSheet.getNumberOfAnswers(); i++) {
 			//we are going to take every answer, split it, take the tag at the beginning if any, and see if it is marked for evaluation.
-			if (studentAnswerSheet.getAnswer(i).substring(0, 10).equals("[EVALUATE]")) { // if so...
+			if (studentAnswerSheet.getAnswer(i).contains("[EVALUATE]")) { // if so...
 				returnValue.add(i); // add it to the return.
 			}
 		}
@@ -105,11 +104,11 @@ public class Grade {
 		if (percentageGiven < 0 || percentageGiven > 100) {
 			throw new IllegalArgumentException("Percentage must be between 0 and 100!");
 		}
-		if (!studentAnswerSheet.getAnswer(questionNumber).substring(0, 10).equals("[EVALUATE]")) {
+		if (!studentAnswerSheet.getAnswer(questionNumber).contains("[EVALUATE]")) {
 			throw new IllegalArgumentException("Question must be up for evaluation, you cannot evaluate a multiple choice answer!");
 		}
 		currentGrade += (percentageGiven / 100.0) * gradeScoreDistribution; // add that score to the grade
-		studentAnswerSheet.changeAnswer(questionNumber, studentAnswerSheet.getAnswer(questionNumber).substring(10)); // Remove the "[EVALUATE]" part of the answer in the student sheet
+		studentAnswerSheet.changeAnswer(questionNumber, studentAnswerSheet.getAnswer(questionNumber).substring(11)); // Remove the "[EVALUATE]" part of the answer in the student sheet
 	}
 
 	/**
