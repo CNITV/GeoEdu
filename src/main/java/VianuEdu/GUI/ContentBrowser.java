@@ -104,7 +104,7 @@ public class ContentBrowser {
 
     }
 
-    public static void makeButton(Graphics g, int x, int y, int width, int height, String Name, String ID, int i) {
+    public static void makeButton(Graphics g, int x, int y, int width, int height, String ID, String Name, int i) {
 
         int xhovered = Menu.X_hovered;
         int yhovered = Menu.Y_hovered;
@@ -112,7 +112,7 @@ public class ContentBrowser {
 
             if (Chovered[i] == true) {
                 Setari.ButtonSound("button_click.wav");
-                Tests.findTest(currentClass, Name);
+                Tests.findTest(currentClass, ID);
                 showTest = true;
                 showExercise = false;
             }
@@ -161,7 +161,7 @@ public class ContentBrowser {
 
     }
 
-    public static void drawContent(Graphics g,ArrayList<String> ID, ArrayList<String> content, int NrContent) {
+    public static void drawContent(Graphics g, ArrayList<String> ID, ArrayList<String> content, int NrContent) {
 
 
         for (int i = 0; i <= NrContent/2; i++) {

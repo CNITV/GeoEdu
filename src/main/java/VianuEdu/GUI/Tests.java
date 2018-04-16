@@ -33,7 +33,7 @@ public class Tests {
 
         try {
             Test test = Menu.Maner.getTest(Name);
-
+            System.out.println(test.getContents().size());
             for (Integer index = 1; index <= test.getContents().size(); index++) {
                 Question[index] = test.getContents().get(index).getQuestion();
                 Answers[index] = test.getContents().get(index).getAnswer();
