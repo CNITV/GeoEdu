@@ -11,7 +11,7 @@ public class ContentBrowser {
     public static int ContentBrowserHeight = GeoEduMenu.PanelHeight / 2;
     public static int BrowserY = GeoEduMenu.PanelHeight / 4;
     public static int BrowserX = GeoEduMenu.Rightpanel;
-    public static int NumberContent;
+    public static int NumberContent=0;
     public static int currentClass;
     public static int Class[] = new int[101];
     public static boolean Chovered[] = new boolean[101];
@@ -67,13 +67,18 @@ public class ContentBrowser {
                         for (String TestID : ID) {
                             test = Menu.Maner.getTest(TestID);
                             ContentName.add(test.getTestName());
-                            ContentID.set(++NumberContent, TestID);
+                            ContentID.add( TestID);
+                            NumberContent++;
+
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
                     } catch (IllegalAccessException e) {
                         e.printStackTrace();
                     }
+                    currentClass = Class[p];
+                    dExercises = false;
+                    dTest = true;
                 }
 
             } else if (Exercises == true && Class[p] >= 9 && Menu.MousePressed == true) {
@@ -99,7 +104,7 @@ public class ContentBrowser {
 
     }
 
-    public static void makeButton(Graphics g, int x, int y, int width, int height, String Name, int i) {
+    public static void makeButton(Graphics g, int x, int y, int width, int height, String Name, String ID, int i) {
 
         int xhovered = Menu.X_hovered;
         int yhovered = Menu.Y_hovered;
@@ -156,10 +161,11 @@ public class ContentBrowser {
 
     }
 
-    public static void drawContent(Graphics g, ArrayList<String> content, int NrContent) {
+    public static void drawContent(Graphics g,ArrayList<String> ID, ArrayList<String> content, int NrContent) {
 
-        for (int i = 0; i < NrContent; i++) {
-            makeButton(g, BrowserX, ContentStart * Menu.ScreenHeight / 1080 + i * ContentBrowserHeight / 6, ContentBrowserWidth, ContentBrowserHeight / 6, content.get(i), i);
+
+        for (int i = 0; i <= NrContent/2; i++) {
+            makeButton(g, BrowserX, ContentStart * Menu.ScreenHeight / 1080 + i * ContentBrowserHeight / 6, ContentBrowserWidth, ContentBrowserHeight / 6, ID.get(i), content.get(i), i);
         }
 
     }
@@ -167,7 +173,7 @@ public class ContentBrowser {
     public static void findContent(Graphics g) {
 
         getInfo();
-        if (dTest == true) drawContent(g, ContentName, NumberContent);
+        if (dTest == true) drawContent(g, ContentID, ContentName, NumberContent);
     }
 
     public static void drawBrowser(Graphics g) {

@@ -1,8 +1,11 @@
 package VianuEdu.GUI;
 
+import VianuEdu.backend.TestLibrary.Test;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.time.Clock;
 
 
@@ -28,6 +31,18 @@ public class Tests {
 
     public static void findTest(int Class, String Name) {
 
+        try {
+            Test test = Menu.Maner.getTest(Name);
+
+            for (Integer index = 1; index <= test.getContents().size(); index++) {
+                Question[index] = test.getContents().get(index).getQuestion();
+                Answers[index] = test.getContents().get(index).getAnswer();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
 
     }
 
