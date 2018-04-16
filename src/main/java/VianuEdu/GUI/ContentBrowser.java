@@ -64,6 +64,9 @@ public class ContentBrowser {
                         ArrayList<String> ID = Menu.Maner.getTestQueue("Geo", UserImput.cookie);
                         System.out.println(UserImput.cookie);
                         VianuEdu.backend.TestLibrary.Test test = null;
+                        ContentName.clear();
+                        ContentID.clear();
+                        NumberContent =0;
                         for (String TestID : ID) {
                             test = Menu.Maner.getTest(TestID);
                             ContentName.add(test.getTestName());
@@ -164,7 +167,7 @@ public class ContentBrowser {
     public static void drawContent(Graphics g, ArrayList<String> ID, ArrayList<String> content, int NrContent) {
 
 
-        for (int i = 0; i <= NrContent/2; i++) {
+        for (int i = 0; i < NrContent; i++) {
             makeButton(g, BrowserX, ContentStart * Menu.ScreenHeight / 1080 + i * ContentBrowserHeight / 6, ContentBrowserWidth, ContentBrowserHeight / 6, ID.get(i), content.get(i), i);
         }
 

@@ -65,6 +65,8 @@ public class UserImput extends JPanel {
         BoxName[7] = "Esti Profesor?";
         PName[2] = "Parola:";
         PName[3] = "Confirma Parola:";
+        username.setText("IfDex22");
+        password.setText("parolasecreta");
 
     }
 

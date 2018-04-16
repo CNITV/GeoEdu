@@ -76,6 +76,7 @@ public class Menu extends JPanel implements ActionListener {
         StartMenu.initializeButtons();
         StartMenu.importImages();
         UserImput.ImportImages();
+        Window.frame.add(Tests.essay);
         addMouseListener(new Control());
         setFocusable(true);
     }

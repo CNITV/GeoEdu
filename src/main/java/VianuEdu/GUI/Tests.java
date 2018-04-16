@@ -7,37 +7,71 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.time.Clock;
+import java.util.ArrayList;
 
 
 public class Tests {
 
     // public static Map<Integer,Pair<String,String>> test[] = new Map[10001];
     public static String Question[] = new String[1001];
-    public static String Answers[] = new String[1001];
+    public static String Answers[][] = new String[101][101];
     public static String SAnswers[] = new String[1001];
+    public static String RAnswers[] = new String[1001];
     public static String TestName;
+    public static String[] Essays = new String[101];
+    public static String TestID;
     public static boolean QuestionGenerated = false;
     public static boolean beginTest = false;
+    public static boolean endTest = false;
+    public static boolean Test_finished;
+    public static boolean isCalculated = false;
+    public static boolean ChoiceQuestion[] = new boolean[101];
     public static int CAnswer[] = new int[1001];
-    public static int NrQuestions = 5;
+    public static int NrQuestions = 3;
     public static int copyScreenWidth = Menu.ScreenWidth;
     public static int currentQuestion = 1;
-    public static int NrAnswers = 5;
+    public static int NrAnswers[] = new int[1001];
+    public static float result;
     public static JLabel label;
     public static Icon Image[] = new Icon[1001];
     public static BufferedImage lb;
     public static long beginTime;
     public static Clock clock = Clock.systemUTC();
+    public static JTextArea essay = new JTextArea();
 
     public static void findTest(int Class, String Name) {
 
+        STimer();
+        beginTest = false;
+        endTest = false;
+        Test_finished = false;
+        isCalculated = false;
+        currentQuestion = 1;
+        essay.setVisible(false);
+        for(int i=0;i<= NrQuestions;i++){
+            CAnswer[i]=0;
+            ChoiceQuestion[i]=false;
+            RAnswers[i] = null;
+            Essays[i] = null;
+        }
+
         try {
             Test test = Menu.Maner.getTest(Name);
+            TestID = Name;
+            TestName = test.getTestName();
             System.out.println(test.getContents().size());
             for (Integer index = 1; index <= test.getContents().size(); index++) {
                 Question[index] = test.getContents().get(index).getQuestion();
-                Answers[index] = test.getContents().get(index).getAnswer();
+                RAnswers[index] = test.getContents().get(index).getAnswer();
+                if(test.getContents().get(index).getQuestionType().equals("multiple-choice")) {
+                    ChoiceQuestion[index]=true;
+                    NrAnswers[index] = test.getContents().get(index).getQuestionChoices().size();
+                    for (Integer i = 0; i < test.getContents().get(index).getQuestionChoices().size(); i++) {
+                        Answers[index][i+1] = test.getContents().get(index).getQuestionChoices().get(i);
+                    }
+                }
             }
+
         } catch (IOException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
@@ -53,10 +87,6 @@ public class Tests {
         g.drawRect(GeoEduMenu.PanelWidth, 0, Menu.ScreenWidth * 3 / 5 - 1, Menu.ScreenHeight);
     }
 
-    public static String getFormatedString(String text) {
-
-        return "<html>" + text + "<html>";
-    }
 
     public static BufferedImage labeltoImage(Component component) {
         BufferedImage img = new BufferedImage(component.getWidth(), component.getHeight(), BufferedImage.TYPE_INT_ARGB);
@@ -77,6 +107,7 @@ public class Tests {
         if (QuestionGenerated == false || Menu.ScreenWidth != copyScreenWidth) {
             label.setFont(f);
             label.setForeground(new Color(255, 255, 255));
+            essay.setText(Essays[currentQuestion]);
             Window.frame.add(label);
             lb = labeltoImage(label);
             QuestionGenerated = true;
@@ -94,8 +125,9 @@ public class Tests {
 
         int x = Menu.X_hovered;
         int y = Menu.Y_hovered;
-        if (x > Menu.ScreenWidth / 3 && x < 2 * Menu.ScreenWidth / 3 && y > Menu.ScreenHeight / 2 + p * AnswerHeight && y < Menu.ScreenHeight / 2 + (p + 1) * AnswerHeight && Menu.MousePressed == true) {
-            CAnswer[currentQuestion] = p;
+        if (x > Menu.ScreenWidth / 3 && x < 2 * Menu.ScreenWidth / 3 && y > Menu.ScreenHeight / 2 + p * AnswerHeight && y < Menu.ScreenHeight / 2 + (p + 1) * AnswerHeight && Menu.MousePressed == true) { {
+                CAnswer[currentQuestion] = p;
+            }
             if (Menu.MousePressed == true && GeoEduMenu.copyMousePressed == false)
                 Setari.ButtonSound("button_click.wav");
         }
@@ -126,23 +158,6 @@ public class Tests {
 
     }
 
-    public static void generateAnswers(String Sir, String answers[]) {
-
-        char sir[] = Sir.toCharArray();
-        int len = sir.length;
-        int i = 0, n = 0, w = 0;
-        char c[] = new char[101];
-        while (i < len) {
-            if (sir[i] == '/' || i == len - 1) {
-                w = 0;
-                answers[++n] = String.valueOf(c);
-            } else {
-                c[w] = sir[i];
-                w++;
-            }
-            i++;
-        }
-    }
 
     public static void STimer() {
 
@@ -241,6 +256,7 @@ public class Tests {
             if (GeoEduMenu.copyMousePressed == true) {
                 QuestionGenerated = false;
                 beginTest = true;
+                endTest = false;
                 STimer();
             }
         }
@@ -278,6 +294,123 @@ public class Tests {
             g.fill3DRect(x + 2, y + 2, width - 4, height - 4, false);
 
             Font small = new Font("Calibri", Font.PLAIN, UserImput.FontSize * 2 / 3);
+            FontMetrics metricsy = g.getFontMetrics(small);
+            FontMetrics metricsx = g.getFontMetrics(small);
+            g.setColor(new Color(220, 220, 220));
+            g.setFont(small);
+            g.drawString(String.valueOf(Name), x + width / 2 - metricsx.stringWidth(String.valueOf(Name)) / 2, y + height / 2 + metricsy.getHeight() / 4);
+        }
+
+    }
+
+    public static void drawEndButton(Graphics g, int x, int y, int width, int height, String Name) {
+
+        int xm = Menu.X_hovered;
+        int ym = Menu.Y_hovered;
+
+
+        if (xm > x && xm < x + width && ym > y && ym < y + height && Menu.MousePressed == true) {
+
+            if (GeoEduMenu.copyMousePressed == false) Setari.ButtonSound("button_click.wav");
+        } else if (xm > x && xm < x + width && ym > y && ym < y + height) {
+            if (GeoEduMenu.copyMousePressed == true) {
+                QuestionGenerated = false;
+                beginTest = false;
+                endTest = true;
+                STimer();
+            }
+        }
+        if (xm > x && xm < x + width && ym > y && ym < y + height && Menu.MousePressed == true) {
+            g.setColor(new Color(60, 60, 60));
+            g.fill3DRect(x, y, width, height, true);
+            g.setColor(Color.LIGHT_GRAY);
+            g.fill3DRect(x + 2, y + 2, width - 4, height - 4, true);
+            g.setColor(Color.WHITE);
+            g.drawRect(x, y, width, height);
+
+            Font small = new Font("Calibri", Font.PLAIN, UserImput.FontSize /3);
+            FontMetrics metricsy = g.getFontMetrics(small);
+            FontMetrics metricsx = g.getFontMetrics(small);
+            g.setColor(new Color(0, 0, 0));
+            g.setFont(small);
+            g.drawString(String.valueOf(Name), x + width / 2 - metricsx.stringWidth(String.valueOf(Name)) / 2, y + height / 2 + metricsy.getHeight() / 4);
+
+        } else if (xm > x && xm < x + width && ym > y && ym < y + height) {
+            g.setColor(new Color(255, 230, 31));
+            g.fill3DRect(x, y, width, height, false);
+            g.setColor(Color.BLACK);
+            g.fill3DRect(x + 2, y + 2, width - 4, height - 4, false);
+
+            Font small = new Font("Calibri", Font.PLAIN, UserImput.FontSize /3);
+            FontMetrics metricsy = g.getFontMetrics(small);
+            FontMetrics metricsx = g.getFontMetrics(small);
+            g.setColor(new Color(255, 231, 170));
+            g.setFont(small);
+            g.drawString(String.valueOf(Name), x + width / 2 - metricsx.stringWidth(String.valueOf(Name)) / 2, y + height / 2 + metricsy.getHeight() / 4);
+        } else {
+            g.setColor(new Color(60, 60, 60));
+            g.fill3DRect(x, y, width, height, false);
+            g.setColor(Color.BLACK);
+            g.fill3DRect(x + 2, y + 2, width - 4, height - 4, false);
+
+            Font small = new Font("Calibri", Font.PLAIN, UserImput.FontSize /3);
+            FontMetrics metricsy = g.getFontMetrics(small);
+            FontMetrics metricsx = g.getFontMetrics(small);
+            g.setColor(new Color(220, 220, 220));
+            g.setFont(small);
+            g.drawString(String.valueOf(Name), x + width / 2 - metricsx.stringWidth(String.valueOf(Name)) / 2, y + height / 2 + metricsy.getHeight() / 4);
+        }
+
+    }
+
+    public static void drawExitButton(Graphics g, int x, int y, int width, int height, String Name) {
+
+        int xm = Menu.X_hovered;
+        int ym = Menu.Y_hovered;
+
+
+        if (xm > x && xm < x + width && ym > y && ym < y + height && Menu.MousePressed == true) {
+
+            if (GeoEduMenu.copyMousePressed == false) Setari.ButtonSound("button_click.wav");
+        } else if (xm > x && xm < x + width && ym > y && ym < y + height) {
+            if (GeoEduMenu.copyMousePressed == true) {
+                Test_finished = true;
+            }
+        }
+        if (xm > x && xm < x + width && ym > y && ym < y + height && Menu.MousePressed == true) {
+            g.setColor(new Color(60, 60, 60));
+            g.fill3DRect(x, y, width, height, true);
+            g.setColor(Color.LIGHT_GRAY);
+            g.fill3DRect(x + 2, y + 2, width - 4, height - 4, true);
+            g.setColor(Color.WHITE);
+            g.drawRect(x, y, width, height);
+
+            Font small = new Font("Calibri", Font.PLAIN, UserImput.FontSize );
+            FontMetrics metricsy = g.getFontMetrics(small);
+            FontMetrics metricsx = g.getFontMetrics(small);
+            g.setColor(new Color(0, 0, 0));
+            g.setFont(small);
+            g.drawString(String.valueOf(Name), x + width / 2 - metricsx.stringWidth(String.valueOf(Name)) / 2, y + height / 2 + metricsy.getHeight() / 4);
+
+        } else if (xm > x && xm < x + width && ym > y && ym < y + height) {
+            g.setColor(new Color(255, 230, 31));
+            g.fill3DRect(x, y, width, height, false);
+            g.setColor(Color.BLACK);
+            g.fill3DRect(x + 2, y + 2, width - 4, height - 4, false);
+
+            Font small = new Font("Calibri", Font.PLAIN, UserImput.FontSize );
+            FontMetrics metricsy = g.getFontMetrics(small);
+            FontMetrics metricsx = g.getFontMetrics(small);
+            g.setColor(new Color(255, 231, 170));
+            g.setFont(small);
+            g.drawString(String.valueOf(Name), x + width / 2 - metricsx.stringWidth(String.valueOf(Name)) / 2, y + height / 2 + metricsy.getHeight() / 4);
+        } else {
+            g.setColor(new Color(60, 60, 60));
+            g.fill3DRect(x, y, width, height, false);
+            g.setColor(Color.BLACK);
+            g.fill3DRect(x + 2, y + 2, width - 4, height - 4, false);
+
+            Font small = new Font("Calibri", Font.PLAIN, UserImput.FontSize);
             FontMetrics metricsy = g.getFontMetrics(small);
             FontMetrics metricsx = g.getFontMetrics(small);
             g.setColor(new Color(220, 220, 220));
@@ -360,7 +493,7 @@ public class Tests {
 
     public static void drawBeginScreen(Graphics g, String SName) {
 
-        String Name = "Esti pe cale sa dai testul din lectia: " + SName + ".";
+        String Name = "Esti pe cale sa dai testul din lectia:  " + SName + ".";
         g.setColor(new Color(10, 10, 10));
         g.fillRect(GeoEduMenu.PanelWidth, 0, Menu.ScreenWidth * 3 / 5, Menu.ScreenHeight);
         g.setColor(new Color(255, 255, 255));
@@ -393,6 +526,10 @@ public class Tests {
         } else {
             time = String.valueOf(minute) + " : " + String.valueOf(second);
         }
+        if(minute == 0 && second == 0 ){
+            endTest = true;
+            beginTest =false;
+        }
         int x = Menu.ScreenWidth * 5 / 12;
         int y = Menu.ScreenHeight * 7 / 8;
         int width = Menu.ScreenWidth / 6;
@@ -412,18 +549,82 @@ public class Tests {
 
     }
 
+    public static void drawEssay(Graphics g,int x, int y, int width, int height){
+
+        g.setColor(Color.BLACK);
+        g.fill3DRect(x-width/40,y-width/10,width+width/20,height+width/20+width*3/40,true);
+        g.setColor(Color.WHITE);
+        Font small = new Font("Calibri", Font.PLAIN, UserImput.FontSize / 3);
+        FontMetrics metricsy = g.getFontMetrics(small);
+        FontMetrics metricsx = g.getFontMetrics(small);
+        g.setFont(small);
+        g.drawString(String.valueOf("Scrie raspunsul aici:"), x + width /20, y -width/30);
+        g.drawRect(x,y,width,height);
+        essay.setVisible(true);
+        Font f = new Font("Calibri", Font.PLAIN, UserImput.FontSize * 3 / 8);
+        essay.setBounds(x,y,width,height);
+        essay.setBackground(Color.LIGHT_GRAY);
+        essay.setFont(f);
+
+    }
+
+    public static void calculateResult(){
+        int total =0;
+        int correct = 0;
+        for(int i=1;i<= NrQuestions; i++){
+            try{
+                if(ChoiceQuestion[i]==true)
+                total++;
+                if(SAnswers[i].equals(RAnswers[i]))correct++;
+            }catch(java.lang.NullPointerException e){
+
+            }
+        }
+        result = 10*correct/total;
+    }
+
+    public static void drawEndScreen(Graphics g){
+
+        drawbackground(g);
+        essay.setVisible(false);
+        Font small = new Font("Calibri", Font.PLAIN, UserImput.FontSize );
+        FontMetrics metricsy = g.getFontMetrics(small);
+        FontMetrics metricsx = g.getFontMetrics(small);
+        g.setColor(new Color(220, 220, 220));
+        g.setFont(small);
+        g.drawString(String.valueOf("Testul s-a terminat!"), Menu.ScreenWidth / 2 - metricsx.stringWidth(String.valueOf("Testul s-a incheiat!"))/2, Menu.ScreenHeight / 2 - metricsy.getHeight() );
+        g.drawString(String.valueOf("Ai obtinut nota partiala: ")+String.valueOf(result), Menu.ScreenWidth / 2 - metricsx.stringWidth(String.valueOf("Ai obtinut nota partiala: ")+String.valueOf(result))/2, Menu.ScreenHeight / 2 );
+        drawExitButton(g,Menu.ScreenWidth*3/8,Menu.ScreenHeight*3/4,Menu.ScreenWidth/4,Menu.ScreenHeight/12,"Iesie");
+
+    }
+
     public static void drawContent(Graphics g, int currentQuestion, int nrAnswers) {
 
-        if (beginTest == false) drawBeginScreen(g, TestName);
+        if (beginTest == false&& endTest ==false) drawBeginScreen(g, TestName);
+        else if(endTest ==true){
+            drawEndScreen(g);
+        }
         else {
+
             drawbackground(g);
             drawQuestion(g, Question[currentQuestion], Image[currentQuestion]);
-            for (int i = 1; i <= nrAnswers; i++) {
-                if (CAnswer[currentQuestion] != i) drawAnswer(g, SAnswers[i], i);
+            if(ChoiceQuestion[currentQuestion]==true) {
+                for (int i = 1; i <= nrAnswers; i++) {
+                    if (CAnswer[currentQuestion] != i) drawAnswer(g, Answers[currentQuestion][i], i);
+                }
+                if (CAnswer[currentQuestion] != 0) {
+                    drawAnswer(g, Answers[currentQuestion][CAnswer[currentQuestion]], CAnswer[currentQuestion]);
+                    SAnswers[currentQuestion] = Answers[currentQuestion][CAnswer[currentQuestion]];
+                }
+                essay.setVisible(false);
             }
-            if (CAnswer[currentQuestion] != 0)
-                drawAnswer(g, SAnswers[CAnswer[currentQuestion]], CAnswer[currentQuestion]);
+            else {
+                drawEssay(g,Menu.ScreenWidth/3,Menu.ScreenHeight/2,Menu.ScreenWidth/3,Menu.ScreenHeight/3);System.out.println("true");
+                Essays[currentQuestion] = essay.getText();
+            }
+
             if (currentQuestion < NrQuestions) drawNextButton(g);
+            else if(currentQuestion == NrQuestions)drawEndButton(g,Menu.ScreenWidth * 2 / 3 +Menu.ScreenWidth/60 ,Menu.ScreenHeight * 2 / 3 - Menu.ScreenHeight / 40,Menu.ScreenWidth / 10, Menu.ScreenHeight / 14,"Termina Testul!");
             if (currentQuestion > 1) drawPreviousButton(g);
             drawSlideBar(g, NrQuestions);
             drawMap(g, NrQuestions);
@@ -438,15 +639,20 @@ public class Tests {
         NrQuestions = i - 1;
     }
 
+
+
     public static void Paint(Graphics g) {
 
-        drawContent(g, currentQuestion, NrAnswers);
+       if(Test_finished==false) drawContent(g, currentQuestion, NrAnswers[currentQuestion]);
     }
 
     public static void Run() {
+
+        if(Test_finished == false);
         updateQuestionNumber();
-        if (QuestionGenerated == false) {
-            generateAnswers(Answers[currentQuestion], SAnswers);
+        if (endTest == true && isCalculated==false) {
+            calculateResult();
+            isCalculated = true;
         }
     }
 
