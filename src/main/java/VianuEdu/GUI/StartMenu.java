@@ -280,8 +280,12 @@ public class StartMenu {
 
     public static void generateTitle(Graphics g) {
 
-        Username = UserImput.student.getFirstName() + " " + UserImput.student.getLastName();
-
+        if(Menu.isTeacher==true){
+            Username = UserImput.teacher.getFirstName() + " " + UserImput.teacher.getLastName();
+        }
+        else{
+            Username = UserImput.student.getFirstName() + " " + UserImput.student.getLastName();
+        }
         Font small = new Font("Futura", Font.BOLD, FontSize * 2);
         FontMetrics metricsy = g.getFontMetrics(small);
         FontMetrics metricsx = g.getFontMetrics(small);

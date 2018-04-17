@@ -65,8 +65,8 @@ public class UserImput extends JPanel {
         BoxName[7] = "Esti Profesor?";
         PName[2] = "Parola:";
         PName[3] = "Confirma Parola:";
-        username.setText("IfDex22");
-        password.setText("parolasecreta");
+        username.setText("ucsene_the_student_slayer");
+        password.setText("SpaghettiBrokenCode22");
 
     }
 
@@ -201,6 +201,7 @@ public class UserImput extends JPanel {
                     try {
                         cookie2 = Menu.Maner.teacherLogin(new Account(USERNAME, PASSWORD));
                         teacher = Menu.Maner.getTeacher(cookie2);
+                        Menu.isTeacher = true;
 
                     } catch (IOException e1) {
                         //continue
@@ -213,15 +214,19 @@ public class UserImput extends JPanel {
 
 
                 } catch (java.lang.NullPointerException e) {
-                    showMessage = true;
-                    startMessage = clock.millis();
-                    dialogText = "ID utilizator sau parola incorecta!";
-                    Login = true;
+                    try{
+                        StartMenu.Username = teacher.getFirstName() + " " + teacher.getLastName();
+                    }catch(java.lang.NullPointerException e1){
+                        showMessage = true;
+                        startMessage = clock.millis();
+                        dialogText = "ID utilizator sau parola incorecta!";
+                        Login = true;
+                    }
                 }
 
                 if (cookie2.length() < 9 && cookie.length() < 9) {
                     showMessage = true;
-                    startMessage = clock.millis();
+                    startMessage = clock.millis();System.out.println("este");
                     dialogText = "ID utilizator sau parola incorecta!";
                     Login = true;
                 }

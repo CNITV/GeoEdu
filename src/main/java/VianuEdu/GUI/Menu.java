@@ -41,6 +41,7 @@ public class Menu extends JPanel implements ActionListener {
     public static int YFrame;
     public static int Framerate = 1;
     public static boolean MousePressed = false;
+    public static boolean isTeacher;
     public static boolean ENTER = false;
     public static JTextField username = new JTextField(20);
     public static JPasswordField password = new JPasswordField(30);
@@ -77,6 +78,7 @@ public class Menu extends JPanel implements ActionListener {
         StartMenu.importImages();
         UserImput.ImportImages();
         Window.frame.add(Tests.essay);
+        TestEditor.initialiseTextboxes();
         addMouseListener(new Control());
         setFocusable(true);
     }

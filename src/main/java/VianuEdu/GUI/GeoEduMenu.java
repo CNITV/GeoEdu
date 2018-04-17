@@ -22,13 +22,14 @@ public class GeoEduMenu {
     public static boolean[] pressed = new boolean[10];
     public static boolean[] hovered = new boolean[10];
     public static boolean ArrowPressed = false;
+    public static boolean editTest = false;
     private static boolean Panels_Hidden = false;
     public static boolean copyMousePressed = false;
     public static String[] Button_name = new String[10];
     private static int X_leftPanel = -PanelWidth;
     private static int X_rightPanel = ScreenWidth;
     public static int classNumber = 4;
-    private static int NrButtons = 6;
+    public static int NrButtons = 5;
     private static int ButtonWidth = PanelWidth;
     private static int ButtonHeight = PanelHeight / NrButtons * 4 / 5;
     private static int ClassHeight = ButtonHeight / 2;
@@ -169,6 +170,10 @@ public class GeoEduMenu {
             X_leftPanel = AnimateLeftP(dir);
             X_rightPanel = AnimateRightP(dir);
         }
+        else{
+            X_leftPanel = 0;
+            X_rightPanel = ScreenWidth*4/5;
+        }
         lastStep = clock.millis();
         g.drawImage(Background, (ScreenWidth - Background.getWidth(null)) / 2 - 8, 0, null);
         g.setColor(new Color(10, 10, 10));
@@ -233,8 +238,20 @@ public class GeoEduMenu {
             g.fillRect(x, y, Width, Height / 100);
             g.fillRect(x, y, Width, Height * 99 / 100);
 
-            String cls = "Clasa a " + clasa + "-a";
-            Font small = new Font("Consolas", Font.PLAIN, Font_size / 2 * 5 / 4);
+            String cls = new String();
+            if(isTeacher == true && button == 4){
+
+                if(clasa == 9){
+                    cls = "Creeaza un test";
+                }
+                else if(clasa == 10){
+                    cls = "Corecteaza un test";
+                }
+            }
+            else {
+                cls = "Clasa a " + clasa + "-a";
+            }
+            Font small = new Font("Calibri", Font.PLAIN, Font_size / 2 * 8 / 7);
             FontMetrics metricsy = g.getFontMetrics(small);
             FontMetrics metricsx = g.getFontMetrics(small);
             g.setColor(new Color(250, 250, 250));
@@ -242,14 +259,30 @@ public class GeoEduMenu {
             g.drawString(cls, x + Width / 2 - metricsx.stringWidth(cls) / 2, y + Height / 2 + metricsy.getHeight() / 4);
 
         } else if (Panels_Hidden == false && classHovered[clasa - 9] == true) {
+
+            if(MousePressed != copyMousePressed && MousePressed == false && isTeacher == true && button == 4 && clasa == 9){
+                editTest=true;System.out.println("test");
+            }
             g.setColor(new Color(164, 148, 110));
             g.fillRect(x, y, Width, Height);
             g.setColor(new Color(231, 198, 63));
             g.fillRect(x, y, Width, Height / 100);
             g.fillRect(x, y, Width, Height * 99 / 100);
 
-            String cls = "Clasa a " + clasa + "-a";
-            Font small = new Font("Consolas", Font.PLAIN, Font_size / 2 * 5 / 4);
+            String cls = new String();
+            if(isTeacher == true && button == 4){
+
+                if(clasa == 9){
+                    cls = "Creeaza un test";
+                }
+                else if(clasa == 10){
+                    cls = "Corecteaza un test";
+                }
+            }
+            else {
+                cls = "Clasa a " + clasa + "-a";
+            }
+            Font small = new Font("Calibri", Font.PLAIN, Font_size / 2 * 8 / 7);
             FontMetrics metricsy = g.getFontMetrics(small);
             FontMetrics metricsx = g.getFontMetrics(small);
             g.setColor(new Color(255, 231, 170));
@@ -258,13 +291,25 @@ public class GeoEduMenu {
 
         } else if (Panels_Hidden == false) {
             g.setColor(new Color(50, 50, 50));
-            g.fillRect(x, y, Width, Height);
+            g.fill3DRect(x, y, Width, Height,false);
             g.setColor(new Color(200, 200, 200));
-            g.fillRect(x, y, Width, Height / 100);
-            g.fillRect(x, y, Width, Height * 99 / 100);
+            g.fill3DRect(x, y, Width, Height / 100,true);
+            g.fill3DRect(x, y, Width, Height * 99 / 100,true);
 
-            String cls = "Clasa a " + clasa + "-a";
-            Font small = new Font("Consolas", Font.PLAIN, Font_size / 2);
+            String cls = new String();
+            if(isTeacher == true && button == 4){
+
+                if(clasa == 9){
+                    cls = "Creeaza un test";
+                }
+                else if(clasa == 10){
+                    cls = "Corecteaza un test";
+                }
+            }
+            else {
+                cls = "Clasa a " + clasa + "-a";
+            }
+            Font small = new Font("Calibri", Font.BOLD, Font_size / 2);
             FontMetrics metricsy = g.getFontMetrics(small);
             FontMetrics metricsx = g.getFontMetrics(small);
             g.setColor(new Color(164, 148, 110));
@@ -284,9 +329,20 @@ public class GeoEduMenu {
 
     public static void showClasses(Graphics g, int x) {
 
-        if (x <= 3 && x >= 2 && currentPressed == x) {
-            for (int i = 0; i < classNumber; i++) {
-                makeClassButton(g, Leftpanel + PanelWidth, x * ButtonHeight + i * ClassHeight, ClassWidth, ClassHeight, i + 9, x);
+        if(isTeacher == true){
+            if (x <= 4 && x >= 2 && currentPressed == x) {
+                if(x==4)classNumber = 2;
+                else classNumber = 4;
+                for (int i = 0; i < classNumber; i++) {
+                    makeClassButton(g, Leftpanel + PanelWidth, x * ButtonHeight + i * ClassHeight, ClassWidth, ClassHeight, i + 9, x);
+                }
+            }
+        }
+        else {
+            if (x <= 3 && x >= 2 && currentPressed == x) {
+                for (int i = 0; i < classNumber; i++) {
+                    makeClassButton(g, Leftpanel + PanelWidth, x * ButtonHeight + i * ClassHeight, ClassWidth, ClassHeight, i + 9, x);
+                }
             }
         }
     }
@@ -403,12 +459,21 @@ public class GeoEduMenu {
 
     public static void initializeButtons() {
 
-        Button_name[1] = "Meniu";
-        Button_name[2] = "Exercitii";
-        Button_name[3] = "Teste";
-        Button_name[4] = "Status";
-        Button_name[5] = "Setari";
-
+        if(isTeacher == true){
+            Button_name[1] = "Meniu";
+            Button_name[2] = "Exercitii";
+            Button_name[3] = "Teste";
+            Button_name[4] = "Profesor";
+            Button_name[5] = "Status";
+            Button_name[6] = "Setari";
+        }
+        else {
+            Button_name[1] = "Meniu";
+            Button_name[2] = "Exercitii";
+            Button_name[3] = "Teste";
+            Button_name[4] = "Status";
+            Button_name[5] = "Setari";
+        }
     }
 
     /**
@@ -420,9 +485,9 @@ public class GeoEduMenu {
 
     public static void GenerateButtons(Graphics g) {
 
-        for (int i = 1; i < NrButtons; i++) {
+        for (int i = 1; i <= NrButtons; i++) {
 
-            makeButton(g, X_leftPanel, i * ButtonHeight, ButtonWidth, ButtonHeight, Button_name[i], i);
+            makeButton(g, X_leftPanel, (i) * ButtonHeight, ButtonWidth, ButtonHeight, Button_name[i], i);
 
         }
         makeArrow(g, X_leftPanel + PanelWidth + ArrowWidth / 4, ScreenHeight - 3 * ArrowHeight);
@@ -457,10 +522,12 @@ public class GeoEduMenu {
 
     public static void initializeDimensions() {
 
+        if(isTeacher == true)NrButtons = 6;
+        else NrButtons = 5;
         PanelWidth = ScreenWidth / 5;
         PanelHeight = ScreenHeight;
         ButtonWidth = PanelWidth;
-        ButtonHeight = PanelHeight / NrButtons * 4 / 5;
+        ButtonHeight = PanelHeight / (NrButtons+1) * 4 / 5;
         ClassHeight = ButtonHeight / 2;
         ClassWidth = ButtonWidth * 2 / 3;
         Font_size = ScreenWidth * 60 / 1920;
@@ -544,13 +611,16 @@ public class GeoEduMenu {
 
     public static void Paint(Graphics g) {
 
-        GeoEduMenu.generateBackground(g);
-        if (ContentBrowser.showTest == true) Tests.Paint(g);
-        GeoEduMenu.initializeButtons();
-        GeoEduMenu.GenerateButtons(g);
-        ContentBrowser.Paint(g);
-        Setari.Settings(g);
-
+        if(editTest==true){
+            TestEditor.Paint(g);
+        }else{
+            GeoEduMenu.generateBackground(g);
+            if (ContentBrowser.showTest == true) Tests.Paint(g);
+            GeoEduMenu.initializeButtons();
+            GeoEduMenu.GenerateButtons(g);
+            ContentBrowser.Paint(g);
+            Setari.Settings(g);
+        }
     }
 
     public static void returnMenu() {
@@ -570,6 +640,9 @@ public class GeoEduMenu {
 
         initializeDimensions();
         ContentBrowser.Run();
+        if(editTest==true){
+            TestEditor.Run();
+        }
         if (Setari.SettingsOn == false) {
             mouseState();
             Panelstate();

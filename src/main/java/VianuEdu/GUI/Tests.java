@@ -1,5 +1,6 @@
 package VianuEdu.GUI;
 
+import VianuEdu.backend.TestLibrary.AnswerSheet;
 import VianuEdu.backend.TestLibrary.Test;
 
 import javax.swing.*;
@@ -563,6 +564,7 @@ public class Tests {
         essay.setVisible(true);
         Font f = new Font("Calibri", Font.PLAIN, UserImput.FontSize * 3 / 8);
         essay.setBounds(x,y,width,height);
+        essay.setLineWrap(true);
         essay.setBackground(Color.LIGHT_GRAY);
         essay.setFont(f);
 
@@ -632,6 +634,21 @@ public class Tests {
         }
     }
 
+    public static void sendData(){
+
+        AnswerSheet sheet = new AnswerSheet(UserImput.student,TestID,NrQuestions);
+
+        for(int i=1;i<=NrQuestions;i++){
+            if(ChoiceQuestion[i]==false)sheet.addAnswer(i,Essays[i]);
+            else{
+               // sheet.addMultipleChoiceAnswer(i,SAnswers[i]);
+            }
+        }
+
+
+
+    }
+
     public static void updateQuestionNumber() {
 
         int i = 1;
@@ -650,8 +667,10 @@ public class Tests {
 
         if(Test_finished == false);
         updateQuestionNumber();
+        UserImput.initilaizeDimensions();;
         if (endTest == true && isCalculated==false) {
             calculateResult();
+            sendData();
             isCalculated = true;
         }
     }

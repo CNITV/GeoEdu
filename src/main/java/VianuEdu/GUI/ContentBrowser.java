@@ -75,9 +75,9 @@ public class ContentBrowser {
 
                         }
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        //e.printStackTrace();
                     } catch (IllegalAccessException e) {
-                        e.printStackTrace();
+                       // e.printStackTrace();
                     }
                     currentClass = Class[p];
                     dExercises = false;
@@ -181,12 +181,12 @@ public class ContentBrowser {
 
     public static void drawBrowser(Graphics g) {
 
-        g.setColor(new Color(10, 10, 10));
-        g.fillRect(GeoEduMenu.Rightpanel, 0, GeoEduMenu.PanelWidth, Menu.ScreenHeight / 4);
-        g.fillRect(GeoEduMenu.Rightpanel, Menu.ScreenHeight * 3 / 4, GeoEduMenu.PanelWidth, Menu.ScreenHeight / 4);
         g.setColor(new Color(105, 105, 105));
         g.fillRect(BrowserX, BrowserY, ContentBrowserWidth, ContentBrowserHeight);
         findContent(g);
+        g.setColor(new Color(10, 10, 10));
+        g.fillRect(GeoEduMenu.Rightpanel, 0, GeoEduMenu.PanelWidth, Menu.ScreenHeight / 4);
+        g.fillRect(GeoEduMenu.Rightpanel, Menu.ScreenHeight * 3 / 4, GeoEduMenu.PanelWidth, Menu.ScreenHeight / 4);
         g.setColor(new Color(255, 255, 255));
         g.drawRect(BrowserX, BrowserY, ContentBrowserWidth, ContentBrowserHeight);
         g.setColor(new Color(255, 255, 255));
