@@ -70,9 +70,9 @@ public class UserImput extends JPanel {
 
     }
 
-    public static void DialogBox(Graphics g, String Message, int x, int y) {
+    public static void DialogBox(Graphics g, String Message, int x, int y, int size) {
 
-        Font small = new Font("Futura", Font.PLAIN, FontSize / 2);
+        Font small = new Font("Futura", Font.PLAIN, size / 2);
         FontMetrics metricsy = g.getFontMetrics(small);
         FontMetrics metricsx = g.getFontMetrics(small);
         g.setColor(new Color(255, 247, 33));
@@ -577,7 +577,7 @@ public class UserImput extends JPanel {
     public static void showDialog(Graphics g, String Message) {
 
         if (showMessage == true && clock.millis() - startMessage < 1000) {
-            DialogBox(g, Message, Menu.ScreenWidth / 2, Menu.ScreenHeight / 6);
+            DialogBox(g, Message, Menu.ScreenWidth / 2, Menu.ScreenHeight / 6,FontSize/2);
         } else {
             showMessage = false;
             startMessage = 0;
