@@ -23,9 +23,15 @@ package VianuEdu.backend.DatabaseHandling;
 import VianuEdu.backend.Identification.Account;
 import VianuEdu.backend.Identification.Student;
 import VianuEdu.backend.Identification.Teacher;
+import VianuEdu.backend.TestLibrary.Question;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 
 import static org.junit.Assert.*;
 
@@ -77,6 +83,26 @@ public class DatabaseHandlerTests {
 		} catch (IOException | IllegalAccessException e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Test
+	public void createTestWorks() throws IOException, IllegalAccessException, ParseException {
+		HashMap<Integer, Question> contents = new HashMap<>();
+		contents.put(1, new Question("Did you answer this question?", "Yes."));
+		contents.put(2, new Question("How are you?", "Fine, thank you very much."));
+		ArrayList<String> questionChoices = new ArrayList<>();
+		questionChoices.add("a) Pretty.");
+		questionChoices.add("b) Very.");
+		questionChoices.add("c) Not at all.");
+		contents.put(3, new Question("How happy are you right now?", questionChoices, "a) Pretty."));
+		Date startTime = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse("2049-02-21 10:30:00");
+		Date endTime = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse("2049-02-21 11:20:00");
+
+		VianuEdu.backend.TestLibrary.Test test = new VianuEdu.backend.TestLibrary.Test("T-000000", "The Genesis Test", "Geo", startTime, endTime, 12, "Z", contents);
+
+		DatabaseHandler handler = new DatabaseHandler();
+
+		String testID = handler.createTest(test, handler.getTeacher("5ad7921e6ea8b916b80d59df"));
 	}
 
 }

@@ -256,7 +256,7 @@ public class DatabaseHandler {
 				.post(body)
 				.addHeader("content-type", "image/png")
 				.addHeader("filename", file.getName())
-				.addHeader("authorization", "Basic " + Arrays.toString(Base64.getEncoder().encode((teacher.getAccount().getUserName() + ":" + teacher.getAccount().getPassword()).getBytes())))
+				.addHeader("authorization", "Basic " + Base64.getEncoder().encodeToString((teacher.getAccount().getUserName() + ":" + teacher.getAccount().getPassword()).getBytes()))
 				.build();
 
 		Response response = client.newCall(request).execute();
@@ -406,7 +406,7 @@ public class DatabaseHandler {
 				.url(serverURL + "/api/createTest/" + teacher.getCourse())
 				.post(body)
 				.addHeader("content-type", "application/json")
-				.addHeader("authorization", "Basic " + Arrays.toString(Base64.getEncoder().encode((teacher.getAccount().getUserName() + ":" + teacher.getAccount().getPassword()).getBytes())))
+				.addHeader("authorization", "Basic " + Base64.getEncoder().encodeToString((teacher.getAccount().getUserName() + ":" + teacher.getAccount().getPassword()).getBytes()))
 				.build();
 
 		Response response = client.newCall(request).execute();
