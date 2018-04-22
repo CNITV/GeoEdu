@@ -65,8 +65,8 @@ public class UserImput extends JPanel {
         BoxName[7] = "Esti Profesor?";
         PName[2] = "Parola:";
         PName[3] = "Confirma Parola:";
-        username.setText("ucsene_the_student_slayer");
-        password.setText("SpaghettiBrokenCode22");
+        username.setText("TotallyTeacher");
+        password.setText("totallynotastudent");
 
     }
 
@@ -194,12 +194,14 @@ public class UserImput extends JPanel {
                     cookie = Menu.Maner.studentLogin(new Account(USERNAME, PASSWORD));
 
                     student = Menu.Maner.getStudent(cookie);
+                    Menu.isTeacher = false;
                 } catch (IOException e) {
                     //e.printStackTrace();
                     // afiseaza ca nu e net
                 } catch (IllegalAccessException e) {
                     try {
                         cookie2 = Menu.Maner.teacherLogin(new Account(USERNAME, PASSWORD));
+
                         teacher = Menu.Maner.getTeacher(cookie2);
                         Menu.isTeacher = true;
 

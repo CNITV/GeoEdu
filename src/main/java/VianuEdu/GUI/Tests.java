@@ -38,7 +38,8 @@ public class Tests {
     public static BufferedImage lb;
     public static long beginTime;
     public static Clock clock = Clock.systemUTC();
-    public static JTextArea essay = new JTextArea();
+    public static JTextArea essay = new JTextArea(10,20);
+    public static JScrollPane scroll  = new JScrollPane(essay);
 
     public static void findTest(int Class, String Name) {
 
@@ -49,6 +50,7 @@ public class Tests {
         isCalculated = false;
         currentQuestion = 1;
         essay.setVisible(false);
+        scroll.setVisible(false);
         for(int i=0;i<= NrQuestions;i++){
             CAnswer[i]=0;
             ChoiceQuestion[i]=false;
@@ -62,7 +64,7 @@ public class Tests {
             TestName = test.getTestName();
             System.out.println(test.getContents().size());
             for (Integer index = 1; index <= test.getContents().size(); index++) {
-                Question[index] = test.getContents().get(index).getQuestion();
+                Question[index] = "<html>"+test.getContents().get(index).getQuestion()+"<html>";
                 RAnswers[index] = test.getContents().get(index).getAnswer();
                 if(test.getContents().get(index).getQuestionType().equals("multiple-choice")) {
                     ChoiceQuestion[index]=true;
@@ -563,11 +565,14 @@ public class Tests {
         g.drawRect(x,y,width,height);
         essay.setVisible(true);
         Font f = new Font("Calibri", Font.PLAIN, UserImput.FontSize * 3 / 8);
-        essay.setBounds(x,y,width,height);
         essay.setLineWrap(true);
-        essay.setBackground(Color.LIGHT_GRAY);
+        scroll.setBackground(Color.LIGHT_GRAY);
         essay.setFont(f);
-
+        scroll.setWheelScrollingEnabled(true);
+        scroll.setAutoscrolls(true);
+        scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        scroll.setBounds(x,y,width,height);
+        scroll.setVisible(true);
     }
 
     public static void calculateResult(){
@@ -582,13 +587,14 @@ public class Tests {
 
             }
         }
-        result = 10*correct/total;
+        result = 10*(float)(correct)/(float)(total);
     }
 
     public static void drawEndScreen(Graphics g){
 
         drawbackground(g);
         essay.setVisible(false);
+        scroll.setVisible(false);
         Font small = new Font("Calibri", Font.PLAIN, UserImput.FontSize );
         FontMetrics metricsy = g.getFontMetrics(small);
         FontMetrics metricsx = g.getFontMetrics(small);
@@ -619,6 +625,7 @@ public class Tests {
                     SAnswers[currentQuestion] = Answers[currentQuestion][CAnswer[currentQuestion]];
                 }
                 essay.setVisible(false);
+                scroll.setVisible(false);
             }
             else {
                 drawEssay(g,Menu.ScreenWidth/3,Menu.ScreenHeight/2,Menu.ScreenWidth/3,Menu.ScreenHeight/3);System.out.println("true");

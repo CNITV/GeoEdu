@@ -149,9 +149,9 @@ public class TestEditor {
         if (Menu.MousePressed == false && copyMousePressed == true && Next == true) {
 
             if (stage1 == true) {
-                submitData();
-                chackdata(g);
                 try {
+                    chackdata(g);
+                    submitData();
                     if (DataChecked == true) {
                         check = false;
                         stage1 = false;
@@ -811,6 +811,26 @@ public class TestEditor {
 
     }
 
+    public static void deleteData(){
+
+        for(int i=1;i<=8;i++)Tbox[i].setText(null);
+        check = false;
+        check2 = false;
+        TestName = null;
+        TestClass = null;
+        TestDate = null;
+        TestStart = null;
+        TestEnd = null;
+        TestPercentage = 0;
+        for(int i=1;i<=NrQuestions;i++){
+            Questions[i]=null;
+            for(int j=1;j<=NrVar[i];j++)Answers[i][j]=null;
+            NrVar[i]=3;
+        }
+        NrQuestions = 0;
+        MPQuestions = 0;
+    }
+
     public static void uploadData() {
 
 
@@ -859,7 +879,12 @@ public class TestEditor {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+    GeoEduMenu.editTest = false;
+        Qbox.setVisible(false);
+        for(int i=1;i<=10;i++)Abox[i].setVisible(false);
+        deleteData();
+        stage2 = false;
+        stage1 = true;
     }
 
     public static void Run() {
