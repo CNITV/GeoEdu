@@ -2,6 +2,7 @@ package VianuEdu.GUI;
 
 import VianuEdu.backend.TestLibrary.AnswerSheet;
 import VianuEdu.backend.TestLibrary.Test;
+import sun.security.krb5.internal.KDCReqBody;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,6 +24,7 @@ public class Tests {
     public static String TestID;
     public static boolean QuestionGenerated = false;
     public static boolean beginTest = false;
+    public static boolean copyMousePressed;
     public static boolean endTest = false;
     public static boolean Test_finished;
     public static boolean isCalculated = false;
@@ -44,8 +46,8 @@ public class Tests {
     public static void findTest(int Class, String Name) {
 
         STimer();
-        beginTest = false;
         endTest = false;
+        beginTest = false;
         Test_finished = false;
         isCalculated = false;
         currentQuestion = 1;
@@ -62,7 +64,6 @@ public class Tests {
             Test test = Menu.Maner.getTest(Name);
             TestID = Name;
             TestName = test.getTestName();
-            System.out.println(test.getContents().size());
             for (Integer index = 1; index <= test.getContents().size(); index++) {
                 Question[index] = "<html>"+test.getContents().get(index).getQuestion()+"<html>";
                 RAnswers[index] = test.getContents().get(index).getAnswer();
@@ -318,7 +319,6 @@ public class Tests {
         } else if (xm > x && xm < x + width && ym > y && ym < y + height) {
             if (GeoEduMenu.copyMousePressed == true) {
                 QuestionGenerated = false;
-                beginTest = false;
                 endTest = true;
                 STimer();
             }
@@ -378,6 +378,12 @@ public class Tests {
         } else if (xm > x && xm < x + width && ym > y && ym < y + height) {
             if (GeoEduMenu.copyMousePressed == true) {
                 Test_finished = true;
+                beginTest = false;
+                for(int i=1; i<=NrQuestions;i++){
+                    Question[i]=null;
+                    NrAnswers[i]=0;
+                }
+                NrQuestions = 0;
             }
         }
         if (xm > x && xm < x + width && ym > y && ym < y + height && Menu.MousePressed == true) {
@@ -444,11 +450,20 @@ public class Tests {
 
 
         if (xm > x && xm < x + width && ym > y && ym < y + height && Menu.MousePressed == true) {
-            currentQuestion = Name;
-            if (GeoEduMenu.copyMousePressed == false) Setari.ButtonSound("button_click.wav");
+
+            if (GeoEduMenu.copyMousePressed == false){
+
+                Setari.ButtonSound("button_click.wav");
+
+            }
         } else if (xm > x && xm < x + width && ym > y && ym < y + height) {
+
+
             if (GeoEduMenu.copyMousePressed == true) {
-                QuestionGenerated = false;
+                System.out.println("daaaa");
+                   currentQuestion = Name;
+                   QuestionGenerated = false;
+
             }
         }
         if (Name == currentQuestion) {
@@ -628,7 +643,7 @@ public class Tests {
                 scroll.setVisible(false);
             }
             else {
-                drawEssay(g,Menu.ScreenWidth/3,Menu.ScreenHeight/2,Menu.ScreenWidth/3,Menu.ScreenHeight/3);System.out.println("true");
+                drawEssay(g,Menu.ScreenWidth/3,Menu.ScreenHeight/2,Menu.ScreenWidth/3,Menu.ScreenHeight/3);
                 Essays[currentQuestion] = essay.getText();
             }
 

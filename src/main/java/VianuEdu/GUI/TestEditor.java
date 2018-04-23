@@ -85,7 +85,6 @@ public class TestEditor {
 
             if (Name.equals("Creeaza test")) {
                 createTest = true;
-                System.out.println("c");
                 planTest = false;
             } else if (Name.equals("Teste Planificate")) {
                 createTest = false;
@@ -418,7 +417,7 @@ public class TestEditor {
                     for (int i = 1; i <= 10; i++) {
                         Abox[i].setText(Answers[currentQuestion][i]);
                     }
-                    System.out.print("hh");
+
                     Qbox.setText(Questions[currentQuestion]);
                     NrBox.setText(String.valueOf(NrVar[currentQuestion]));
                 }
@@ -619,7 +618,7 @@ public class TestEditor {
         for (int i = 1; i <= 8; i++) {
             if (Tbox[i].getText().length() < 1) {
                 UserImput.DialogBox(g, "Casuta goala!", Menu.ScreenWidth / 8 + (i - 1) / 4 * Menu.ScreenWidth * 5 / 6 / 2, Menu.ScreenHeight / 4 + (i - 1) % 4 * Menu.ScreenHeight * 3 / 16 + Menu.ScreenHeight / 60, UserImput.FontSize / 2);
-                System.out.println("uuu");
+
                 DataChecked = false;
             } else {
                 char c[] = Tbox[i].getText().toCharArray();
@@ -806,7 +805,7 @@ public class TestEditor {
         if (second < 10) Second = '0' + String.valueOf(second);
         else Second = String.valueOf(second);
         str = Month + ' ' + String.valueOf(day) + ", " + String.valueOf(year) + ' ' + String.valueOf(hour) + ':' + Minute + ':' + Second;
-        System.out.println(str);
+
         return str;
 
     }

@@ -113,7 +113,7 @@ public class ContentBrowser {
         int yhovered = Menu.Y_hovered;
         if (xhovered > x && xhovered < x + width && yhovered > y && yhovered < y + height && Menu.MousePressed == true) {
 
-            if (Chovered[i] == true) {
+            if (Chovered[i] == true&&Tests.beginTest==false) {
                 Setari.ButtonSound("button_click.wav");
                 Tests.findTest(currentClass, ID);
                 showTest = true;
