@@ -27,8 +27,8 @@ import java.util.ArrayList;
 /**
  * The Question class represents a test question, with its respective correct answer.
  * <p>
- * Essentialy, this is a Pair object specialised to hold questions and answers. However, this object allows for the easy
- * creation of multiple-choice questions while simultaneously reading them in a simpler way.
+ * Essentially, this is a Pair object specialised to hold questions and answers. However, this object allows for the easy
+ * creation of multiple-choice questions and attachment of images while simultaneously reading them in a simpler way.
  *
  * @author StormFireFox1
  * @since 2018-04-14
@@ -36,6 +36,7 @@ import java.util.ArrayList;
 public class Question {
 	private String question;
 	private String answer;
+	private byte[] image;
 	private ArrayList<String> questionChoices;
 	private String questionType;
 
@@ -43,12 +44,31 @@ public class Question {
 	 * Constructs and initializes a normal question.
 	 *
 	 * @param question The question.
-	 * @param answer The answer.
+	 * @param answer   The answer.
 	 */
 	public Question(String question, String answer) {
 		this.question = question;
 		this.answer = answer;
 		this.questionType = "normal";
+	}
+
+	/**
+	 * Constructs and initializes a normal question with an image attached.
+	 *
+	 * @param question The question.
+	 * @param image    The image to attach to the question.
+	 * @param answer   The answer.
+	 */
+	public Question(String question, byte[] image, String answer) {
+		if (image.length == 0) {
+			throw new IllegalArgumentException("Image can't be nil! Just make a normal question instead!");
+		} else if (image.length > 500000) {
+			throw new IllegalArgumentException("Image can't be bigger than 500KB!");
+		}
+		this.question = question;
+		this.image = image;
+		this.answer = answer;
+		this.questionType = "normal + image";
 	}
 
 	/**
@@ -69,6 +89,29 @@ public class Question {
 	}
 
 	/**
+	 * Constructs and initializes a multiple-choice question with an image attached.
+	 *
+	 * @param question        The question.
+	 * @param image           The image to attach to the question.
+	 * @param questionChoices The choices for the question.
+	 * @param answer          The answer. Must exist within the choices of the question.
+	 */
+	public Question(String question, byte[] image, ArrayList<String> questionChoices, String answer) {
+		if (!questionChoices.contains(answer)) {
+			throw new IllegalArgumentException("Cannot submit a question whose answer doesn't actually exist in the choices!");
+		} else if (image.length == 0) {
+			throw new IllegalArgumentException("Image can't be nil! Just make a normal question instead!");
+		} else if (image.length > 500000) {
+			throw new IllegalArgumentException("Image can't be bigger than 500KB!");
+		}
+		this.question = question;
+		this.image = image;
+		this.questionChoices = questionChoices;
+		this.answer = answer;
+		this.questionType = "multiple-choice + image";
+	}
+
+	/**
 	 * Gets the question.
 	 *
 	 * @return The question.
@@ -82,9 +125,17 @@ public class Question {
 	 *
 	 * @return The answer.
 	 */
-
 	public String getAnswer() {
 		return answer;
+	}
+
+	/**
+	 * Gets the image attached to the question in byte array form.
+	 *
+	 * @return The image in byte array form.
+	 */
+	public byte[] getImage() {
+		return image;
 	}
 
 	/**
@@ -101,10 +152,10 @@ public class Question {
 
 	/**
 	 * Gets the question choice.
+	 * <p>
+	 * Can be either a normal question or a multiple-choice question, with an image attached or not.
 	 *
-	 * Can be either a normal question or a multiple-choice question.
-	 *
-	 * @return "normal" if this is a normal question or "multiple-choice" if this is a multiple-choice question.
+	 * @return "normal" if this is a normal question or "multiple-choice" if this is a multiple-choice question. "+ image" is appended if image exists.
 	 */
 	public String getQuestionType() {
 		return questionType;
@@ -146,6 +197,6 @@ public class Question {
 	 */
 	@Override
 	public String toString() {
-		return JSONManager.toIndentedJSON(this);
+		return JSONManager.toJSON(this);
 	}
 }
