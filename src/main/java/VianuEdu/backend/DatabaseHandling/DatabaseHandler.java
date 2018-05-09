@@ -339,7 +339,7 @@ public class DatabaseHandler {
 	 * @param testID The test ID of the test you wish to get.
 	 * @return A Test object attached to that specific test ID.
 	 * @throws IOException            Most likely thrown if the device doesn't have a connection.
-	 * @throws IllegalAccessException Thrown if there isn't a test attached to that test ID
+	 * @throws IllegalAccessException Thrown if there isn't a test attached to that test ID or if the test is not yet avaiable for administration.
 	 */
 	public Test getTest(String testID) throws IOException, IllegalAccessException {
 		OkHttpClient client = new OkHttpClient();
@@ -347,6 +347,38 @@ public class DatabaseHandler {
 		Request request = new Request.Builder()
 				.url(serverURL + "/api/getTest/" + testID)
 				.get()
+				.build();
+
+		Response response = client.newCall(request).execute();
+		if (response.code() == 404) {
+			throw new IllegalAccessException("404 test not found!");
+		} else if (response.code() == 401) {
+			throw new IllegalAccessException("Test not yet available!");
+		}
+
+		JsonObject object = new JsonParser().parse(response.body().string()).getAsJsonObject();
+
+		object.remove("_id");
+
+		return JSONManager.fromJSONToTest(object.toString());
+	}
+
+	/**
+	 * A specialized version of getTest that bypasses the time limitation surrounding the getTest method.
+	 *
+	 * @param testID  The test ID of the test you wish to get.
+	 * @param teacher The teacher who wants to view the test.
+	 * @return A Test object attached to that specific test ID.
+	 * @throws IllegalAccessException Thrown if there isn't a test attached to that test ID.
+	 * @throws IOException            Most likely thrown if the device doesn't have a connection.
+	 */
+	public Test viewTest(String testID, Teacher teacher) throws IllegalAccessException, IOException {
+		OkHttpClient client = new OkHttpClient();
+
+		Request request = new Request.Builder()
+				.url(serverURL + "/api/viewTest/" + testID)
+				.get()
+				.addHeader("authorization", "Basic " + Base64.getEncoder().encodeToString((teacher.getAccount().getUserName() + ":" + teacher.getAccount().getPassword()).getBytes()))
 				.build();
 
 		Response response = client.newCall(request).execute();
