@@ -424,6 +424,61 @@ public class DatabaseHandler {
 	}
 
 	/**
+	 * Updates a test in the database.
+	 *
+	 * @param test    The new Test object to be updated into the database. It will find the reference of the test in the database by test ID.
+	 * @param teacher The teacher who will upload the test.
+	 * @throws IOException Most likely thrown if the device doesn't have a connection.
+	 */
+	public void updateTest(Test test, Teacher teacher) throws IOException {
+		OkHttpClient client = new OkHttpClient();
+
+		MediaType mediaType = MediaType.parse("application/json");
+		RequestBody body = RequestBody.create(mediaType, test.toString());
+		Request request = new Request.Builder()
+				.url(serverURL + "/api/updateTest/" + test.getTestID())
+				.post(body)
+				.addHeader("content-type", "application/json")
+				.addHeader("authorization", "Basic " + Base64.getEncoder().encodeToString((teacher.getAccount().getUserName() + ":" + teacher.getAccount().getPassword()).getBytes()))
+				.build();
+
+		Response response = client.newCall(request).execute();
+
+		if (response.code() == 404) {
+			throw new IllegalArgumentException("Test provided does not currently exist in the database! Create a new one!");
+		}
+	}
+
+	/**
+	 * Queries the database for a list of tests that are to be administered in the future.
+	 *
+	 * @param subject The subject for which the list of tests will be made.
+	 * @return An ArrayList of Strings which contains the test ID's of all future tests to be administered.
+	 * @throws IOException Most likely thrown if the device doesn't have a connection.
+	 */
+	public ArrayList<String> getPlannedTests(String subject, Teacher teacher) throws IOException {
+		if (!(subject.equals("Geo") || subject.equals("Phi") || subject.equals("Info") || subject.equals("Math"))) {
+			throw new IllegalArgumentException("Subject must be a VianuEdu-compatible course!");
+		}
+
+		OkHttpClient client = new OkHttpClient();
+
+		Request request = new Request.Builder()
+				.url(serverURL + "/api/getPlannedTests/" + subject)
+				.get()
+				.addHeader("authorization", "Basic " + Base64.getEncoder().encodeToString((teacher.getAccount().getUserName() + ":" + teacher.getAccount().getPassword()).getBytes()))
+				.build();
+
+		Response response = client.newCall(request).execute();
+
+		String body = response.body().string();
+
+		response.close();
+
+		return new ArrayList<>(Arrays.asList(body.split("\n")));
+	}
+
+	/**
 	 * Gets the next test ID for submission.
 	 *
 	 * @return The next test ID for submission.
