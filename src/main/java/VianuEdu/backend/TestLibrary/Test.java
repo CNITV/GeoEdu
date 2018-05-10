@@ -55,13 +55,14 @@ public class Test {
 	/**
 	 * Constructs and initializes a test.
 	 *
-	 * @param testID    The ID for the test. Must follow the specific VianuEdu format! (i.e. ID for a test is T-000001)
-	 * @param testName  The name of the test. Must not be empty.
-	 * @param course    The course for which the test is made for. Must be supported by VianuEdu. Currently only geography, physics, informatics and mathematics are supported. (Written as, "Geo", "Phi", "Info" and "Math")
-	 * @param startTime The time at which the test will start.
-	 * @param endTime   The time at which the test will end.
-	 * @param grade     The grade for which the test will be administered.
-	 * @param contents  The contents of the test. A HashMap which contains the question and the answer key for the test.
+	 * @param testID      The ID for the test. Must follow the specific VianuEdu format! (i.e. ID for a test is T-000001)
+	 * @param testName    The name of the test. Must not be empty.
+	 * @param course      The course for which the test is made for. Must be supported by VianuEdu. Currently only geography, physics, informatics and mathematics are supported. (Written as, "Geo", "Phi", "Info" and "Math")
+	 * @param startTime   The time at which the test will start.
+	 * @param endTime     The time at which the test will end.
+	 * @param grade       The grade for which the test will be administered.
+	 * @param gradeLetter The letter of the grade for which the test will be administered.
+	 * @param contents    The contents of the test. A HashMap which contains the question and the answer key for the test.
 	 */
 	public Test(String testID, String testName, String course, Date startTime, Date endTime, Integer grade, String gradeLetter, HashMap<Integer, Question> contents) {
 		if (!(testID.matches("T-([0123456789])\\w+"))) {
@@ -154,7 +155,6 @@ public class Test {
 	 * Checks whether the question is a multiple-choice question or not.
 	 *
 	 * @param questionNumber The question number for which to check the type of question.
-	 *
 	 * @return True if it is a multiple-choice question, false if otherwise.
 	 */
 	public boolean isMultipleAnswer(Integer questionNumber) {
@@ -165,7 +165,7 @@ public class Test {
 	 * Gets the multiple choices that a specific question has, if it does have any.
 	 *
 	 * @param questionNumber The question number for which to get the multiple choices.
-	 * @return The multiple choices in an ArrayList<String>.
+	 * @return The multiple choices in an ArrayList of Strings.
 	 */
 	public ArrayList<String> getMultipleChoices(Integer questionNumber) {
 		if (this.isMultipleAnswer(questionNumber)) {
@@ -176,8 +176,9 @@ public class Test {
 
 	/**
 	 * Gets the answer key for the test.
-	 *
+	 * <p>
 	 * Essentialy, this parses the content and only extracts the answers for each of the questions in the test.
+	 *
 	 * @return An AnswerSheet object containing all of the answers for the test.
 	 */
 	public AnswerSheet getAnswerKey() {

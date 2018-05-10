@@ -141,7 +141,7 @@ public class Question {
 	/**
 	 * Gets the question choices.
 	 *
-	 * @return An ArrayList<String> containing each one of the choices.
+	 * @return An ArrayList of Strings containing each one of the choices.
 	 */
 	public ArrayList<String> getQuestionChoices() {
 		if (questionType.equals("normal")) {

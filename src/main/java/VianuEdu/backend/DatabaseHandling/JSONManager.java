@@ -61,26 +61,56 @@ public class JSONManager {
 		return json.toJson(object);
 	}
 
+	/**
+	 * Deserializes a JSON string into a Student object.
+	 *
+	 * @param jsonString The JSON string to deserialize.
+	 * @return The deserialized Student object.
+	 */
 	public static Student fromJSONToStudent(String jsonString) {
 		Gson json = new GsonBuilder().setPrettyPrinting().create();
 		return json.fromJson(jsonString, Student.class);
 	}
 
+	/**
+	 * Deserializes a JSON string into a Teacher object.
+	 *
+	 * @param jsonString The JSON string to deserialize.
+	 * @return The deserialized Teacher object.
+	 */
 	public static Teacher fromJSONtoTeacher(String jsonString) {
 		Gson json = new GsonBuilder().setPrettyPrinting().create();
 		return json.fromJson(jsonString, Teacher.class);
 	}
 
+	/**
+	 * Deserializes a JSON string into a Test object.
+	 *
+	 * @param jsonString The JSON string to deserialize.
+	 * @return The deserialized Test object.
+	 */
 	public static Test fromJSONToTest(String jsonString) {
 		Gson json = new GsonBuilder().setPrettyPrinting().create();
 		return json.fromJson(jsonString, Test.class);
 	}
 
+	/**
+	 * Deserializes a JSON string into a AnswerSheet object.
+	 *
+	 * @param jsonString The JSON string to deserialize.
+	 * @return The deserialized AnswerSheet object.
+	 */
 	public static AnswerSheet fromJSONToAnswerSheet(String jsonString) {
 		Gson json = new GsonBuilder().setPrettyPrinting().create();
 		return json.fromJson(jsonString, AnswerSheet.class);
 	}
 
+	/**
+	 * Deserializes a JSON string into a Grade object.
+	 *
+	 * @param jsonString The JSON string to deserialize.
+	 * @return The deserialized Grade object.
+	 */
 	public static Grade fromJSONToGrade(String jsonString) {
 		Gson json = new GsonBuilder().setPrettyPrinting().create();
 		return json.fromJson(jsonString, Grade.class);

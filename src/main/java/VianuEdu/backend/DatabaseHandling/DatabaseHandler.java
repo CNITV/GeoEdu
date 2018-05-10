@@ -86,7 +86,8 @@ public class DatabaseHandler {
 	 *
 	 * @param account The account for which to log in.
 	 * @return A cookie that represents the ID of the student in the database.
-	 * @throws IOException Most likely thrown if the device doesn't have a connection.
+	 * @throws IOException            Most likely thrown if the device doesn't have a connection.
+	 * @throws IllegalAccessException Thrown if the authentication fails.
 	 */
 	public String studentLogin(Account account) throws IOException, IllegalAccessException {
 		OkHttpClient client = new OkHttpClient();
@@ -126,7 +127,8 @@ public class DatabaseHandler {
 	 *
 	 * @param account The account for which to log in.
 	 * @return A cookie that represents the ID of the teacher in the database.
-	 * @throws IOException Most likely thrown if the device doesn't have a connection.
+	 * @throws IOException            Most likely thrown if the device doesn't have a connection.
+	 * @throws IllegalAccessException Thrown if the authentication fails.
 	 */
 	public String teacherLogin(Account account) throws IOException, IllegalAccessException {
 		OkHttpClient client = new OkHttpClient();
@@ -163,7 +165,8 @@ public class DatabaseHandler {
 	 *
 	 * @param cookie The cookie representing the ID of the student.
 	 * @return The Student object associated with the provided cookie.
-	 * @throws IOException Most likely thrown if the device doesn't have a connection.
+	 * @throws IOException            Most likely thrown if the device doesn't have a connection.
+	 * @throws IllegalAccessException Thrown if the ID is invalid and unattached to a Student.
 	 */
 	public Student getStudent(String cookie) throws IOException, IllegalAccessException {
 		OkHttpClient client = new OkHttpClient();
@@ -198,7 +201,8 @@ public class DatabaseHandler {
 	 *
 	 * @param cookie The cookie representing the ID of the teacher.
 	 * @return The Teacher object associated with the provided cookie.
-	 * @throws IOException Most likely thrown if the device doesn't have a connection.
+	 * @throws IOException            Most likely thrown if the device doesn't have a connection.
+	 * @throws IllegalAccessException Thrown if the ID is invalid and unattached to a Teacher.
 	 */
 	public Teacher getTeacher(String cookie) throws IOException, IllegalAccessException {
 		OkHttpClient client = new OkHttpClient();
@@ -236,7 +240,7 @@ public class DatabaseHandler {
 	 *
 	 * @param grade   The grade for which to get the list of lessons for.
 	 * @param subject The subject for which to get the list of lessons for.
-	 * @return An ArrayList<String> which contains the list of lessons called for.
+	 * @return An ArrayList of Strings which contains the list of lessons called for.
 	 * @throws IOException Most likely thrown if the device doesn't have a connection.
 	 */
 	public ArrayList<String> listLessons(String subject, Integer grade) throws IOException {
@@ -477,7 +481,7 @@ public class DatabaseHandler {
 	 *
 	 * @param subject   The subject for which the student has tests.
 	 * @param studentID The student ID for which this method will search tests for.
-	 * @return An ArrayList<String> containing the test ID's of each test that the student might have to take.
+	 * @return An ArrayList of Strings containing the test ID's of each test that the student might have to take.
 	 * @throws IOException Most likely thrown if the device doesn't have a connection.
 	 */
 	public ArrayList<String> getTestQueue(String subject, String studentID) throws IOException {
@@ -577,6 +581,7 @@ public class DatabaseHandler {
 	 * Queries the database for a list of tests that are to be administered in the future.
 	 *
 	 * @param subject The subject for which the list of tests will be made.
+	 * @param teacher The teacher who wants to see the planned tests. Required for authentication.
 	 * @return An ArrayList of Strings which contains the test ID's of all future tests to be administered.
 	 * @throws IOException Most likely thrown if the device doesn't have a connection.
 	 */
@@ -673,7 +678,7 @@ public class DatabaseHandler {
 	 * Gets the student ID's for the answer sheets that must be evaluated for the provided test ID.
 	 *
 	 * @param testID The test ID for which to find answer sheets for.
-	 * @return An ArrayList<String> which contains the student ID of each answer sheet to be evaluated.
+	 * @return An ArrayList of Strings which contains the student ID of each answer sheet to be evaluated.
 	 * @throws IOException            Most likely thrown if the device doesn't have a connection.
 	 * @throws IllegalAccessException Thrown if no answer sheets are found.
 	 */
