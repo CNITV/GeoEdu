@@ -106,7 +106,16 @@ public class DatabaseHandler {
 		if (response.code() == 404) {
 			throw new IllegalAccessException("Invalid username and password combination!");
 		}
-		return response.body().string();
+
+		String result;
+		if (response.body() != null) {
+			result = response.body().string();
+		} else {
+			throw new NullPointerException("Response body came out null! Try again!");
+		}
+		response.close();
+
+		return result;
 	}
 
 	/**
@@ -137,7 +146,16 @@ public class DatabaseHandler {
 		if (response.code() == 404) {
 			throw new IllegalAccessException("Invalid username and password combination!");
 		}
-		return response.body().string();
+
+		String result;
+		if (response.body() != null) {
+			result = response.body().string();
+		} else {
+			throw new NullPointerException("Response body came out null! Try again!");
+		}
+		response.close();
+
+		return result;
 	}
 
 	/**
@@ -161,7 +179,14 @@ public class DatabaseHandler {
 			throw new IllegalAccessException("Cookie invalid! (Possibly wrong ID)");
 		}
 
-		JsonObject object = new JsonParser().parse(response.body().string()).getAsJsonObject();
+		JsonObject object;
+		if (response.body() != null) {
+			object = new JsonParser().parse(response.body().string()).getAsJsonObject();
+		} else {
+			throw new NullPointerException("Response body came out null! Try again!");
+		}
+
+		response.close();
 
 		object.remove("_id");
 
@@ -189,7 +214,14 @@ public class DatabaseHandler {
 			throw new IllegalAccessException("Cookie invalid! (Possibly wrong ID)");
 		}
 
-		JsonObject object = new JsonParser().parse(response.body().string()).getAsJsonObject();
+		JsonObject object;
+		if (response.body() != null) {
+			object = new JsonParser().parse(response.body().string()).getAsJsonObject();
+		} else {
+			throw new NullPointerException("Response body came out null! Try again!");
+		}
+
+		response.close();
 
 		object.remove("_id");
 
@@ -220,7 +252,14 @@ public class DatabaseHandler {
 
 		Response response = client.newCall(request).execute();
 
-		String body = response.body().string();
+		String body;
+		if (response.body() != null) {
+			body = response.body().string();
+		} else {
+			throw new NullPointerException("Response body came out null! Try again!");
+		}
+
+		response.close();
 
 		return new ArrayList<>(Arrays.asList(body.split("\n")));
 	}
@@ -260,7 +299,10 @@ public class DatabaseHandler {
 				.build();
 
 		Response response = client.newCall(request).execute();
-		return response.code() == 200;
+		boolean isSuccessful = response.code() == 200;
+		response.close();
+
+		return isSuccessful;
 	}
 
 	/**
@@ -284,7 +326,16 @@ public class DatabaseHandler {
 		if (response.code() == 404) {
 			throw new IOException("404 file not found");
 		}
-		return response.body().bytes();
+
+		byte[] result;
+		if (response.body() != null) {
+			result = response.body().bytes();
+		} else {
+			throw new NullPointerException("Response body came out null! Try again!");
+		}
+		response.close();
+
+		return result;
 	}
 
 	/**
@@ -307,7 +358,15 @@ public class DatabaseHandler {
 
 		Response response = client.newCall(request).execute();
 
-		return response.body().string();
+		String result;
+		if (response.body() != null) {
+			result = response.body().string();
+		} else {
+			throw new NullPointerException("Response body came out null! Try again!");
+		}
+		response.close();
+
+		return result;
 	}
 
 	/**
@@ -330,7 +389,15 @@ public class DatabaseHandler {
 
 		Response response = client.newCall(request).execute();
 
-		return response.body().string();
+		String result;
+		if (response.body() != null) {
+			result = response.body().string();
+		} else {
+			throw new NullPointerException("Response body came out null! Try again!");
+		}
+		response.close();
+
+		return result;
 	}
 
 	/**
@@ -356,7 +423,13 @@ public class DatabaseHandler {
 			throw new IllegalAccessException("Test not yet available!");
 		}
 
-		JsonObject object = new JsonParser().parse(response.body().string()).getAsJsonObject();
+		JsonObject object;
+		if (response.body() != null) {
+			object = new JsonParser().parse(response.body().string()).getAsJsonObject();
+		} else {
+			throw new NullPointerException("Response body came out null! Try again!");
+		}
+		response.close();
 
 		object.remove("_id");
 
@@ -386,7 +459,13 @@ public class DatabaseHandler {
 			throw new IllegalAccessException("404 test not found!");
 		}
 
-		JsonObject object = new JsonParser().parse(response.body().string()).getAsJsonObject();
+		JsonObject object;
+		if (response.body() != null) {
+			object = new JsonParser().parse(response.body().string()).getAsJsonObject();
+		} else {
+			throw new NullPointerException("Response body came out null! Try again");
+		}
+		response.close();
 
 		object.remove("_id");
 
@@ -415,7 +494,13 @@ public class DatabaseHandler {
 
 		Response response = client.newCall(request).execute();
 
-		String body = response.body().string();
+		String body;
+		if (response.body() != null) {
+			body = response.body().string();
+		} else {
+			throw new NullPointerException("Response body came out null! Try again!");
+		}
+		response.close();
 
 		return new ArrayList<>(Arrays.asList(body.split("\n")));
 
@@ -448,7 +533,13 @@ public class DatabaseHandler {
 		}
 
 		Pattern pattern = Pattern.compile("T-([0-9])\\w+");
-		Matcher matcher = pattern.matcher(response.body().string());
+		Matcher matcher;
+		if (response.body() != null) {
+			matcher = pattern.matcher(response.body().string());
+		} else {
+			throw new NullPointerException("Response body came out null! Try again");
+		}
+		response.close();
 		if (!matcher.find()) {
 			throw new RemoteException("Something didn't work at the server! Sorry!");
 		}
@@ -479,6 +570,7 @@ public class DatabaseHandler {
 		if (response.code() == 404) {
 			throw new IllegalArgumentException("Test provided does not currently exist in the database! Create a new one!");
 		}
+		response.close();
 	}
 
 	/**
@@ -503,8 +595,12 @@ public class DatabaseHandler {
 
 		Response response = client.newCall(request).execute();
 
-		String body = response.body().string();
-
+		String body;
+		if (response.body() != null) {
+			body = response.body().string();
+		} else {
+			throw new NullPointerException("Response body came out null! Try again!");
+		}
 		response.close();
 
 		return new ArrayList<>(Arrays.asList(body.split("\n")));
@@ -526,7 +622,15 @@ public class DatabaseHandler {
 
 		Response response = client.newCall(request).execute();
 
-		return response.body().string();
+		String result;
+		if (response.body() != null) {
+			result = response.body().string();
+		} else {
+			throw new NullPointerException("Response body came out null! Try again!");
+		}
+		response.close();
+
+		return result;
 	}
 
 	/**
@@ -552,7 +656,13 @@ public class DatabaseHandler {
 		}
 
 
-		JsonObject object = new JsonParser().parse(response.body().string()).getAsJsonObject();
+		JsonObject object;
+		if (response.body() != null) {
+			object = new JsonParser().parse(response.body().string()).getAsJsonObject();
+		} else {
+			throw new NullPointerException("Response body came out null! Try again!");
+		}
+		response.close();
 
 		object.remove("_id");
 
@@ -582,7 +692,13 @@ public class DatabaseHandler {
 			throw new RemoteException("Something didn't work at the server! Sorry!");
 		}
 
-		String body = response.body().string();
+		String body;
+		if (response.body() != null) {
+			body = response.body().string();
+		} else {
+			throw new NullPointerException("Response body came out null! Try again");
+		}
+		response.close();
 
 		return new ArrayList<>(Arrays.asList(body.split("\n")));
 
@@ -610,8 +726,14 @@ public class DatabaseHandler {
 		Response response = client.newCall(request).execute();
 
 		if (!(response.isSuccessful())) {
-			throw new IllegalAccessException(response.code() + " submission not successful! Reason: " + response.body().string());
+			if (response.body() != null) {
+				throw new IllegalAccessException(response.code() + " submission not successful! Reason: " + response.body().string());
+			} else {
+				throw new NullPointerException("Response body came out null! Try again!");
+			}
 		}
+
+		response.close();
 	}
 
 	/**
@@ -636,7 +758,13 @@ public class DatabaseHandler {
 			throw new IllegalAccessException("404 grade not found!");
 		}
 
-		JsonObject object = new JsonParser().parse(response.body().string()).getAsJsonObject();
+		JsonObject object;
+		if (response.body() != null) {
+			object = new JsonParser().parse(response.body().string()).getAsJsonObject();
+		} else {
+			throw new NullPointerException("Response body came out null! Try again!");
+		}
+		response.close();
 
 		object.remove("_id");
 
