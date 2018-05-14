@@ -217,6 +217,21 @@ public class AnswerSheet {
 	}
 
 	/**
+	 * Gets the number of multiple choice answers currently in an answer sheet.
+	 *
+	 * @return The number of multiple choice answers currently in an answer sheet.
+	 */
+	public int getNumberOfMultipleChoiceAnswers() {
+		int numberOfMultipleChoiceAnswers = 0;
+		for (int i = 1; i <= answers.keySet().size(); i++) {
+			if (answers.get(i).contains("[MULTIPLE_ANSWER]")) {
+				numberOfMultipleChoiceAnswers++;
+			}
+		}
+		return numberOfMultipleChoiceAnswers;
+	}
+
+	/**
 	 * Gets the Student object associated with this answer sheet.
 	 *
 	 * @return The Student object associated with this answer sheet.

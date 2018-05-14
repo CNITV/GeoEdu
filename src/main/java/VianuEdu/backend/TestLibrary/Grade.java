@@ -41,6 +41,7 @@ public class Grade {
 	private final Double MAXIMUM_GRADE = 100.0;
 	private Double currentGrade = 0.0;
 	private Double gradeScoreDistribution;
+	private Double normalScoreDistribution;
 	private AnswerSheet studentAnswerSheet;
 	private AnswerSheet answerKey;
 	private Teacher teacher;
@@ -57,6 +58,18 @@ public class Grade {
 		this.answerKey = answerKey;
 		this.teacher = teacher;
 		this.gradeScoreDistribution = MAXIMUM_GRADE / answerKey.getNumberOfAnswers();
+		this.calculateGrade();
+	}
+
+	public Grade(AnswerSheet studentAnswerSheet, AnswerSheet answerKey, Teacher teacher, Double essayPercentage) {
+		if (essayPercentage < 0 || essayPercentage > 100) {
+			throw new IllegalArgumentException("Essay scoring percentage must be between 0 and 100%!");
+		}
+		this.studentAnswerSheet = studentAnswerSheet;
+		this.answerKey = answerKey;
+		this.teacher = teacher;
+		this.gradeScoreDistribution = (MAXIMUM_GRADE - essayPercentage) / answerKey.getNumberOfMultipleChoiceAnswers();
+		this.normalScoreDistribution = essayPercentage / (answerKey.getNumberOfAnswers() - answerKey.getNumberOfMultipleChoiceAnswers());
 		this.calculateGrade();
 	}
 
@@ -107,7 +120,11 @@ public class Grade {
 		if (!studentAnswerSheet.getAnswer(questionNumber).contains("[EVALUATE]")) {
 			throw new IllegalArgumentException("Question must be up for evaluation, you cannot evaluate a multiple choice answer!");
 		}
-		currentGrade += (percentageGiven / 100.0) * gradeScoreDistribution; // add that score to the grade
+		if (normalScoreDistribution != 0) {
+			currentGrade += (percentageGiven / 100.0) * normalScoreDistribution; // add that score to the grade
+		} else {
+			currentGrade += (percentageGiven / 100.0) * gradeScoreDistribution;
+		}
 		studentAnswerSheet.changeAnswer(questionNumber, studentAnswerSheet.getAnswer(questionNumber).substring(11)); // Remove the "[EVALUATE]" part of the answer in the student sheet
 	}
 
