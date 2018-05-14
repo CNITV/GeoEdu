@@ -48,12 +48,13 @@ public class Test {
 	private String course;
 	private Date startTime;
 	private Date endTime;
+	private Double normalQuestionPercentage;
 	private Integer grade;
 	private String gradeLetter;
 	private HashMap<Integer, Question> contents;
 
 	/**
-	 * Constructs and initializes a test.
+	 * Constructs and initializes a test where all question are graded with equal points.
 	 *
 	 * @param testID      The ID for the test. Must follow the specific VianuEdu format! (i.e. ID for a test is T-000001)
 	 * @param testName    The name of the test. Must not be empty.
@@ -83,6 +84,46 @@ public class Test {
 		this.course = course;
 		this.startTime = startTime;
 		this.endTime = endTime;
+		this.grade = grade;
+		this.gradeLetter = gradeLetter;
+		this.contents = contents;
+	}
+
+	/**
+	 * Constructs and initializes a test where the percentage of the grade attributed to normal questions is defined.
+	 *
+	 * @param testID                   The ID for the test. Must follow the specific VianuEdu format! (i.e. ID for a test is T-000001)
+	 * @param testName                 The name of the test. Must not be empty.
+	 * @param course                   The course for which the test is made for. Must be supported by VianuEdu. Currently only geography, physics, informatics and mathematics are supported. (Written as, "Geo", "Phi", "Info" and "Math")
+	 * @param startTime                The time at which the test will start.
+	 * @param endTime                  The time at which the test will end.
+	 * @param normalQuestionPercentage The percentage of the final grade attributed to normal questions.
+	 * @param grade                    The grade for which the test will be administered.
+	 * @param gradeLetter              The letter of the grade for which the test will be administered.
+	 * @param contents                 The contents of the test. A HashMap which contains the question and the answer key for the test.
+	 */
+	public Test(String testID, String testName, String course, Date startTime, Date endTime, Double normalQuestionPercentage, Integer grade, String gradeLetter, HashMap<Integer, Question> contents) {
+		if (!(testID.matches("T-([0123456789])\\w+"))) {
+			throw new IllegalArgumentException("Test ID must be of specific VianuEdu format! (i.e. ID for tests are T-00001)");
+		} else if (testName.isEmpty()) {
+			throw new IllegalArgumentException("Test name must not be empty!");
+		} else if (!(course.equals("Geo") || course.equals("Phi") || course.equals("Info") || course.equals("Math"))) {
+			throw new IllegalArgumentException("Teacher must teach a VianuEdu-compatible course!");
+		} else if (startTime.before(new Date())) {
+			throw new IllegalArgumentException("Cannot dispense a test in the past! (Back to the future?)");
+		} else if (endTime.before(startTime)) {
+			throw new IllegalArgumentException("Cannot have a test finish before it even started! (Stop time travelling, god dammit!)");
+		} else if (normalQuestionPercentage < 0 || normalQuestionPercentage > 100) {
+			throw new IllegalArgumentException("Normal question percentage must be between 0 and 100%!");
+		} else if (grade < 9 || grade > 12 || !"ABCDEFGHIJKLMNOPQRSTUVWXYZ".contains(gradeLetter) || gradeLetter.length() != 1) {
+			throw new IllegalArgumentException("This is not a class! Deal with it!");
+		}
+		this.testID = testID;
+		this.testName = testName;
+		this.course = course;
+		this.startTime = startTime;
+		this.endTime = endTime;
+		this.normalQuestionPercentage = normalQuestionPercentage;
 		this.grade = grade;
 		this.gradeLetter = gradeLetter;
 		this.contents = contents;
@@ -131,6 +172,15 @@ public class Test {
 	 */
 	public Date getEndTime() {
 		return endTime;
+	}
+
+	/**
+	 * Gets the percentage for the grade attributed to normal questions.
+	 *
+	 * @return The percentage for the grade attributed to normal questions.
+	 */
+	public Double getNormalQuestionPercentage() {
+		return normalQuestionPercentage;
 	}
 
 	/**
