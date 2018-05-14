@@ -278,12 +278,14 @@ public class UserImput extends JPanel {
         Menu.X_hovered = MouseInfo.getPointerInfo().getLocation().x - Menu.XFrame - Setari.FrameBarX;
         Menu.Y_hovered = MouseInfo.getPointerInfo().getLocation().y - Menu.YFrame - Setari.FrameBarY;
 
+        Submithovered = false;
         if (Menu.X_hovered >= x && Menu.X_hovered <= x + width && Menu.Y_hovered >= y && Menu.Y_hovered <= y + height)
             Submithovered = true;
 
         if (((Menu.MousePressed == false && copyMousePressed2 == true && Submithovered == true) || Menu.ENTER == true) && Login == true) {
 
             checkData(g);
+            Menu.ENTER = false;
         }
 
         if (Menu.MousePressed == true && Submithovered == true) {
@@ -611,7 +613,6 @@ public class UserImput extends JPanel {
         ScreenHeight = Menu.ScreenHeight;
         FontSize = 60 * ScreenWidth / 1920;
         if (60 * ScreenHeight / 1080 < FontSize) FontSize = 60 * ScreenHeight / 1080;
-
     }
 
     public static void MouseState() {

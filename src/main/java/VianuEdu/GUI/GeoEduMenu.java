@@ -339,6 +339,7 @@ public class GeoEduMenu {
             }
         }
         else {
+            classNumber = 4;
             if (x <= 3 && x >= 2 && currentPressed == x) {
                 for (int i = 0; i < classNumber; i++) {
                     makeClassButton(g, Leftpanel + PanelWidth, x * ButtonHeight + i * ClassHeight, ClassWidth, ClassHeight, i + 9, x);

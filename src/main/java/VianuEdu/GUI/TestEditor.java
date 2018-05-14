@@ -1,12 +1,11 @@
 package VianuEdu.GUI;
 
-import VianuEdu.backend.TestLibrary.AnswerSheet;
 import VianuEdu.backend.TestLibrary.Question;
 import VianuEdu.backend.TestLibrary.Test;
-import javafx.scene.layout.VBox;
+import javafx.stage.Screen;
+import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
 import java.io.IOException;
 import java.text.*;
@@ -34,17 +33,32 @@ public class TestEditor {
     public static boolean check = false;
     public static boolean copyMousePressed = false;
     public static boolean isInitialised = false;
+    public static boolean editHovered = false;
     public static String TestName;
     public static String TestClass;
     public static String TestDate;
     public static String TestStart;
     public static String TestEnd;
+    public static String editMenuName[] = new String[10];
     public static int TestPercentage;
     public static int MPQuestions;
-    public static String[][] plannedTests = new String[101][101];
+    public static int editMenuX;
+    public static int editMenuY;
+    public static int currentScreenWidth;
+    public static int currentScreenHeight;
+    public static String currentTestID = new String();
+    public static boolean editMenu = false;
+    public static int currentClass=0;
+    public static int LetterNumber = 9;
+    public static int editMenuLengh = 2;
+    public static int currentLetter=0;
+    public static ArrayList<String> plannedTests[][] = new ArrayList[101][101];
     public static String Questions[] = new String[101];
     public static String Answers[][] = new String[101][15];
+    public static ArrayList<String> TestPlanned[][] = new ArrayList[101][101];
     public static String CAnswers[] = new String[101];
+    public static String Class[] = new String[10];
+    public static String Letter[] = new String[10];
     public static JTextField Tbox[] = new JTextField[15];
     public static JTextField NrBox = new JTextField();
     public static JTextArea Qbox = new JTextArea();
@@ -92,6 +106,9 @@ public class TestEditor {
             }
             if (copyMousePressed == false) {
                 Setari.ButtonSound("button_click.wav");
+                if(planTest==true){
+                    findPlannedTests();
+                }
             }
         }
         if ((createTest == true && Name.equals("Creeaza test")) || (planTest == true && Name.equals("Teste Planificate"))) {
@@ -136,6 +153,68 @@ public class TestEditor {
 
         drawPanelButton(g, Menu.ScreenWidth / 20, Menu.ScreenHeight / 20, Menu.ScreenWidth * 9 / 20, Menu.ScreenHeight / 15, "Creeaza test");
         drawPanelButton(g, Menu.ScreenWidth * 10 / 20, Menu.ScreenHeight / 20, Menu.ScreenWidth * 9 / 20, Menu.ScreenHeight / 15, "Teste Planificate");
+
+    }
+
+    public static void drawExitButton(Graphics g, int x, int y, int width, int height, String Name){
+
+
+        if (Menu.MousePressed == true && Menu.X_hovered>x&&Menu.X_hovered<x+width&&Menu.Y_hovered>y&&Menu.Y_hovered<y+height) {
+            if (GeoEduMenu.copyMousePressed != Menu.MousePressed && copyMousePressed == false) {
+                Setari.ButtonSound("button_click.wav");
+            }
+            g.setColor(new Color(55, 53, 53));
+            g.fillRoundRect(x, y, width, height, 15, 15);
+            g.setColor(new Color(220, 220, 220));
+            //g.drawRect(x, y, width, height);
+
+            Font small = new Font("Futura", Font.PLAIN, UserImput.FontSize / 2);
+            FontMetrics metricsy = g.getFontMetrics(small);
+            FontMetrics metricsx = g.getFontMetrics(small);
+            g.setColor(new Color(220, 220, 220));
+            g.setFont(small);
+            g.drawString(String.valueOf(Name), x + width / 2 - metricsx.stringWidth(String.valueOf(Name)) / 2, y + height / 2 + metricsy.getHeight() / 4);
+
+        } else if (Menu.X_hovered>x&&Menu.X_hovered<x+width&&Menu.Y_hovered>y&&Menu.Y_hovered<y+height) {
+
+
+            if(copyMousePressed == true){
+                GeoEduMenu.editTest = false;
+                for(int i=1;i<=8;i++){
+                    Tbox[i].setVisible(false);
+                }
+                Qbox.setVisible(false);
+                NrBox.setVisible(false);
+                for(int i=1;i<=10;i++){
+                    Abox[i].setVisible(false);
+                }
+            }
+
+            g.setColor(new Color(231, 198, 63));
+            g.fillRoundRect(x, y, width, height, 15, 15);
+            g.setColor(new Color(255, 231, 63));
+            //   g.drawRect(x, y, width, height);
+
+            Font small = new Font("Futura", Font.PLAIN, UserImput.FontSize / 2);
+            FontMetrics metricsy = g.getFontMetrics(small);
+            FontMetrics metricsx = g.getFontMetrics(small);
+            g.setColor(new Color(255, 231, 63));
+            g.setFont(small);
+            g.drawString(String.valueOf(Name), x + width / 2 - metricsx.stringWidth(String.valueOf(Name)) / 2, y + height / 2 + metricsy.getHeight() / 4);
+
+        } else {
+            g.setColor(new Color(255, 253, 253));
+            g.fillRoundRect(x, y, width, height, 15, 15);
+            g.setColor(new Color(0, 0, 0));
+            // g.drawRect(x, y, width, height);
+
+            Font small = new Font("Futura", Font.PLAIN, UserImput.FontSize / 2);
+            FontMetrics metricsy = g.getFontMetrics(small);
+            FontMetrics metricsx = g.getFontMetrics(small);
+            g.setColor(new Color(0, 0, 0));
+            g.setFont(small);
+            g.drawString(String.valueOf(Name), x + width / 2 - metricsx.stringWidth(String.valueOf(Name)) / 2, y + height / 2 + metricsy.getHeight() / 4);
+        }
 
     }
 
@@ -255,7 +334,7 @@ public class TestEditor {
         }
         Qbox.setVisible(false);
         makeSubmitButton(g, startX + width * 7 / 9, startY + height * 7 / 9, width / 8, height / 12, "Continua");
-
+        drawExitButton(g, startX + width * 7 / 9, startY + height * 7 / 9-height/9, width / 8, height / 12, "Iesire");
     }
 
     public static void create_stage2(Graphics g) {
@@ -303,6 +382,7 @@ public class TestEditor {
         if (currentQuestion < NrQuestions) drawNextButton(g);
         else if (currentQuestion == NrQuestions)
             makeSubmitButton(g, Menu.ScreenWidth * 3 / 4 + Menu.ScreenWidth / 20, Menu.ScreenHeight / 3, Menu.ScreenWidth / 15, Menu.ScreenHeight / 14, "Incarca");
+        drawExitButton(g,Menu.ScreenWidth * 4 / 5 + Menu.ScreenWidth / 20, Menu.ScreenHeight *7/8, Menu.ScreenWidth / 15, Menu.ScreenHeight / 20, "Iesire");
         if (currentQuestion > 1) drawPreviousButton(g);
 
     }
@@ -576,6 +656,178 @@ public class TestEditor {
 
     }
 
+    public static void drawPlannedTest(Graphics g, int x, int y, int width, int height, int i, int j, int k) {
+
+        int size = width / plannedTests[i][j].get(k).length() * 2;
+
+        Font small = new Font("Calibri", Font.PLAIN, size);
+        FontMetrics metricsy = g.getFontMetrics(small);
+        FontMetrics metricsx = g.getFontMetrics(small);
+
+        if (Menu.X_hovered > x && Menu.X_hovered < x + width && Menu.Y_hovered > y && Menu.Y_hovered < y + metricsy.getHeight()) {
+            System.out.println(editHovered);
+            if(Menu.MousePressed == false && copyMousePressed == true && editHovered == false){
+                editMenuX = Menu.X_hovered ;
+                editMenuY = Menu.Y_hovered ;
+                currentScreenWidth = Menu.ScreenWidth;
+                currentScreenHeight = Menu.ScreenHeight;
+                currentTestID = plannedTests[i][j].get(k);
+                editMenu = true;
+            }
+            editHovered = false;
+            int size2 = width / plannedTests[i][j].get(k).length() * 2;
+            Font small2 = new Font("Calibri", Font.BOLD, size2);
+            FontMetrics metricsy1 = g.getFontMetrics(small2);
+            FontMetrics metricsx1 = g.getFontMetrics(small2);
+            g.setColor(Color.GRAY);
+            g.fill3DRect(x, y, width, metricsy1.getHeight(), true);
+            g.setColor(Color.WHITE);
+            g.drawRect(x, y, width, metricsy1.getHeight());
+
+
+            g.setFont(small2);
+            g.drawString(String.valueOf(TestPlanned[i][j].get(k)), x + width / 2 - metricsx1.stringWidth(String.valueOf(TestPlanned[i][j].get(k))) / 2, y + metricsy1.getHeight() / 2 + metricsy1.getHeight() / 4);
+        } else {
+            g.setColor(Color.GRAY);
+            g.fill3DRect(x, y, width, metricsy.getHeight(), true);
+            g.setColor(Color.WHITE);
+            g.drawRect(x, y, width, metricsy.getHeight());
+
+
+            g.setFont(small);
+            g.drawString(String.valueOf(plannedTests[i][j].get(k)), x + width / 2 - metricsx.stringWidth(String.valueOf(plannedTests[i][j].get(k))) / 2, y + metricsy.getHeight() / 2 + metricsy.getHeight() / 4);
+        }
+
+    }
+
+    public static void drawBox(Graphics g, int x, int y, int width, int height, int letter, int clasa){
+
+        g.setColor(new Color(40,40,40));
+        g.fillRect(x,y,width,height);
+        if(letter == 0 && clasa == 0){
+            g.setColor(Color.WHITE);
+            g.drawRect(x,y,width,height);
+        }
+        else if(letter == 0){
+
+            String grade = Class[clasa];
+            g.setColor(Color.WHITE);
+            g.drawRect(x,y,width,height);
+
+            Font small = new Font("Calibri", Font.PLAIN, UserImput.FontSize / 2);
+            FontMetrics metricsy = g.getFontMetrics(small);
+            FontMetrics metricsx = g.getFontMetrics(small);
+            g.setFont(small);
+            g.drawString(String.valueOf(grade), x + width / 2 - metricsx.stringWidth(String.valueOf(grade)) / 2, y + height / 2 + metricsy.getHeight() / 4);
+        }
+        else if(clasa == 0){
+
+            String litera = Letter[letter];
+            g.setColor(Color.WHITE);
+            g.drawRect(x,y,width,height);
+
+            Font small = new Font("Calibri", Font.PLAIN, UserImput.FontSize / 2);
+            FontMetrics metricsy = g.getFontMetrics(small);
+            FontMetrics metricsx = g.getFontMetrics(small);
+            g.setFont(small);
+            g.drawString(String.valueOf(litera), x + width / 2 - metricsx.stringWidth(String.valueOf(litera)) / 2, y + height / 2 + metricsy.getHeight() / 4);
+        }
+        else{
+
+            g.setColor(Color.WHITE);
+            g.drawRect(x,y,width,height);
+
+            try {
+                for (int i = 0; i < plannedTests[letter][clasa].size(); i++) {
+                    drawPlannedTest(g, x, y + i * height / plannedTests[letter][clasa].size(), width, height / plannedTests[letter][clasa].size(), letter, clasa, i);
+                }
+            }catch (java.lang.NullPointerException e){
+
+            }
+        }
+
+    }
+
+    public static void drawEditBox(Graphics g, int x, int y, int width, int height, String testID, int i){
+
+        if(Menu.X_hovered>x&&Menu.X_hovered<x+width&&Menu.Y_hovered>y&&Menu.Y_hovered<y+height && Menu.MousePressed==true){
+            g.setColor(Color.LIGHT_GRAY);
+            g.fill3DRect(x,y,width,height,true);
+            g.setColor(Color.BLACK);
+            g.drawRect(x,y,width,height);
+
+            Font small = new Font("Calibri", Font.PLAIN, UserImput.FontSize/3);
+            FontMetrics metricsy = g.getFontMetrics(small);
+            FontMetrics metricsx = g.getFontMetrics(small);
+            g.drawString(String.valueOf(editMenuName[i]), x + width / 2 - metricsx.stringWidth(String.valueOf(editMenuName[i]))*2/3 , y + height / 2 + metricsy.getHeight() / 4);
+            editHovered = true;
+        }
+        else if(Menu.X_hovered>x&&Menu.X_hovered<x+width&&Menu.Y_hovered>y&&Menu.Y_hovered<y+height){
+            if(GeoEduMenu.copyMousePressed==true){
+                Setari.ButtonSound("button_click.wav");
+            }
+            g.setColor(new Color(255,214,71));
+            g.fill3DRect(x,y,width,height,false);
+            g.setColor(Color.WHITE);
+            g.drawRect(x,y,width,height);
+
+            Font small = new Font("Calibri", Font.PLAIN, UserImput.FontSize/3);
+            FontMetrics metricsy = g.getFontMetrics(small);
+            FontMetrics metricsx = g.getFontMetrics(small);
+            g.drawString(String.valueOf(editMenuName[i]), x + width / 2 - metricsx.stringWidth(String.valueOf(editMenuName[i]))*2/3 , y + height / 2 + metricsy.getHeight() / 4);
+            editHovered = true;
+        }
+        else {
+            if(Menu.MousePressed == true && copyMousePressed == false){
+                editMenu = false;
+            }
+            g.setColor(Color.BLACK);
+            g.fill3DRect(x, y, width, height, false);
+            g.setColor(Color.WHITE);
+            g.drawRect(x, y, width, height);
+
+            Font small = new Font("Calibri", Font.PLAIN, UserImput.FontSize / 3);
+            FontMetrics metricsy = g.getFontMetrics(small);
+            FontMetrics metricsx = g.getFontMetrics(small);
+            g.drawString(String.valueOf(editMenuName[i]), x + width / 2 - metricsx.stringWidth(String.valueOf(editMenuName[i]))*2/3, y + height / 2 + metricsy.getHeight() / 4);
+        }
+    }
+
+    public static void drawEditMenu(Graphics g){
+        for(int i=0;i<editMenuLengh;i++){
+            drawEditBox(g,editMenuX*Menu.ScreenWidth/currentScreenWidth,editMenuY*Menu.ScreenHeight/currentScreenHeight+i*Menu.ScreenHeight/20,Menu.ScreenWidth/10,Menu.ScreenHeight/20,currentTestID,i);
+        }
+    }
+
+    public static void drawTable(Graphics g, int StartX, int StartY, int Width, int Height){
+
+        int width = Width/(5);
+        int height = Height/(11);
+        Class[1] = "Clasa a 9-a";
+        Class[2] = "Clasa a 10-a";
+        Class[3] = "Clasa a 11-a";
+        Class[4] = "Clasa a 12-a";
+        Letter[1] = "A";
+        Letter[2] = "B";
+        Letter[3] = "C";
+        Letter[4] = "D";
+        Letter[5] = "E";
+        Letter[6] = "F";
+        Letter[7] = "G";
+        Letter[8] = "H";
+        Letter[9] = "I";
+        editMenuName[0] = "Editeaza";
+        editMenuName[1] = "Copiaza";
+        editMenuName[2] = "Sterge";
+
+        for(int i = 0;i<=LetterNumber;i++){
+            for(int j = 0;j<=4;j++){
+                drawBox(g,StartX+j*width,StartY+i*height,width,height,i,j);
+            }
+        }
+        if(editMenu==true)drawEditMenu(g);
+    }
+
     public static void Paint(Graphics g) {
         drawBackground(g);
         generatePanelButtons(g);
@@ -595,9 +847,52 @@ public class TestEditor {
             Qbox.setVisible(false);
             for (int i = 1; i <= NumarVariante; i++) Abox[i].setVisible(false);
             NrBox.setVisible(false);
+            drawTable(g,Menu.ScreenWidth/10,Menu.ScreenHeight/7,Menu.ScreenWidth*4/5,Menu.ScreenHeight*5/6);
         }
 
         copyMousePressed = Menu.MousePressed;
+    }
+
+    public static void findPlannedTests(){
+
+        for(int i=1;i<= 90; i ++){
+            for(int j = 1; j <=90; j++){
+                TestPlanned[i][j] = new ArrayList<>();
+                plannedTests[i][j] = new ArrayList<>();
+            }
+        }
+
+        try {
+            ArrayList<String> testID = new ArrayList<>();
+
+            testID = Menu.Maner.getPlannedTests("Geo",UserImput.teacher);
+            for(int i=0;i<testID.size();i++){
+                try {
+                    String TestID = testID.get(i).split(" ")[0];
+
+                    Test test = Menu.Maner.viewTest(TestID,UserImput.teacher);
+                    String clasa = testID.get(i).split(" ")[2];
+                    char Clasa[] = clasa.toCharArray();
+                    char letter = Clasa[Clasa.length-1];
+                    int clasaNr = 0;
+                    for(int j=0;j<Clasa.length-1;j++){
+                        clasaNr = clasaNr*10+(Clasa[j]-'0');
+                    }System.out.println(clasaNr);
+                   // plannedTests[letter-'A'+1][clasaNr-8] = new ArrayList<>();
+                    plannedTests[letter-'A'+1][clasaNr-8].add(test.getStartTime().toString());
+                  //  TestPlanned[letter-'A'+1][clasaNr-8] = new ArrayList<>();
+                    TestPlanned[letter-'A'+1][clasaNr-8].add(test.getTestName());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
     }
 
     public static void updateDimensions() {
@@ -878,7 +1173,7 @@ public class TestEditor {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    GeoEduMenu.editTest = false;
+        GeoEduMenu.editTest = false;
         Qbox.setVisible(false);
         for(int i=1;i<=10;i++)Abox[i].setVisible(false);
         deleteData();

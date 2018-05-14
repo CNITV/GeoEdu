@@ -2,7 +2,6 @@ package VianuEdu.GUI;
 
 import VianuEdu.backend.TestLibrary.AnswerSheet;
 import VianuEdu.backend.TestLibrary.Test;
-import sun.security.krb5.internal.KDCReqBody;
 
 import javax.swing.*;
 import java.awt.*;
@@ -57,6 +56,7 @@ public class Tests {
             CAnswer[i]=0;
             ChoiceQuestion[i]=false;
             RAnswers[i] = null;
+            SAnswers[i]=null;
             Essays[i] = null;
         }
 
@@ -130,8 +130,8 @@ public class Tests {
         int x = Menu.X_hovered;
         int y = Menu.Y_hovered;
         if (x > Menu.ScreenWidth / 3 && x < 2 * Menu.ScreenWidth / 3 && y > Menu.ScreenHeight / 2 + p * AnswerHeight && y < Menu.ScreenHeight / 2 + (p + 1) * AnswerHeight && Menu.MousePressed == true) { {
-                CAnswer[currentQuestion] = p;
-            }
+            CAnswer[currentQuestion] = p;
+        }
             if (Menu.MousePressed == true && GeoEduMenu.copyMousePressed == false)
                 Setari.ButtonSound("button_click.wav");
         }
@@ -382,6 +382,7 @@ public class Tests {
                 for(int i=1; i<=NrQuestions;i++){
                     Question[i]=null;
                     NrAnswers[i]=0;
+                    CAnswer[i] = 0;
                 }
                 NrQuestions = 0;
             }
@@ -461,8 +462,8 @@ public class Tests {
 
             if (GeoEduMenu.copyMousePressed == true) {
                 System.out.println("daaaa");
-                   currentQuestion = Name;
-                   QuestionGenerated = false;
+                currentQuestion = Name;
+                QuestionGenerated = false;
 
             }
         }
@@ -596,7 +597,7 @@ public class Tests {
         for(int i=1;i<= NrQuestions; i++){
             try{
                 if(ChoiceQuestion[i]==true)
-                total++;
+                    total++;
                 if(SAnswers[i].equals(RAnswers[i]))correct++;
             }catch(java.lang.NullPointerException e){
 
@@ -663,7 +664,7 @@ public class Tests {
         for(int i=1;i<=NrQuestions;i++){
             if(ChoiceQuestion[i]==false)sheet.addAnswer(i,Essays[i]);
             else{
-               // sheet.addMultipleChoiceAnswer(i,SAnswers[i]);
+                //sheet.addMultipleChoiceAnswer(i,SAnswers[i]);
             }
         }
 
@@ -682,7 +683,7 @@ public class Tests {
 
     public static void Paint(Graphics g) {
 
-       if(Test_finished==false) drawContent(g, currentQuestion, NrAnswers[currentQuestion]);
+        if(Test_finished==false) drawContent(g, currentQuestion, NrAnswers[currentQuestion]);
     }
 
     public static void Run() {

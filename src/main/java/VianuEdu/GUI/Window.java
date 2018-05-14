@@ -36,7 +36,7 @@ public class Window extends JFrame {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(1920, 1080);
         frame.setLocationRelativeTo(null);
-        frame.setTitle("GeoEdu");
+        frame.setTitle("VianuEdu");
         frame.setResizable(true);
         frame.setVisible(true);
     }

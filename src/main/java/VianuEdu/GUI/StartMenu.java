@@ -223,6 +223,7 @@ public class StartMenu {
             if (Menu.MousePressed == false && copyMousePressed3 == true && Name == "Iesire") System.exit(0);
             else if (Menu.MousePressed == false && copyMousePressed3 == true && Name == "Deconectare") {
                 button_start = -NrButtons * ButtonHeight;
+                Menu.isTeacher = false;
                 UserImput.Login = true;
             }
             g.setColor(new Color(231, 198, 63));

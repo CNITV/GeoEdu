@@ -77,7 +77,7 @@ public class ContentBrowser {
                     } catch (IOException e) {
                         //e.printStackTrace();
                     } catch (IllegalAccessException e) {
-                       // e.printStackTrace();
+                        // e.printStackTrace();
                     }
                     currentClass = Class[p];
                     dExercises = false;
