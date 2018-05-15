@@ -48,16 +48,10 @@ public class ContentBrowser {
             Test = true;
         }
         p = GeoEduMenu.currentPressed;
-        Class[2] = Class[3] = Class[4] = 0;
-        for (int i = 0; i < GeoEduMenu.classNumber; i++) {
-            if (GeoEduMenu.classPressed[i] == true && GeoEduMenu.classHovered[i] == true) {
-                Class[p] = i + 9;
-            }
-        }
         if (Search == true) {
 
         } else {
-            if (Test == true && Class[p] >= 9 && Menu.MousePressed == true) {
+            if (Test == true  && Menu.MousePressed == true) {
 
                 if (StartMenu.Start_GeoEdu == false) {
                     try {

@@ -5,8 +5,16 @@ import VianuEdu.backend.TestLibrary.Test;
 import javafx.stage.Screen;
 import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
+import javax.imageio.ImageIO;
+import javax.jws.soap.SOAPBinding;
 import javax.swing.*;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.filechooser.FileSystemView;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.text.*;
 import java.util.ArrayList;
@@ -22,6 +30,8 @@ public class TestEditor {
     public static int NrQuestions = 1;
     public static int PAnswers[] = new int[101];
     public static boolean Qchecked[] = new boolean[101];
+    public static boolean loadedTest = false;
+    public static boolean copiedTest = false;
     public static boolean createTest = true;
     public static boolean changeQuestion = false;
     public static boolean planTest = false;
@@ -33,6 +43,7 @@ public class TestEditor {
     public static boolean check = false;
     public static boolean copyMousePressed = false;
     public static boolean isInitialised = false;
+    public static boolean upload = false;
     public static boolean editHovered = false;
     public static String TestName;
     public static String TestClass;
@@ -53,7 +64,9 @@ public class TestEditor {
     public static int editMenuLengh = 2;
     public static int currentLetter=0;
     public static ArrayList<String> plannedTests[][] = new ArrayList[101][101];
+    public static ArrayList<String> plannedTestID[][] = new ArrayList[101][101];
     public static String Questions[] = new String[101];
+    public static byte QImage[][] = new byte[101][101];
     public static String Answers[][] = new String[101][15];
     public static ArrayList<String> TestPlanned[][] = new ArrayList[101][101];
     public static String CAnswers[] = new String[101];
@@ -209,6 +222,58 @@ public class TestEditor {
             // g.drawRect(x, y, width, height);
 
             Font small = new Font("Futura", Font.PLAIN, UserImput.FontSize / 2);
+            FontMetrics metricsy = g.getFontMetrics(small);
+            FontMetrics metricsx = g.getFontMetrics(small);
+            g.setColor(new Color(0, 0, 0));
+            g.setFont(small);
+            g.drawString(String.valueOf(Name), x + width / 2 - metricsx.stringWidth(String.valueOf(Name)) / 2, y + height / 2 + metricsy.getHeight() / 4);
+        }
+
+    }
+
+    public static void drawImageButton(Graphics g, int x, int y, int width, int height, int p){
+
+        String Name = "Incarca imagine";
+
+        if (Menu.MousePressed == true && Menu.X_hovered>x&&Menu.X_hovered<x+width&&Menu.Y_hovered>y&&Menu.Y_hovered<y+height) {
+            if (GeoEduMenu.copyMousePressed != Menu.MousePressed && copyMousePressed == false) {
+                Setari.ButtonSound("button_click.wav");
+                uploadPhotoMenu(p);
+                upload = true;
+            }
+            g.setColor(new Color(55, 53, 53));
+            g.fillRoundRect(x, y, width, height, 15, 15);
+            g.setColor(new Color(220, 220, 220));
+            //g.drawRect(x, y, width, height);
+
+            Font small = new Font("Futura", Font.PLAIN, UserImput.FontSize / 4);
+            FontMetrics metricsy = g.getFontMetrics(small);
+            FontMetrics metricsx = g.getFontMetrics(small);
+            g.setColor(new Color(220, 220, 220));
+            g.setFont(small);
+            g.drawString(String.valueOf(Name), x + width / 2 - metricsx.stringWidth(String.valueOf(Name)) / 2, y + height / 2 + metricsy.getHeight() / 4);
+
+        } else if (Menu.X_hovered>x&&Menu.X_hovered<x+width&&Menu.Y_hovered>y&&Menu.Y_hovered<y+height) {
+
+            g.setColor(new Color(231, 198, 63));
+            g.fillRoundRect(x, y, width, height, 15, 15);
+            g.setColor(new Color(255, 231, 63));
+            //   g.drawRect(x, y, width, height);
+
+            Font small = new Font("Futura", Font.PLAIN, UserImput.FontSize / 4);
+            FontMetrics metricsy = g.getFontMetrics(small);
+            FontMetrics metricsx = g.getFontMetrics(small);
+            g.setColor(new Color(255, 231, 63));
+            g.setFont(small);
+            g.drawString(String.valueOf(Name), x + width / 2 - metricsx.stringWidth(String.valueOf(Name)) / 2, y + height / 2 + metricsy.getHeight() / 4);
+
+        } else {
+            g.setColor(new Color(255, 253, 253));
+            g.fillRoundRect(x, y, width, height, 15, 15);
+            g.setColor(new Color(0, 0, 0));
+            // g.drawRect(x, y, width, height);
+
+            Font small = new Font("Futura", Font.PLAIN, UserImput.FontSize / 4);
             FontMetrics metricsy = g.getFontMetrics(small);
             FontMetrics metricsx = g.getFontMetrics(small);
             g.setColor(new Color(0, 0, 0));
@@ -383,6 +448,7 @@ public class TestEditor {
         else if (currentQuestion == NrQuestions)
             makeSubmitButton(g, Menu.ScreenWidth * 3 / 4 + Menu.ScreenWidth / 20, Menu.ScreenHeight / 3, Menu.ScreenWidth / 15, Menu.ScreenHeight / 14, "Incarca");
         drawExitButton(g,Menu.ScreenWidth * 4 / 5 + Menu.ScreenWidth / 20, Menu.ScreenHeight *7/8, Menu.ScreenWidth / 15, Menu.ScreenHeight / 20, "Iesire");
+        drawImageButton(g,Menu.ScreenWidth  / 5 - Menu.ScreenWidth / 20, Menu.ScreenHeight *7/8, Menu.ScreenWidth / 15, Menu.ScreenHeight / 20,currentQuestion);
         if (currentQuestion > 1) drawPreviousButton(g);
 
     }
@@ -399,12 +465,12 @@ public class TestEditor {
 
         if (mx > x && mx < x + widht && my > y && my < y + height && Menu.MousePressed == true) {
 
-            PAnswers[currentQuestion] = p;
+            if(p!=0)PAnswers[currentQuestion] = p;
             CAnswers[currentQuestion] = Abox[p].getText();
             if (copyMousePressed == false) Setari.ButtonSound("button_click.wav");
         }
 
-        if (PAnswers[currentQuestion] == p) {
+        if (PAnswers[currentQuestion]==p) {
             g.setColor(new Color(255, 236, 52));
             g.fill3DRect(x, y, widht, height, true);
             g.setColor(new Color(255, 236, 52));
@@ -439,7 +505,7 @@ public class TestEditor {
 
     public static void drawVariants(Graphics g, int x, int y, int width, int height, int Nr) {
 
-        NrVar[currentQuestion] = NumarVariante;
+        if(loadedTest==false&&copiedTest == false)NrVar[currentQuestion] = NumarVariante;
         if (NumarVariante < 6) {
             for (int i = 1; i <= NumarVariante; i++) {
                 drawCell(g, Menu.ScreenWidth / 3, Menu.ScreenHeight * 3 / 5 + (i - 1) * Menu.ScreenHeight / 20, Menu.ScreenWidth / 3, Menu.ScreenHeight / 20, i);
@@ -671,7 +737,7 @@ public class TestEditor {
                 editMenuY = Menu.Y_hovered ;
                 currentScreenWidth = Menu.ScreenWidth;
                 currentScreenHeight = Menu.ScreenHeight;
-                currentTestID = plannedTests[i][j].get(k);
+                currentTestID = plannedTestID[i][j].get(k);
                 editMenu = true;
             }
             editHovered = false;
@@ -750,6 +816,7 @@ public class TestEditor {
 
     public static void drawEditBox(Graphics g, int x, int y, int width, int height, String testID, int i){
 
+        editHovered = false;
         if(Menu.X_hovered>x&&Menu.X_hovered<x+width&&Menu.Y_hovered>y&&Menu.Y_hovered<y+height && Menu.MousePressed==true){
             g.setColor(Color.LIGHT_GRAY);
             g.fill3DRect(x,y,width,height,true);
@@ -763,9 +830,34 @@ public class TestEditor {
             editHovered = true;
         }
         else if(Menu.X_hovered>x&&Menu.X_hovered<x+width&&Menu.Y_hovered>y&&Menu.Y_hovered<y+height){
-            if(GeoEduMenu.copyMousePressed==true){
+            if(copyMousePressed==true){
                 Setari.ButtonSound("button_click.wav");
+                editMenu = false;
+                if(i==0) {
+                    try {
+                        System.out.println(testID);
+                        loadData(Menu.Maner.viewTest(testID, UserImput.teacher));
+                        submitData();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
+                    loadedTest=true;
+                }
+                else if(i==1){
+                    try {
+                        System.out.println(testID);
+                        loadData(Menu.Maner.viewTest(testID, UserImput.teacher));
+                        submitData();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
+            editHovered = true;
             g.setColor(new Color(255,214,71));
             g.fill3DRect(x,y,width,height,false);
             g.setColor(Color.WHITE);
@@ -775,12 +867,8 @@ public class TestEditor {
             FontMetrics metricsy = g.getFontMetrics(small);
             FontMetrics metricsx = g.getFontMetrics(small);
             g.drawString(String.valueOf(editMenuName[i]), x + width / 2 - metricsx.stringWidth(String.valueOf(editMenuName[i]))*2/3 , y + height / 2 + metricsy.getHeight() / 4);
-            editHovered = true;
         }
         else {
-            if(Menu.MousePressed == true && copyMousePressed == false){
-                editMenu = false;
-            }
             g.setColor(Color.BLACK);
             g.fill3DRect(x, y, width, height, false);
             g.setColor(Color.WHITE);
@@ -796,6 +884,13 @@ public class TestEditor {
     public static void drawEditMenu(Graphics g){
         for(int i=0;i<editMenuLengh;i++){
             drawEditBox(g,editMenuX*Menu.ScreenWidth/currentScreenWidth,editMenuY*Menu.ScreenHeight/currentScreenHeight+i*Menu.ScreenHeight/20,Menu.ScreenWidth/10,Menu.ScreenHeight/20,currentTestID,i);
+        }
+        if( Menu.X_hovered>editMenuX*Menu.ScreenWidth/currentScreenWidth && Menu.X_hovered<editMenuX*Menu.ScreenWidth/currentScreenWidth+Menu.ScreenWidth/10 && Menu.Y_hovered>editMenuY*Menu.ScreenHeight/currentScreenHeight &&Menu.Y_hovered<editMenuY*Menu.ScreenHeight/currentScreenHeight+Menu.ScreenHeight/20*(editMenuLengh)){
+            editHovered = true;
+        }
+        else if(Menu.MousePressed == true ){
+            editMenu = false;
+            editHovered = false;
         }
     }
 
@@ -859,6 +954,7 @@ public class TestEditor {
             for(int j = 1; j <=90; j++){
                 TestPlanned[i][j] = new ArrayList<>();
                 plannedTests[i][j] = new ArrayList<>();
+                plannedTestID[i][j] = new ArrayList<>();
             }
         }
 
@@ -880,6 +976,7 @@ public class TestEditor {
                     }System.out.println(clasaNr);
                    // plannedTests[letter-'A'+1][clasaNr-8] = new ArrayList<>();
                     plannedTests[letter-'A'+1][clasaNr-8].add(test.getStartTime().toString());
+                    plannedTestID[letter-'A'+1][clasaNr-8].add(test.getTestID().toString());
                   //  TestPlanned[letter-'A'+1][clasaNr-8] = new ArrayList<>();
                     TestPlanned[letter-'A'+1][clasaNr-8].add(test.getTestName());
                 } catch (IOException e) {
@@ -899,6 +996,31 @@ public class TestEditor {
 
         UserImput.initilaizeDimensions();
 
+    }
+
+    public static void uploadPhotoMenu(int p){
+
+        if(upload==true) {
+            JFileChooser fc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+            upload = false;
+            fc.setCurrentDirectory(new java.io.File("C:/"));
+            fc.setDialogTitle("Alege imaginea:");
+            fc.setFileFilter(new FileNameExtensionFilter("JPEG File","jpg"));
+            int rv = fc.showOpenDialog(null);
+            if (rv == JFileChooser.APPROVE_OPTION) {
+                File image = fc.getSelectedFile();
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    try {
+                        ImageIO.write(ImageIO.read(image), "jpg", baos);
+                        baos.flush();
+                        QImage[currentQuestion] = baos.toByteArray();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    upload = true;
+            }
+        }
     }
 
     public static void memoriseData() {
@@ -961,10 +1083,10 @@ public class TestEditor {
 
                 } else if (i == 2) {
 
-                    if (Tbox[i].getText().length() < 3) {
+                    if (Tbox[i].getText().length() < 2) {
                         DataChecked = false;
                         UserImput.DialogBox(g, "Clasa incorecta!", Menu.ScreenWidth / 8 + (i - 1) / 4 * Menu.ScreenWidth * 5 / 6 / 2, Menu.ScreenHeight / 4 + (i - 1) % 4 * Menu.ScreenHeight * 3 / 16 + Menu.ScreenHeight / 60, UserImput.FontSize / 2);
-                    } else if (c[0] < '0' || c[0] > '9' || c[1] < '0' || c[1] > '9' || c[2] < 'A' || c[2] > 'Z') {
+                    } else if (c[0] < '0' || c[0] > '9' ||  c[c.length-1] < 'A' || c[c.length-1] > 'Z') {
                         DataChecked = false;
                         UserImput.DialogBox(g, "Clasa incorecta!", Menu.ScreenWidth / 8 + (i - 1) / 4 * Menu.ScreenWidth * 5 / 6 / 2, Menu.ScreenHeight / 4 + (i - 1) % 4 * Menu.ScreenHeight * 3 / 16 + Menu.ScreenHeight / 60, UserImput.FontSize / 2);
                     }
@@ -1116,6 +1238,11 @@ public class TestEditor {
         TestStart = null;
         TestEnd = null;
         TestPercentage = 0;
+        Qbox.setText(null);
+        NrBox.setText(null);
+        for(int i=1;i<=NrVar[currentQuestion];i++){
+            Abox[i].setText(null);
+        }
         for(int i=1;i<=NrQuestions;i++){
             Questions[i]=null;
             for(int j=1;j<=NrVar[i];j++)Answers[i][j]=null;
@@ -1123,6 +1250,7 @@ public class TestEditor {
         }
         NrQuestions = 0;
         MPQuestions = 0;
+        currentQuestion = 1;
     }
 
     public static void uploadData() {
@@ -1146,7 +1274,7 @@ public class TestEditor {
         int clasa = 0;
         char Class[] = TestClass.toCharArray();
         for (int i = 0; i < Class.length; i++) {
-            if (Class[i] > '0' && Class[i] < '9') {
+            if (Class[i] >= '0' && Class[i] <= '9') {
                 clasa = clasa * 10 + (Class[i] - '0');
             } else {
                 letter = Class[i];
@@ -1161,15 +1289,24 @@ public class TestEditor {
             }
             System.out.println(Answers[i][1]);
             Question question;
-            if (i <= MPQuestions) question = new Question(Questions[i], a, Answers[i][PAnswers[i]]);
-            else question = new Question(Questions[i], Answers[i][PAnswers[i]]);
+
+                if (i <= MPQuestions) question = new Question(Questions[i], QImage[i], a, CAnswers[i]);
+                else question = new Question(Questions[i], QImage[i], Answers[i][PAnswers[i]]);
+
             map.put(i, question);
 
         }
         try {
-            Test test = new Test(Menu.Maner.getNextTestID(), TestName, "Geo", date, date2, clasa, String.valueOf(letter), map);
-            System.out.println(test.toString());
-            Menu.Maner.createTest(test, UserImput.teacher);
+            if(loadedTest==false) {
+                Test test = new Test(Menu.Maner.getNextTestID(), TestName, "Geo", date, date2, clasa, String.valueOf(letter), map);
+
+                Menu.Maner.createTest(test, UserImput.teacher);
+            }else{
+                Test test = new Test(currentTestID, TestName, "Geo", date, date2, clasa, String.valueOf(letter), map);
+                Menu.Maner.updateTest(test, UserImput.teacher);
+                currentTestID = null;
+                loadedTest = false;
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -1179,6 +1316,46 @@ public class TestEditor {
         deleteData();
         stage2 = false;
         stage1 = true;
+    }
+
+    public static void loadData(Test test){
+
+        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+            deleteData();
+            Tbox[1].setText(test.getTestName());
+            Tbox[2].setText(test.getGrade());
+            Tbox[3].setText(format.format(test.getStartTime()));
+            Tbox[4].setText(new SimpleDateFormat("HH:mm:ss").format(test.getStartTime()));
+            Tbox[5].setText(new SimpleDateFormat("HH:mm:ss").format(test.getEndTime()));
+            HashMap<Integer,Question> map = new HashMap<>();
+            map = test.getContents();
+            MPQuestions = 0;
+            NrQuestions = map.size();
+            for(int i=1;i<=map.size();i++){
+                Questions[i] = map.get(i).getQuestion();
+                if(map.get(i).getQuestionType().equals("multiple-choice")){
+                    MPQuestions++;
+                    CAnswers[i] = map.get(i).getAnswer();
+                    for(int j=0;j<map.get(i).getQuestionChoices().size();j++){
+                        Answers[i][j+1] = map.get(i).getQuestionChoices().get(j);System.out.println(Answers[i][j]);
+                        if(CAnswers[i].equals(Answers[i][j]))PAnswers[i]=j+1;
+                    }
+                    NrVar[i] = map.get(i).getQuestionChoices().size();
+                }
+                stage1 = true;
+                stage2 = false;
+                planTest = false;
+                createTest = true;
+            }
+            Tbox[6].setText(String.valueOf(MPQuestions));
+            Tbox[7].setText(String.valueOf(NrQuestions-MPQuestions));
+            Tbox[8].setText("1");
+            currentQuestion = 1;
+            Qbox.setText(Questions[currentQuestion]);
+            NrBox.setText(String.valueOf(NrVar[currentQuestion]));
+            for(int i=1;i<=NrVar[currentQuestion];i++){
+                Abox[i].setText(Answers[currentQuestion][i]);
+            }
     }
 
     public static void Run() {

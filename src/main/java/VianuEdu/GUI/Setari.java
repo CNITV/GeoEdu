@@ -313,7 +313,6 @@ public class Setari extends JPanel {
 
         if (GeoEduMenu.pressed[GeoEduMenu.NrButtons] == false && copy_pressed == true) {
             SettingsOn = true;
-
             GeoEduMenu.hovered[GeoEduMenu.NrButtons] = false;
         }
         copy_pressed = GeoEduMenu.pressed[GeoEduMenu.NrButtons];

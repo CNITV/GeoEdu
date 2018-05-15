@@ -3,12 +3,14 @@ package VianuEdu.GUI;
 import VianuEdu.backend.TestLibrary.AnswerSheet;
 import VianuEdu.backend.TestLibrary.Test;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.time.Clock;
-import java.util.ArrayList;
+
 
 
 public class Tests {
@@ -35,7 +37,7 @@ public class Tests {
     public static int NrAnswers[] = new int[1001];
     public static float result;
     public static JLabel label;
-    public static Icon Image[] = new Icon[1001];
+    public static byte Image[][] = new byte[101][101];
     public static BufferedImage lb;
     public static long beginTime;
     public static Clock clock = Clock.systemUTC();
@@ -74,6 +76,7 @@ public class Tests {
                         Answers[index][i+1] = test.getContents().get(index).getQuestionChoices().get(i);
                     }
                 }
+                Image[index] = test.getContents().get(index).getImage();
             }
 
         } catch (IOException e) {
@@ -102,9 +105,9 @@ public class Tests {
         return img.getSubimage(region.x, region.y, region.width, region.height);
     }
 
-    public static void drawQuestion(Graphics g, String question, Icon img) {
+    public static void drawQuestion(Graphics g, String question) {
         Font f = new Font("Calibri", Font.PLAIN, UserImput.FontSize / 2);
-        label = new JLabel(question, img, SwingConstants.CENTER);
+        label = new JLabel(question, SwingConstants.CENTER);
         label.setLayout(null);
         label.setBounds(Menu.ScreenWidth / 4, 0, Menu.ScreenWidth / 2, Menu.ScreenHeight / 2);
         label.setSize(Menu.ScreenWidth / 2, Menu.ScreenHeight / 4);
@@ -118,6 +121,21 @@ public class Tests {
         }
         copyScreenWidth = Menu.ScreenWidth;
         if (QuestionGenerated == true) g.drawImage(lb, label.getX(), label.getY(), null);
+    }
+
+    public static void drawImage(Graphics g){
+
+        try {
+            Image img = ImageIO.read(new ByteArrayInputStream(Image[currentQuestion]));
+            img = img.getScaledInstance(Menu.ScreenWidth/6, Menu.ScreenHeight/8,2);
+            g.drawImage(img,(Menu.ScreenWidth-img.getWidth(null))/2,Menu.ScreenHeight/4,null);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        catch (java.lang.NullPointerException e){
+
+        }
+
     }
 
     public static void drawAnswer(Graphics g, String answers, int p) {
@@ -579,7 +597,7 @@ public class Tests {
         g.setFont(small);
         g.drawString(String.valueOf("Scrie raspunsul aici:"), x + width /20, y -width/30);
         g.drawRect(x,y,width,height);
-        essay.setVisible(true);
+       if(Setari.SettingsOn==false) essay.setVisible(true);
         Font f = new Font("Calibri", Font.PLAIN, UserImput.FontSize * 3 / 8);
         essay.setLineWrap(true);
         scroll.setBackground(Color.LIGHT_GRAY);
@@ -588,7 +606,8 @@ public class Tests {
         scroll.setAutoscrolls(true);
         scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         scroll.setBounds(x,y,width,height);
-        scroll.setVisible(true);
+        if(Setari.SettingsOn==false)scroll.setVisible(true);
+        else scroll.setVisible(false);
     }
 
     public static void calculateResult(){
@@ -631,7 +650,13 @@ public class Tests {
         else {
 
             drawbackground(g);
-            drawQuestion(g, Question[currentQuestion], Image[currentQuestion]);
+            drawImage(g);
+            try {
+                drawQuestion(g, Question[currentQuestion]);
+            }
+            catch (java.lang.NullPointerException e){
+
+            }
             if(ChoiceQuestion[currentQuestion]==true) {
                 for (int i = 1; i <= nrAnswers; i++) {
                     if (CAnswer[currentQuestion] != i) drawAnswer(g, Answers[currentQuestion][i], i);
@@ -647,7 +672,7 @@ public class Tests {
                 drawEssay(g,Menu.ScreenWidth/3,Menu.ScreenHeight/2,Menu.ScreenWidth/3,Menu.ScreenHeight/3);
                 Essays[currentQuestion] = essay.getText();
             }
-
+            if(Setari.SettingsOn==true)essay.setVisible(false);
             if (currentQuestion < NrQuestions) drawNextButton(g);
             else if(currentQuestion == NrQuestions)drawEndButton(g,Menu.ScreenWidth * 2 / 3 +Menu.ScreenWidth/60 ,Menu.ScreenHeight * 2 / 3 - Menu.ScreenHeight / 40,Menu.ScreenWidth / 10, Menu.ScreenHeight / 14,"Termina Testul!");
             if (currentQuestion > 1) drawPreviousButton(g);

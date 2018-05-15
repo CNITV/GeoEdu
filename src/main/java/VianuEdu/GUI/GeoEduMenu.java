@@ -340,7 +340,7 @@ public class GeoEduMenu {
         }
         else {
             classNumber = 4;
-            if (x <= 3 && x >= 2 && currentPressed == x) {
+            if (x == 2 && currentPressed == x) {
                 for (int i = 0; i < classNumber; i++) {
                     makeClassButton(g, Leftpanel + PanelWidth, x * ButtonHeight + i * ClassHeight, ClassWidth, ClassHeight, i + 9, x);
                 }
@@ -383,7 +383,7 @@ public class GeoEduMenu {
             currentPressed = i;
             showClasses(g, i);
         } else if (hovered[i] == true) {
-            if (MousePressed == false && copyMousePressed == true && i == 1) returnMenu();
+            if (MousePressed == false && copyMousePressed == true && i == 1 && Tests.beginTest==false) returnMenu();
             AnimateFont();
             g.setColor(new Color(138, 114, 23));
             g.fillRect(x, y, Width, Height);
