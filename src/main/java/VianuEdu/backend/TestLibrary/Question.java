@@ -191,6 +191,54 @@ public class Question {
 	}
 
 	/**
+	 * Adds an image to the question. This is the safe way to add an image, as it changes the question type.
+	 *
+	 * @param newImage The new image to add to the question.
+	 * @throws IllegalAccessException Thrown if there is already an image attached to the question.
+	 */
+	public void addImage(byte[] newImage) throws IllegalAccessException {
+		if (newImage.length == 0) {
+			throw new IllegalArgumentException("Image can't be nil!");
+		} else if (newImage.length > 500000) {
+			throw new IllegalArgumentException("Image can't be bigger than 500KB!");
+		} else if (this.image != null) {
+			throw new IllegalAccessException("Cannot call this method to change to a new image! Use changeImage to change the image!");
+		}
+		this.image = newImage;
+		this.questionType = this.questionType + " + image";
+	}
+
+	/**
+	 * Changes the image attached to the question.
+	 *
+	 * @param newImage The new image to be attached to the question.
+	 * @throws IllegalAccessException Thrown if there isn't an image left to change.
+	 */
+	public void changeImage(byte[] newImage) throws IllegalAccessException {
+		if (newImage.length == 0) {
+			throw new IllegalArgumentException("Image can't be nil!");
+		} else if (newImage.length > 500000) {
+			throw new IllegalArgumentException("Image can't be bigger than 500KB!");
+		} else if (this.image == null) {
+			throw new IllegalAccessException("Image cannot be changed if it doesn't exist! Use addImage to add an image!");
+		}
+		this.image = newImage;
+	}
+
+	/**
+	 * Removes an image from the question. This is the safe way to remove an image, as it changes the question type.
+	 *
+	 * @throws IllegalAccessException Thrown if there isn't an image left to remove.
+	 */
+	public void removeImage() throws IllegalAccessException {
+		if (this.image == null) {
+			throw new IllegalAccessException("Cannot remove an image if it doesn't exist!");
+		}
+		this.image = null;
+		this.questionType = this.questionType.substring(0, this.question.length() - 8);
+	}
+
+	/**
 	 * Returns a JSON string with indentation that represents a question. Uses Gson JSON library.
 	 *
 	 * @return A JSON string representing a Question object.

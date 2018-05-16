@@ -208,7 +208,7 @@ public class Test {
 	 * @return True if it is a multiple-choice question, false if otherwise.
 	 */
 	public boolean isMultipleAnswer(Integer questionNumber) {
-		return contents.get(questionNumber).getQuestionType().equals("multiple-choice");
+		return contents.get(questionNumber).getQuestionType().equals("multiple-choice") || contents.get(questionNumber).getQuestionType().equals("multiple-choice + image");
 	}
 
 	/**
@@ -237,7 +237,7 @@ public class Test {
 		Integer questionNumber = 1;
 
 		for (Question question : contents.values()) {
-			if (question.getQuestionType().equals("multiple-choice")) {
+			if (question.getQuestionType().equals("multiple-choice") || question.getQuestionType().equals("multiple-choice + image")) {
 				result.addAnswer(questionNumber, "[MULTIPLE_ANSWER] " + question.getAnswer().substring(0, 1));
 			} else {
 				result.addAnswer(questionNumber, question.getAnswer());
