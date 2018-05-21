@@ -51,7 +51,7 @@ public class TestEditor {
     public static String TestStart;
     public static String TestEnd;
     public static String editMenuName[] = new String[10];
-    public static int TestPercentage;
+    public static Double TestPercentage;
     public static int MPQuestions;
     public static int editMenuX;
     public static int editMenuY;
@@ -834,8 +834,9 @@ public class TestEditor {
                 Setari.ButtonSound("button_click.wav");
                 editMenu = false;
                 if(i==0) {
+                    loadedTest=true;
                     try {
-                        System.out.println(testID);
+                       // System.out.println(testID);
                         loadData(Menu.Maner.viewTest(testID, UserImput.teacher));
                         submitData();
                     } catch (IOException e) {
@@ -843,7 +844,7 @@ public class TestEditor {
                     } catch (IllegalAccessException e) {
                         e.printStackTrace();
                     }
-                    loadedTest=true;
+
                 }
                 else if(i==1){
                     try {
@@ -973,7 +974,7 @@ public class TestEditor {
                     int clasaNr = 0;
                     for(int j=0;j<Clasa.length-1;j++){
                         clasaNr = clasaNr*10+(Clasa[j]-'0');
-                    }System.out.println(clasaNr);
+                    }
                    // plannedTests[letter-'A'+1][clasaNr-8] = new ArrayList<>();
                     plannedTests[letter-'A'+1][clasaNr-8].add(test.getStartTime().toString());
                     plannedTestID[letter-'A'+1][clasaNr-8].add(test.getTestID().toString());
@@ -1003,6 +1004,7 @@ public class TestEditor {
         if(upload==true) {
             JFileChooser fc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
             upload = false;
+            Menu.MousePressed=false;
             fc.setCurrentDirectory(new java.io.File("C:/"));
             fc.setDialogTitle("Alege imaginea:");
             fc.setFileFilter(new FileNameExtensionFilter("JPEG File","jpg"));
@@ -1042,7 +1044,7 @@ public class TestEditor {
                 if (i > 5) {
                     boolean DataChecked2 = true;
                     for (int j = 0; j < c.length; j++) {
-                        if (c[j] != 0 && (c[j] < '0' || c[j] > '9')) {
+                        if (c[j] != 0 && c[j]!='.' && (c[j] < '0' || c[j] > '9')) {
                             DataChecked2 = false;
                             DataChecked = false;
                         }
@@ -1142,7 +1144,7 @@ public class TestEditor {
         TestDate = Tbox[3].getText();
         TestStart = Tbox[4].getText();
         TestEnd = Tbox[5].getText();
-        TestPercentage = Integer.valueOf(Tbox[8].getText());
+        TestPercentage = Double.valueOf(Tbox[8].getText());
 
     }
 
@@ -1237,7 +1239,7 @@ public class TestEditor {
         TestDate = null;
         TestStart = null;
         TestEnd = null;
-        TestPercentage = 0;
+        TestPercentage = 0.0;
         Qbox.setText(null);
         NrBox.setText(null);
         for(int i=1;i<=NrVar[currentQuestion];i++){
@@ -1263,7 +1265,7 @@ public class TestEditor {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        DateFormat format = new SimpleDateFormat("MMM d, yyyy hh:mm:ss", Locale.ENGLISH);
+        DateFormat format = new SimpleDateFormat("MMM d, yyyy HH:mm:ss", Locale.ENGLISH);
         try {
             date = format.parse(getDate(TestDate + '/' + TestStart));
             date2 = format.parse(getDate(TestDate + '/' + TestEnd));
@@ -1287,22 +1289,23 @@ public class TestEditor {
             for (int j = 1; j <= NrVar[i]; j++) {
                 a.add(Answers[i][j]);
             }
-            System.out.println(Answers[i][1]);
+
             Question question;
 
-                if (i <= MPQuestions) question = new Question(Questions[i], QImage[i], a, CAnswers[i]);
+                if (i <= MPQuestions) question = new Question(Questions[i], QImage[i], a, Answers[i][PAnswers[i]]);
                 else question = new Question(Questions[i], QImage[i], Answers[i][PAnswers[i]]);
 
+
             map.put(i, question);
+
 
         }
         try {
             if(loadedTest==false) {
-                Test test = new Test(Menu.Maner.getNextTestID(), TestName, "Geo", date, date2, clasa, String.valueOf(letter), map);
-
+                Test test = new Test(Menu.Maner.getNextTestID(), TestName, "Geo", date, date2, (double) TestPercentage, clasa, String.valueOf(letter), map);
                 Menu.Maner.createTest(test, UserImput.teacher);
             }else{
-                Test test = new Test(currentTestID, TestName, "Geo", date, date2, clasa, String.valueOf(letter), map);
+                Test test = new Test(currentTestID, TestName, "Geo", date, date2, (double) TestPercentage, clasa, String.valueOf(letter), map); System.out.println(test.toString());
                 Menu.Maner.updateTest(test, UserImput.teacher);
                 currentTestID = null;
                 loadedTest = false;
@@ -1333,7 +1336,7 @@ public class TestEditor {
             NrQuestions = map.size();
             for(int i=1;i<=map.size();i++){
                 Questions[i] = map.get(i).getQuestion();
-                if(map.get(i).getQuestionType().equals("multiple-choice")){
+                if(test.isMultipleAnswer(i)){
                     MPQuestions++;
                     CAnswers[i] = map.get(i).getAnswer();
                     for(int j=0;j<map.get(i).getQuestionChoices().size();j++){
@@ -1349,7 +1352,7 @@ public class TestEditor {
             }
             Tbox[6].setText(String.valueOf(MPQuestions));
             Tbox[7].setText(String.valueOf(NrQuestions-MPQuestions));
-            Tbox[8].setText("1");
+            Tbox[8].setText(String.valueOf(test.getNormalQuestionPercentage()));
             currentQuestion = 1;
             Qbox.setText(Questions[currentQuestion]);
             NrBox.setText(String.valueOf(NrVar[currentQuestion]));

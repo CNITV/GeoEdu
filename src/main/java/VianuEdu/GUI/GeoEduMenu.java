@@ -16,6 +16,7 @@ public class GeoEduMenu {
     public static int PanelWidth = ScreenWidth / 5;
     public static int PanelHeight = ScreenHeight;
     private static int Font_size = 60;
+    public static int currentClass;
     public static int Relativesize = Font_size;
     public static boolean[] classPressed = new boolean[10];
     public static boolean[] classHovered = new boolean[10];
@@ -231,6 +232,7 @@ public class GeoEduMenu {
         if (Panels_Hidden == false && classHovered[clasa - 9] == true && MousePressed == true) {
             if (MousePressed != copyMousePressed && MousePressed == true) {
                 Setari.ButtonSound("button_click.wav");
+                currentClass = clasa;
             }
             g.setColor(new Color(250, 250, 250));
             g.fillRect(x, y, Width, Height);

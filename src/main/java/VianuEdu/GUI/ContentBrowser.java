@@ -46,40 +46,65 @@ public class ContentBrowser {
             Exercises = true;
         } else if (GeoEduMenu.currentPressed == 3) {
             Test = true;
+            if(Menu.isTeacher==true){
+                p = GeoEduMenu.currentClass;
+            }
         }
-        p = GeoEduMenu.currentPressed;
         if (Search == true) {
 
         } else {
             if (Test == true  && Menu.MousePressed == true) {
 
-                if (StartMenu.Start_GeoEdu == false) {
+                if (StartMenu.Start_GeoEdu == false && showTest==false) {
                     try {
-                        ArrayList<String> ID = Menu.Maner.getTestQueue("Geo", UserImput.cookie);
-                        System.out.println(UserImput.cookie);
-                        VianuEdu.backend.TestLibrary.Test test = null;
-                        ContentName.clear();
-                        ContentID.clear();
-                        NumberContent =0;
-                        for (String TestID : ID) {
-                            test = Menu.Maner.getTest(TestID);
-                            ContentName.add(test.getTestName());
-                            ContentID.add( TestID);
-                            NumberContent++;
+                        if(Menu.isTeacher==true){
+                            ArrayList<String> ID = Menu.Maner.getPlannedTests("Geo",UserImput.teacher);
+                            NumberContent = 0;
+                            ContentName.clear();
+                            ContentID.clear();
 
+                            for(int i=0;i<ID.size();i++) {
+                                String id = ID.get(i).split(" ")[0];
+                                String clasa = ID.get(i).split(" ")[2];
+                                VianuEdu.backend.TestLibrary.Test test = null;
+
+                                char Clasa[] = clasa.toCharArray();
+                                int clasaNr = 0;
+                                for(int j=0;j<Clasa.length-1;j++){
+                                    clasaNr = clasaNr*10+(Clasa[j]-'0');
+                                }
+                                if (clasaNr==p) {
+                                    test = Menu.Maner.viewTest(id,UserImput.teacher);
+                                    ContentName.add(test.getTestName());
+                                    ContentID.add(id);
+                                    NumberContent++;
+                                }
+                            }
+                        }
+                        else {
+                            ArrayList<String> ID = Menu.Maner.getTestQueue("Geo", UserImput.cookie);
+                            VianuEdu.backend.TestLibrary.Test test = null;
+                            ContentName.clear();
+                            ContentID.clear();
+                            NumberContent = 0;
+                            for (String TestID : ID) {
+                                test = Menu.Maner.getTest(TestID);
+                                ContentName.add(test.getTestName());
+                                ContentID.add(TestID);
+                                NumberContent++;
+
+                            }
                         }
                     } catch (IOException e) {
                         //e.printStackTrace();
                     } catch (IllegalAccessException e) {
                         // e.printStackTrace();
                     }
-                    currentClass = Class[p];
                     dExercises = false;
                     dTest = true;
                 }
 
             } else if (Exercises == true && Class[p] >= 9 && Menu.MousePressed == true) {
-                currentClass = Class[p];
                 dExercises = true;
                 dTest = false;
             }
@@ -107,10 +132,9 @@ public class ContentBrowser {
         int yhovered = Menu.Y_hovered;
         if (xhovered > x && xhovered < x + width && yhovered > y && yhovered < y + height && Menu.MousePressed == true) {
 
-            if (Chovered[i] == true&&Tests.beginTest==false) {
+            if (Chovered[i] == true&& showTest == false) {
                 Setari.ButtonSound("button_click.wav");
                 Tests.findTest(currentClass, ID);
-                showTest = true;
                 showExercise = false;
             }
             Cpressed[i] = true;
@@ -170,7 +194,7 @@ public class ContentBrowser {
     public static void findContent(Graphics g) {
 
         getInfo();
-        if (dTest == true) drawContent(g, ContentID, ContentName, NumberContent);
+        if (dTest == true) drawContent(g, ContentID, ContentName, ContentID.size());
     }
 
     public static void drawBrowser(Graphics g) {

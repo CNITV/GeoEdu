@@ -27,6 +27,7 @@ public class Tests {
     public static boolean beginTest = false;
     public static boolean copyMousePressed;
     public static boolean endTest = false;
+    public static boolean scaled = false;
     public static boolean Test_finished;
     public static boolean isCalculated = false;
     public static boolean ChoiceQuestion[] = new boolean[101];
@@ -37,6 +38,7 @@ public class Tests {
     public static int NrAnswers[] = new int[1001];
     public static float result;
     public static JLabel label;
+    public static Image img[] = new Image[101] ;
     public static byte Image[][] = new byte[101][101];
     public static BufferedImage lb;
     public static long beginTime;
@@ -49,6 +51,7 @@ public class Tests {
         STimer();
         endTest = false;
         beginTest = false;
+        ContentBrowser.showTest = true;
         Test_finished = false;
         isCalculated = false;
         currentQuestion = 1;
@@ -62,27 +65,49 @@ public class Tests {
             Essays[i] = null;
         }
 
-        try {
-            Test test = Menu.Maner.getTest(Name);
+        try {System.out.println("dddd");
+            Test test;
+            if(Menu.isTeacher==true){
+                 test = Menu.Maner.viewTest(Name,UserImput.teacher);
+            }
+            else {
+                 test = Menu.Maner.getTest(Name);
+            }
             TestID = Name;
             TestName = test.getTestName();
             for (Integer index = 1; index <= test.getContents().size(); index++) {
                 Question[index] = "<html>"+test.getContents().get(index).getQuestion()+"<html>";
                 RAnswers[index] = test.getContents().get(index).getAnswer();
-                if(test.getContents().get(index).getQuestionType().equals("multiple-choice")) {
+                Image[index] = test.getContents().get(index).getImage();
+                if(test.isMultipleAnswer(index)) {
                     ChoiceQuestion[index]=true;
                     NrAnswers[index] = test.getContents().get(index).getQuestionChoices().size();
                     for (Integer i = 0; i < test.getContents().get(index).getQuestionChoices().size(); i++) {
                         Answers[index][i+1] = test.getContents().get(index).getQuestionChoices().get(i);
                     }
                 }
-                Image[index] = test.getContents().get(index).getImage();
             }
+            readImages(test.getContents().size());
 
         } catch (IOException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
             e.printStackTrace();
+        }
+
+    }
+
+    public static void readImages(int n){
+        for(int i=1;i<=n;i++){
+            try {
+                img[i] = ImageIO.read(new ByteArrayInputStream(Image[i]));
+                img[i] = img[i].getScaledInstance(Menu.ScreenWidth/4, Menu.ScreenHeight/4,2);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }catch(java.lang.NullPointerException e){
+
+            }
+            System.out.println("scaled");
         }
 
     }
@@ -117,6 +142,7 @@ public class Tests {
             essay.setText(Essays[currentQuestion]);
             Window.frame.add(label);
             lb = labeltoImage(label);
+            scaled=false;
             QuestionGenerated = true;
         }
         copyScreenWidth = Menu.ScreenWidth;
@@ -126,11 +152,7 @@ public class Tests {
     public static void drawImage(Graphics g){
 
         try {
-            Image img = ImageIO.read(new ByteArrayInputStream(Image[currentQuestion]));
-            img = img.getScaledInstance(Menu.ScreenWidth/6, Menu.ScreenHeight/8,2);
-            g.drawImage(img,(Menu.ScreenWidth-img.getWidth(null))/2,Menu.ScreenHeight/4,null);
-        } catch (IOException e) {
-            e.printStackTrace();
+            g.drawImage(img[currentQuestion],(Menu.ScreenWidth-img[currentQuestion].getWidth(null))/2,Menu.ScreenHeight/4,null);
         }
         catch (java.lang.NullPointerException e){
 
@@ -396,6 +418,7 @@ public class Tests {
         } else if (xm > x && xm < x + width && ym > y && ym < y + height) {
             if (GeoEduMenu.copyMousePressed == true) {
                 Test_finished = true;
+                ContentBrowser.showTest = false;
                 beginTest = false;
                 for(int i=1; i<=NrQuestions;i++){
                     Question[i]=null;
@@ -689,7 +712,7 @@ public class Tests {
         for(int i=1;i<=NrQuestions;i++){
             if(ChoiceQuestion[i]==false)sheet.addAnswer(i,Essays[i]);
             else{
-                //sheet.addMultipleChoiceAnswer(i,SAnswers[i]);
+                sheet.addMultipleChoiceAnswer(i,SAnswers[i]);
             }
         }
 
@@ -713,12 +736,11 @@ public class Tests {
 
     public static void Run() {
 
-        if(Test_finished == false);
         updateQuestionNumber();
         UserImput.initilaizeDimensions();;
         if (endTest == true && isCalculated==false) {
             calculateResult();
-            sendData();
+            if(Menu.isTeacher==false)sendData();
             isCalculated = true;
         }
     }
