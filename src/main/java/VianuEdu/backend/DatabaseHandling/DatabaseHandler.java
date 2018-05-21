@@ -778,4 +778,47 @@ public class DatabaseHandler {
 		return JSONManager.fromJSONToGrade(object.toString());
 	}
 
+	/**
+	 * Gets the current grades that a specific student has available for review.
+	 *
+	 * @param student The student for which to get the grades for.
+	 * @param subject The subject for which the grades are administered.
+	 * @return An ArrayList of Grade objects which contain all of the grades the provided Student has received in the past 150 days.
+	 * @throws IllegalAccessException Thrown if no grade is found in the database.
+	 * @throws IOException            Most likely thrown if the device doesn't have a connection.
+	 */
+	public ArrayList<Grade> getCurrentGrades(Student student, String subject) throws IllegalAccessException, IOException {
+		OkHttpClient client = new OkHttpClient();
+
+		Request request = new Request.Builder()
+				.url(serverURL + "/api/getCurrentGrades/" + subject)
+				.get()
+				.addHeader("Authentication", Arrays.toString(Base64.getEncoder().encode((student.getAccount().getUserName() + ":" + student.getAccount().getPassword()).getBytes())))
+				.build();
+
+		Response response = client.newCall(request).execute();
+		if (response.code() == 404) {
+			throw new IllegalAccessException("404 grade not found!");
+		}
+
+		String body;
+		if (response.body() != null) {
+			body = response.body().string();
+		} else {
+			throw new NullPointerException("Response body came out null! Try again");
+		}
+		response.close();
+
+		ArrayList<String> testIDList = new ArrayList<>(Arrays.asList(body.split("\n")));
+
+		String studentID = this.studentLogin(student.getAccount());
+
+		ArrayList<Grade> result = new ArrayList<>();
+
+		for (String testID : testIDList) {
+			Grade grade = this.getGrade(studentID, testID);
+			result.add(grade);
+		}
+		return result;
+	}
 }

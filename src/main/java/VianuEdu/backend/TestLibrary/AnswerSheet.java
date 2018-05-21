@@ -166,11 +166,7 @@ public class AnswerSheet {
 	 * @return true if the answer is saved successfully and false if it wasn't added due to the answer exceeding the amount of answers available.
 	 */
 	public boolean addMultipleChoiceAnswer(Integer questionNumber, String answer) {
-		if (answer.length() != 1) {
-			throw new IllegalArgumentException("Cannot add an answer different from a, b, c, ... to a multiple-choice question! Make sure to use the addAnswer() method if the answer comes from a textbox.");
-		} else {
 			return this.addAnswer(questionNumber, "[MULTIPLE_ANSWER] " + answer);
-		}
 	}
 
 	/**
