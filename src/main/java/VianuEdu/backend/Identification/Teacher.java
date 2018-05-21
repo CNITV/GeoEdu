@@ -38,6 +38,8 @@ public class Teacher {
 	private String lastName;
 	private String gender;
 	private String course;
+	private Integer grade;
+	private String gradeLetter;
 	private Account account;
 
 	/**
@@ -51,6 +53,8 @@ public class Teacher {
 		this.lastName = "Ucsene";
 		this.gender = "F";
 		this.course = "Info";
+		this.grade = 11;
+		this.gradeLetter = "G";
 		this.account = new Account("ucsene_the_student_slayer", "SpaghettiBrokenCode22");
 	}
 
@@ -63,7 +67,7 @@ public class Teacher {
 	 * @param course    The course the teacher offers. Must be supported by VianuEdu. Currently only geography, physics, informatics and mathematics are supported. (Written as, "Geo", "Phi", "Info" and "Math")
 	 * @param account   The account of the teacher.
 	 */
-	public Teacher(String firstName, String lastName, String gender, String course, Account account) {
+	public Teacher(String firstName, String lastName, String gender, String course, Integer grade, String gradeLetter, Account account) {
 		if (firstName.equals("")) {
 			throw new IllegalArgumentException("First name must not be empty!");
 		} else if (lastName.equals("")) {
@@ -72,11 +76,17 @@ public class Teacher {
 			throw new IllegalArgumentException("Teacher must be either male (M) or female (F)!");
 		} else if (!(course.equals("Geo") || course.equals("Phi") || course.equals("Info") || course.equals("Math"))) {
 			throw new IllegalArgumentException("Teacher must teach a VianuEdu-compatible course!");
+		} else if (grade < 1 || grade > 12) {
+			throw new IllegalArgumentException("Grade must be between 1 and 12!");
+		} else if (!("ABCDEFGHIJKLMNOPQRSTUVWXYZ".contains(gradeLetter) && gradeLetter.length() <= 1)) {
+			throw new IllegalArgumentException("Grade letter must be between A and Z!");
 		}
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.gender = gender;
 		this.course = course;
+		this.grade = grade;
+		this.gradeLetter = gradeLetter;
 		this.account = account;
 	}
 
@@ -116,6 +126,29 @@ public class Teacher {
 		return course;
 	}
 
+	/**
+	 * Gets the teacher's grade.
+	 *
+	 * @return The teacher's grade.
+	 */
+	public Integer getGrade() {
+		return grade;
+	}
+
+	/**
+	 * Gets the teacher's grade letter.
+	 *
+	 * @return The teacher's grade letter.
+	 */
+	public String getGradeLetter() {
+		return gradeLetter;
+	}
+
+	/**
+	 * Gets the teacher's account.
+	 *
+	 * @return The teacher's account.
+	 */
 	public Account getAccount() {
 		return account;
 	}

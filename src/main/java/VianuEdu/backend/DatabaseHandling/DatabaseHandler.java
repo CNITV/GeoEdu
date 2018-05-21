@@ -573,6 +573,8 @@ public class DatabaseHandler {
 
 		if (response.code() == 404) {
 			throw new IllegalArgumentException("Test provided does not currently exist in the database! Create a new one!");
+		} else if (response.code() == 401) {
+			throw new IllegalArgumentException("Invalid Test object to update!");
 		}
 		response.close();
 	}
