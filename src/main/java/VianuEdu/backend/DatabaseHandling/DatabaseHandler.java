@@ -821,4 +821,78 @@ public class DatabaseHandler {
 		}
 		return result;
 	}
+
+	/**
+	 * Gets the test ID's of all current tests that must be corrected for a specific subject.
+	 *
+	 * @param teacher The teacher who will correct the subjects.
+	 * @param subject The subjecct that the tests were administered on.
+	 * @return An ArrayList of Strings containing the test ID's of each uncorrected test.
+	 * @throws IllegalAccessException Thrown if no tests are found.
+	 * @throws IOException            Most likely thrown if the device doesn't have a connection.
+	 */
+	public ArrayList<String> getUncorrectedTests(Teacher teacher, String subject) throws IllegalAccessException, IOException {
+		OkHttpClient client = new OkHttpClient();
+
+		Request request = new Request.Builder()
+				.url(serverURL + "/api/getUncorrectedTests/" + subject)
+				.get()
+				.addHeader("Authentication", Arrays.toString(Base64.getEncoder().encode((teacher.getAccount().getUserName() + ":" + teacher.getAccount().getPassword()).getBytes())))
+				.build();
+
+		Response response = client.newCall(request).execute();
+		if (response.code() == 404) {
+			throw new IllegalAccessException("404 no uncorrected tests found!");
+		}
+
+		String body;
+		if (response.body() != null) {
+			body = response.body().string();
+		} else {
+			throw new NullPointerException("Response body came out null! Try again");
+		}
+		response.close();
+
+		return new ArrayList<>(Arrays.asList(body.split("\n")));
+	}
+
+	/**
+	 * Gets all the students in a specified classroom.
+	 *
+	 * @param grade       The year of the classroom.
+	 * @param gradeLetter The letter of the classroom.
+	 * @return An ArrayList of Student objects containing all students from specified classroom.
+	 * @throws IllegalAccessException Thrown if no students are found in specified classroom.
+	 * @throws IOException            Most likely thrown if the device doesn't have a connection.
+	 */
+	public ArrayList<Student> listClassbook(Integer grade, String gradeLetter) throws IllegalAccessException, IOException {
+		OkHttpClient client = new OkHttpClient();
+
+		Request request = new Request.Builder()
+				.url(serverURL + "/api/listClassbook/" + grade + "/" + gradeLetter)
+				.get()
+				.build();
+
+		Response response = client.newCall(request).execute();
+		if (response.code() == 404) {
+			throw new IllegalAccessException("404 no uncorrected tests found!");
+		}
+
+		String body;
+		if (response.body() != null) {
+			body = response.body().string();
+		} else {
+			throw new NullPointerException("Response body came out null! Try again");
+		}
+		response.close();
+
+		ArrayList<String> studentIDList = new ArrayList<>(Arrays.asList(body.split("\n")));
+
+		ArrayList<Student> classbook = new ArrayList<>();
+		for (String studentID : studentIDList) {
+			classbook.add(this.getStudent(studentID));
+		}
+
+		return classbook;
+	}
 }
