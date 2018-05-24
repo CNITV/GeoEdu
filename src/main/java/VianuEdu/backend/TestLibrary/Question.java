@@ -62,8 +62,8 @@ public class Question {
 	public Question(String question, byte[] image, String answer) {
 		if (image.length == 0) {
 			throw new IllegalArgumentException("Image can't be nil! Just make a normal question instead!");
-		} else if (image.length > 500000) {
-			throw new IllegalArgumentException("Image can't be bigger than 500KB!");
+		} else if (image.length > 750000) {
+			throw new IllegalArgumentException("Image can't be bigger than 750KB!");
 		}
 		this.question = question;
 		this.image = image;
@@ -101,8 +101,8 @@ public class Question {
 			throw new IllegalArgumentException("Cannot submit a question whose answer doesn't actually exist in the choices!");
 		} else if (image.length == 0) {
 			throw new IllegalArgumentException("Image can't be nil! Just make a normal question instead!");
-		} else if (image.length > 500000) {
-			throw new IllegalArgumentException("Image can't be bigger than 500KB!");
+		} else if (image.length > 750000) {
+			throw new IllegalArgumentException("Image can't be bigger than 750KB!");
 		}
 		this.question = question;
 		this.image = image;
@@ -199,8 +199,8 @@ public class Question {
 	public void addImage(byte[] newImage) throws IllegalAccessException {
 		if (newImage.length == 0) {
 			throw new IllegalArgumentException("Image can't be nil!");
-		} else if (newImage.length > 500000) {
-			throw new IllegalArgumentException("Image can't be bigger than 500KB!");
+		} else if (newImage.length > 750000) {
+			throw new IllegalArgumentException("Image can't be bigger than 750KB!");
 		} else if (this.image != null) {
 			throw new IllegalAccessException("Cannot call this method to change to a new image! Use changeImage to change the image!");
 		}
@@ -217,8 +217,8 @@ public class Question {
 	public void changeImage(byte[] newImage) throws IllegalAccessException {
 		if (newImage.length == 0) {
 			throw new IllegalArgumentException("Image can't be nil!");
-		} else if (newImage.length > 500000) {
-			throw new IllegalArgumentException("Image can't be bigger than 500KB!");
+		} else if (newImage.length > 750000) {
+			throw new IllegalArgumentException("Image can't be bigger than 750KB!");
 		} else if (this.image == null) {
 			throw new IllegalAccessException("Image cannot be changed if it doesn't exist! Use addImage to add an image!");
 		}
