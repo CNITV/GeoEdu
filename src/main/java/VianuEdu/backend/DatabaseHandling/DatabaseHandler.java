@@ -677,6 +677,36 @@ public class DatabaseHandler {
 	}
 
 	/**
+	 * Submits an answer sheet to the database.
+	 *
+	 * @param student The student who is uploading the database.
+	 * @param answerSheet The answer sheet to upload.
+	 * @throws IOException Most likely thrown if the device doesn't have a connection.
+	 * @throws IllegalAccessException Thrown if answer sheet has already been uploaded for test.
+	 */
+	public void submitAnswerSheet(Student student, AnswerSheet answerSheet) throws IOException, IllegalAccessException {
+		OkHttpClient client = new OkHttpClient();
+
+		MediaType mediaType = MediaType.parse("application/json");
+		RequestBody body = RequestBody.create(mediaType, answerSheet.toString());
+		Request request = new Request.Builder()
+				.url(serverURL + "/api/submitAnswerSheet/" + answerSheet.getTestID())
+				.post(body)
+				.addHeader("Authorization", "Basic " + Base64.getEncoder().encodeToString((student.getAccount().getUserName() + ":" + student.getAccount().getPassword()).getBytes()))
+				.build();
+
+		Response response = client.newCall(request).execute();
+		if (response.code() == 400) {
+			throw new IllegalArgumentException("Malformed answer sheet! (different test ID)");
+		} else if (response.code() == 401) {
+			throw new IllegalArgumentException("Malformed answer sheet! (credentials do not match)");
+		} else if (response.code() == 208) {
+			throw new IllegalAccessException("Already submitted answer sheet!");
+		}
+		response.close();
+	}
+
+	/**
 	 * Gets the student ID's for the answer sheets that must be evaluated for the provided test ID.
 	 *
 	 * @param testID The test ID for which to find answer sheets for.
