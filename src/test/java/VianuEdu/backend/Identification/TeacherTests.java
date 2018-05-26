@@ -31,13 +31,15 @@ public class TeacherTests {
 
 		Account testAccount = new Account("ucsene_the_student_slayer", "SpaghettiBrokenCode22");
 
-		Teacher testTeacher = new Teacher("Acob", "Ucsene", "F", "Info", testAccount);
+		Teacher testTeacher = new Teacher("Acob", "Ucsene", "F", "Info", 11, "G", testAccount);
 
 		String JSONString = "{\n" +
 				"  \"firstName\": \"Acob\",\n" +
 				"  \"lastName\": \"Ucsene\",\n" +
 				"  \"gender\": \"F\",\n" +
 				"  \"course\": \"Info\",\n" +
+				"  \"grade\": 11,\n" +
+				"  \"gradeLetter\": \"G\",\n" +
 				"  \"account\": {\n" +
 				"    \"userName\": \"ucsene_the_student_slayer\",\n" +
 				"    \"password\": \"SpaghettiBrokenCode22\"\n" +

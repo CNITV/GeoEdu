@@ -87,7 +87,7 @@ public class DatabaseHandler {
 	 * @param account The account for which to log in.
 	 * @return A cookie that represents the ID of the student in the database.
 	 * @throws IOException            Most likely thrown if the device doesn't have a connection.
-	 * @throws IllegalAccessException Thrown if the authentication fails.
+	 * @throws IllegalAccessException Thrown if the Authorization fails.
 	 */
 	public String studentLogin(Account account) throws IOException, IllegalAccessException {
 		OkHttpClient client = new OkHttpClient();
@@ -128,7 +128,7 @@ public class DatabaseHandler {
 	 * @param account The account for which to log in.
 	 * @return A cookie that represents the ID of the teacher in the database.
 	 * @throws IOException            Most likely thrown if the device doesn't have a connection.
-	 * @throws IllegalAccessException Thrown if the authentication fails.
+	 * @throws IllegalAccessException Thrown if the Authorization fails.
 	 */
 	public String teacherLogin(Account account) throws IOException, IllegalAccessException {
 		OkHttpClient client = new OkHttpClient();
@@ -583,7 +583,7 @@ public class DatabaseHandler {
 	 * Queries the database for a list of tests that are to be administered in the future.
 	 *
 	 * @param subject The subject for which the list of tests will be made.
-	 * @param teacher The teacher who wants to see the planned tests. Required for authentication.
+	 * @param teacher The teacher who wants to see the planned tests. Required for Authorization.
 	 * @return An ArrayList of Strings which contains the test ID's of all future tests to be administered.
 	 * @throws IOException Most likely thrown if the device doesn't have a connection.
 	 */
@@ -692,7 +692,7 @@ public class DatabaseHandler {
 		Request request = new Request.Builder()
 				.url(serverURL + "/api/submitAnswerSheet/" + answerSheet.getTestID())
 				.post(body)
-				.addHeader("Authentication", "Basic " + Base64.getEncoder().encodeToString((student.getAccount().getUserName() + ":" + student.getAccount().getPassword()).getBytes()))
+				.addHeader("Authorization", "Basic " + Base64.getEncoder().encodeToString((student.getAccount().getUserName() + ":" + student.getAccount().getPassword()).getBytes()))
 				.build();
 
 		Response response = client.newCall(request).execute();
@@ -757,7 +757,7 @@ public class DatabaseHandler {
 				.url(serverURL + "/api/submitGrade/" + grade.getAnswerKey().getTestID())
 				.post(body)
 				.addHeader("content-type", "application/json")
-				.addHeader("Authentication", "Basic " + Base64.getEncoder().encodeToString(((grade.getTeacher().getAccount().getUserName() + ":" + grade.getTeacher().getAccount().getPassword()).getBytes())))
+				.addHeader("Authorization", "Basic " + Base64.getEncoder().encodeToString(((grade.getTeacher().getAccount().getUserName() + ":" + grade.getTeacher().getAccount().getPassword()).getBytes())))
 				.build();
 
 		Response response = client.newCall(request).execute();
@@ -823,7 +823,7 @@ public class DatabaseHandler {
 		Request request = new Request.Builder()
 				.url(serverURL + "/api/getCurrentGrades/" + subject)
 				.get()
-				.addHeader("Authentication", "Basic " + Base64.getEncoder().encodeToString(((student.getAccount().getUserName() + ":" + student.getAccount().getPassword()).getBytes())))
+				.addHeader("Authorization", "Basic " + Base64.getEncoder().encodeToString(((student.getAccount().getUserName() + ":" + student.getAccount().getPassword()).getBytes())))
 				.build();
 
 		Response response = client.newCall(request).execute();
@@ -867,7 +867,7 @@ public class DatabaseHandler {
 		Request request = new Request.Builder()
 				.url(serverURL + "/api/getUncorrectedTests/" + subject)
 				.get()
-				.addHeader("Authentication", "Basic " + Base64.getEncoder().encodeToString((teacher.getAccount().getUserName() + ":" + teacher.getAccount().getPassword()).getBytes()))
+				.addHeader("Authorization", "Basic " + Base64.getEncoder().encodeToString((teacher.getAccount().getUserName() + ":" + teacher.getAccount().getPassword()).getBytes()))
 				.build();
 
 		Response response = client.newCall(request).execute();
