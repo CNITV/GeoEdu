@@ -420,10 +420,17 @@ public class Tests {
                 Test_finished = true;
                 ContentBrowser.showTest = false;
                 beginTest = false;
+                essay.setText(null);
+                System.out.println("nuuu");
                 for(int i=1; i<=NrQuestions;i++){
                     Question[i]=null;
+                    RAnswers[i]=null;
+                    SAnswers[i]=null;
                     NrAnswers[i]=0;
                     CAnswer[i] = 0;
+                    if(ChoiceQuestion[i]==false){
+                        Essays[i]=null;
+                    }
                 }
                 NrQuestions = 0;
             }
@@ -660,7 +667,7 @@ public class Tests {
         g.setFont(small);
         g.drawString(String.valueOf("Testul s-a terminat!"), Menu.ScreenWidth / 2 - metricsx.stringWidth(String.valueOf("Testul s-a incheiat!"))/2, Menu.ScreenHeight / 2 - metricsy.getHeight() );
         g.drawString(String.valueOf("Ai obtinut nota partiala: ")+String.valueOf(result), Menu.ScreenWidth / 2 - metricsx.stringWidth(String.valueOf("Ai obtinut nota partiala: ")+String.valueOf(result))/2, Menu.ScreenHeight / 2 );
-        drawExitButton(g,Menu.ScreenWidth*3/8,Menu.ScreenHeight*3/4,Menu.ScreenWidth/4,Menu.ScreenHeight/12,"Iesie");
+        drawExitButton(g,Menu.ScreenWidth*3/8,Menu.ScreenHeight*3/4,Menu.ScreenWidth/4,Menu.ScreenHeight/12,"Iesire");
 
     }
 
@@ -710,13 +717,20 @@ public class Tests {
         AnswerSheet sheet = new AnswerSheet(UserImput.student,TestID,NrQuestions);
 
         for(int i=1;i<=NrQuestions;i++){
+            System.out.println("DAaa");
             if(ChoiceQuestion[i]==false)sheet.addAnswer(i,Essays[i]);
             else{
                 sheet.addMultipleChoiceAnswer(i,SAnswers[i]);
             }
         }
 
-
+        try {
+            Menu.Maner.submitAnswerSheet(UserImput.student, sheet);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -737,7 +751,7 @@ public class Tests {
     public static void Run() {
 
         updateQuestionNumber();
-        UserImput.initilaizeDimensions();;
+        UserImput.initilaizeDimensions();
         if (endTest == true && isCalculated==false) {
             calculateResult();
             if(Menu.isTeacher==false)sendData();

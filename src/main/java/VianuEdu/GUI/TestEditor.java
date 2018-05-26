@@ -1336,12 +1336,13 @@ public class TestEditor {
             NrQuestions = map.size();
             for(int i=1;i<=map.size();i++){
                 Questions[i] = map.get(i).getQuestion();
+                QImage[i] = map.get(i).getImage();
                 if(test.isMultipleAnswer(i)){
                     MPQuestions++;
                     CAnswers[i] = map.get(i).getAnswer();
                     for(int j=0;j<map.get(i).getQuestionChoices().size();j++){
                         Answers[i][j+1] = map.get(i).getQuestionChoices().get(j);System.out.println(Answers[i][j]);
-                        if(CAnswers[i].equals(Answers[i][j]))PAnswers[i]=j+1;
+                        if(CAnswers[i].equals(Answers[i][j]))PAnswers[i]=j;
                     }
                     NrVar[i] = map.get(i).getQuestionChoices().size();
                 }

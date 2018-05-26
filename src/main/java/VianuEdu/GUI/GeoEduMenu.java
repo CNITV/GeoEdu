@@ -23,6 +23,7 @@ public class GeoEduMenu {
     public static boolean[] pressed = new boolean[10];
     public static boolean[] hovered = new boolean[10];
     public static boolean ArrowPressed = false;
+    public static boolean correctTest = false;
     public static boolean editTest = false;
     private static boolean Panels_Hidden = false;
     public static boolean copyMousePressed = false;
@@ -264,6 +265,10 @@ public class GeoEduMenu {
 
             if(MousePressed != copyMousePressed && MousePressed == false && isTeacher == true && button == 4 && clasa == 9){
                 editTest=true;System.out.println("test");
+            }
+            else if(MousePressed != copyMousePressed && MousePressed == false && isTeacher == true && button == 4 && clasa == 10){
+                correctTest = true;Catalog.findUncorrectedTests();
+
             }
             g.setColor(new Color(164, 148, 110));
             g.fillRect(x, y, Width, Height);
@@ -616,7 +621,11 @@ public class GeoEduMenu {
 
         if(editTest==true){
             TestEditor.Paint(g);
-        }else{
+        }
+        else if(correctTest==true){
+            Catalog.Paint(g);
+        }
+        else{
             GeoEduMenu.generateBackground(g);
             if (ContentBrowser.showTest == true) Tests.Paint(g);
             GeoEduMenu.initializeButtons();
@@ -646,6 +655,7 @@ public class GeoEduMenu {
         if(editTest==true){
             TestEditor.Run();
         }
+        if(correctTest==true)Catalog.Run();
         if (Setari.SettingsOn == false) {
             mouseState();
             Panelstate();
