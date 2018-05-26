@@ -757,7 +757,7 @@ public class DatabaseHandler {
 				.url(serverURL + "/api/submitGrade/" + grade.getAnswerKey().getTestID())
 				.post(body)
 				.addHeader("content-type", "application/json")
-				.addHeader("authorization", "Basic " + Arrays.toString(Base64.getEncoder().encode((grade.getTeacher().getAccount().getUserName() + ":" + grade.getTeacher().getAccount().getPassword()).getBytes())))
+				.addHeader("authorization", "Basic " + Base64.getEncoder().encodeToString(((grade.getTeacher().getAccount().getUserName() + ":" + grade.getTeacher().getAccount().getPassword()).getBytes())))
 				.build();
 
 		Response response = client.newCall(request).execute();
@@ -823,7 +823,7 @@ public class DatabaseHandler {
 		Request request = new Request.Builder()
 				.url(serverURL + "/api/getCurrentGrades/" + subject)
 				.get()
-				.addHeader("Authentication", Arrays.toString(Base64.getEncoder().encode((student.getAccount().getUserName() + ":" + student.getAccount().getPassword()).getBytes())))
+				.addHeader("Authentication", "Basic " + Base64.getEncoder().encodeToString(((student.getAccount().getUserName() + ":" + student.getAccount().getPassword()).getBytes())))
 				.build();
 
 		Response response = client.newCall(request).execute();
@@ -867,7 +867,7 @@ public class DatabaseHandler {
 		Request request = new Request.Builder()
 				.url(serverURL + "/api/getUncorrectedTests/" + subject)
 				.get()
-				.addHeader("Authentication", Arrays.toString(Base64.getEncoder().encode((teacher.getAccount().getUserName() + ":" + teacher.getAccount().getPassword()).getBytes())))
+				.addHeader("Authentication", "Basic " + Base64.getEncoder().encodeToString(((teacher.getAccount().getUserName() + ":" + teacher.getAccount().getPassword()).getBytes())))
 				.build();
 
 		Response response = client.newCall(request).execute();
