@@ -1,5 +1,7 @@
 package VianuEdu.GUI;
 
+import VianuEdu.backend.TestLibrary.AnswerSheet;
+
 import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -89,16 +91,23 @@ public class ContentBrowser {
                             NumberContent = 0;
                             for (String TestID : ID) {
                                 test = Menu.Maner.getTest(TestID);
-                                ContentName.add(test.getTestName());
-                                ContentID.add(TestID);
-                                NumberContent++;
+                              try{
+
+                                  Menu.Maner.getAnswerSheet(TestID,UserImput.cookie);
+                                  Menu.Maner.getGrade(TestID,UserImput.cookie);
+
+                              }catch(IllegalAccessException e){
+                                  ContentName.add(test.getTestName());
+                                  ContentID.add(TestID);
+                                  NumberContent++;
+                              }
 
                             }
                         }
                     } catch (IOException e) {
                         //e.printStackTrace();
                     } catch (IllegalAccessException e) {
-                        // e.printStackTrace();
+                         e.printStackTrace();
                     }
                     dExercises = false;
                     dTest = true;

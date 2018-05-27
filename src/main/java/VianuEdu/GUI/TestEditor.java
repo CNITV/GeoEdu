@@ -983,7 +983,7 @@ public class TestEditor {
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (IllegalAccessException e) {
-                    e.printStackTrace();
+                   // e.printStackTrace();
                 }
             }
         } catch (IOException e) {
@@ -1293,7 +1293,7 @@ public class TestEditor {
             Question question;
 
                 if (i <= MPQuestions) question = new Question(Questions[i], QImage[i], a, Answers[i][PAnswers[i]]);
-                else question = new Question(Questions[i], QImage[i], Answers[i][PAnswers[i]]);
+                else question = new Question(Questions[i], QImage[i], "");
 
 
             map.put(i, question);

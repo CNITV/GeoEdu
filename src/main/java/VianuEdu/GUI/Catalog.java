@@ -1,5 +1,7 @@
 package VianuEdu.GUI;
 
+import VianuEdu.backend.Identification.Student;
+import VianuEdu.backend.TestLibrary.AnswerSheet;
 import VianuEdu.backend.TestLibrary.Grade;
 import VianuEdu.backend.TestLibrary.Question;
 import VianuEdu.backend.TestLibrary.Test;
@@ -10,7 +12,10 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.net.DatagramSocket;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 
 public class Catalog {
@@ -22,12 +27,16 @@ public class Catalog {
     public static String StudentID[] = new String[101];
     public static String StudentName[] = new String[101];
     public static String currentTestID;
+    public static String currentClass;
     public static Image img[] = new Image[101];
     public static BufferedImage lb;
     public static int Marks[] = new int[101];
+    public static Double Grades[][] = new Double[101][101];
     public static int LetterNumber = 9;
     public static int NrQuestions;
-    public static int NrStudents;
+    public static int MPQuestions;
+    public static int NrStudents=1;
+    public static int NrGrades = 4;
     public static int copyScreenWidth = Menu.ScreenWidth;
     public static int currentQuestion = 1;
     public static int currentStudent = 0;
@@ -37,11 +46,13 @@ public class Catalog {
     public static boolean catalog = false;
     public static boolean copyMousePressed = Menu.MousePressed;
     public static boolean TestChosen = false;
+    public static boolean classChosen = false;
     public static boolean NextQuestion = false;
     public static JLabel label = new JLabel();
     public static JTextArea essay = new JTextArea(10,20);
     public static JTextField mark = new JTextField();
     public static JScrollPane scroll = new JScrollPane(essay);
+    public static Test test = null;
     
     public static void drawBackground(Graphics g) {
 
@@ -61,7 +72,7 @@ public class Catalog {
             if (Name.equals("Teste Necorectate")) {
                 correctTest = true;
                 catalog = false;
-                if(copyMousePressed == false){
+                if(copyMousePressed == false && TestChosen == false){
                     findUncorrectedTests();
                 }
 
@@ -310,7 +321,7 @@ public class Catalog {
 
     public static void drawMark(Graphics g){
 
-        int x = Menu.ScreenWidth*4/5;
+        int x = Menu.ScreenWidth*31/40;
         int y = Menu.ScreenHeight/2;
 
         g.setColor(Color.WHITE);
@@ -365,7 +376,7 @@ public class Catalog {
     public static void drawImage(Graphics g){
 
         try {
-            g.drawImage(img[currentQuestion],(Menu.ScreenWidth-img[currentQuestion].getWidth(null))/2,Menu.ScreenHeight/4,null);
+            g.drawImage(img[currentQuestion],(Menu.ScreenWidth-img[currentQuestion].getWidth(null))/2,Menu.ScreenHeight/4+Menu.ScreenHeight/20,null);
         }
         catch (java.lang.NullPointerException e){
 
@@ -538,13 +549,78 @@ public class Catalog {
 
         if (xm > x && xm < x + width && ym > y && ym < y + height && Menu.MousePressed == true) {
 
-            if (GeoEduMenu.copyMousePressed == false) Setari.ButtonSound("button_click.wav");
+            if (copyMousePressed == false) Setari.ButtonSound("button_click.wav");
         } else if (xm > x && xm < x + width && ym > y && ym < y + height) {
-            if (GeoEduMenu.copyMousePressed == true) {
+            if (copyMousePressed == true) {
                NextQuestion = false;
-                sendData(StudentID[currentStudent]);
+                sendData();
                currentStudent++;
+               currentQuestion = 1;
                for(int i=1;i<=NrQuestions;i++)Marks[i]=0;
+            }
+        }
+        if (xm > x && xm < x + width && ym > y && ym < y + height && Menu.MousePressed == true) {
+            g.setColor(new Color(60, 60, 60));
+            g.fill3DRect(x, y, width, height, true);
+            g.setColor(Color.LIGHT_GRAY);
+            g.fill3DRect(x + 2, y + 2, width - 4, height - 4, true);
+            g.setColor(Color.WHITE);
+            g.drawRect(x, y, width, height);
+
+            Font small = new Font("Calibri", Font.PLAIN, UserImput.FontSize /3);
+            FontMetrics metricsy = g.getFontMetrics(small);
+            FontMetrics metricsx = g.getFontMetrics(small);
+            g.setColor(new Color(0, 0, 0));
+            g.setFont(small);
+            g.drawString(String.valueOf(Name), x + width / 2 - metricsx.stringWidth(String.valueOf(Name)) / 2, y + height / 2 + metricsy.getHeight() / 4);
+
+        } else if (xm > x && xm < x + width && ym > y && ym < y + height) {
+            g.setColor(new Color(255, 230, 31));
+            g.fill3DRect(x, y, width, height, false);
+            g.setColor(Color.BLACK);
+            g.fill3DRect(x + 2, y + 2, width - 4, height - 4, false);
+
+            Font small = new Font("Calibri", Font.PLAIN, UserImput.FontSize /3);
+            FontMetrics metricsy = g.getFontMetrics(small);
+            FontMetrics metricsx = g.getFontMetrics(small);
+            g.setColor(new Color(255, 231, 170));
+            g.setFont(small);
+            g.drawString(String.valueOf(Name), x + width / 2 - metricsx.stringWidth(String.valueOf(Name)) / 2, y + height / 2 + metricsy.getHeight() / 4);
+        } else {
+            g.setColor(new Color(60, 60, 60));
+            g.fill3DRect(x, y, width, height, false);
+            g.setColor(Color.BLACK);
+            g.fill3DRect(x + 2, y + 2, width - 4, height - 4, false);
+
+            Font small = new Font("Calibri", Font.PLAIN, UserImput.FontSize /3);
+            FontMetrics metricsy = g.getFontMetrics(small);
+            FontMetrics metricsx = g.getFontMetrics(small);
+            g.setColor(new Color(220, 220, 220));
+            g.setFont(small);
+            g.drawString(String.valueOf(Name), x + width / 2 - metricsx.stringWidth(String.valueOf(Name)) / 2, y + height / 2 + metricsy.getHeight() / 4);
+        }
+
+    }
+
+    public static void drawExitStudent(Graphics g, int x, int y, int width, int height, String Name) {
+
+        int xm = Menu.X_hovered;
+        int ym = Menu.Y_hovered;
+
+
+        if (xm > x && xm < x + width && ym > y && ym < y + height && Menu.MousePressed == true) {
+
+            if (copyMousePressed == false) Setari.ButtonSound("button_click.wav");
+        } else if (xm > x && xm < x + width && ym > y && ym < y + height) {
+            if (copyMousePressed == true) {
+                NextQuestion = false;
+                sendData();
+                currentStudent=0;
+                currentQuestion = 1;
+                TestChosen = false;
+                deleteData();
+                findUncorrectedTests();
+                for(int i=1;i<=NrQuestions;i++)Marks[i]=0;
             }
         }
         if (xm > x && xm < x + width && ym > y && ym < y + height && Menu.MousePressed == true) {
@@ -595,11 +671,263 @@ public class Catalog {
         drawStudentMap(g,Menu.ScreenWidth/16,Menu.ScreenHeight/6,Menu.ScreenWidth/8,Menu.ScreenHeight*3/4);
         drawQuestion(g,Questions[currentQuestion]);
         drawImage(g);
+        drawMap(g,NrQuestions);
+        drawMark(g);
         drawEssay(g,Menu.ScreenWidth/3,Menu.ScreenHeight*3/5,Menu.ScreenWidth/3,Menu.ScreenHeight/4);
         if(currentQuestion>1)drawPreviousButton(g);
         if(currentQuestion<NrQuestions)drawNextButton(g);
-        drawMap(g,NrQuestions);
-        drawMark(g);
+        if(currentQuestion==NrQuestions && currentStudent<NrStudents-1){
+            drawNextStudent(g,Menu.ScreenWidth*3/4,Menu.ScreenHeight*2/3,Menu.ScreenWidth/12,Menu.ScreenHeight/15,"Incarca punctaje");
+        }
+        if(currentQuestion==NrQuestions){
+            drawExitStudent(g,Menu.ScreenWidth*3/4,Menu.ScreenHeight*2/3+Menu.ScreenHeight/10,Menu.ScreenWidth/9,Menu.ScreenHeight/15,"Incarca punctaje si iesi");
+        }
+
+
+    }
+
+    public static void drawCatalogBox(Graphics g, int x, int y, int width, int height, int letter, int clasa){
+
+       if(Menu.X_hovered>x&&Menu.X_hovered<x+width&&Menu.Y_hovered>y&&Menu.Y_hovered<y+height &&Menu.MousePressed){
+
+           g.setColor(Color.BLACK);
+           g.fill3DRect(x,y,width,height,true);
+           g.setColor(Color.BLACK);
+           g.fill3DRect(x+3,y+3,width-6,height-6,true);
+           g.setColor(Color.WHITE);
+           g.drawRect(x,y,width,height);
+
+           Font small = new Font("Calibri", Font.BOLD, UserImput.FontSize );
+           FontMetrics metricsy = g.getFontMetrics(small);
+           FontMetrics metricsx = g.getFontMetrics(small);
+           g.setColor(Color.WHITE);
+           g.setFont(small);
+           g.drawString(String.valueOf(Class[clasa]+" "+Letter[letter]), x + width / 2 - metricsx.stringWidth(String.valueOf(Class[clasa]+" "+Letter[letter])) / 2, y + height / 2 + metricsy.getHeight() / 4);
+
+
+       }
+       else if(Menu.X_hovered>x&&Menu.X_hovered<x+width&&Menu.Y_hovered>y&&Menu.Y_hovered<y+height){
+
+           if(copyMousePressed==true){
+               Setari.ButtonSound("button_click.wav");
+               classChosen = true;
+               currentClass = Class[clasa]+" "+Letter[letter];
+               findClass(clasa+8,Letter[letter]);
+           }
+
+           g.setColor(new Color(241,207,98));
+           g.fill3DRect(x,y,width,height,false);
+           g.setColor(new Color(241,207,98));
+           g.fill3DRect(x+3,y+3,width-6,height-6,true);
+           g.setColor(Color.BLACK);
+           g.drawRect(x,y,width,height);
+
+           Font small = new Font("Calibri", Font.BOLD, UserImput.FontSize );
+           FontMetrics metricsy = g.getFontMetrics(small);
+           FontMetrics metricsx = g.getFontMetrics(small);
+           g.setColor(new Color(0, 0, 0));
+           g.setFont(small);
+           g.drawString(String.valueOf(Class[clasa]+" "+Letter[letter]), x + width / 2 - metricsx.stringWidth(String.valueOf(Class[clasa]+" "+Letter[letter])) / 2, y + height / 2 + metricsy.getHeight() / 4);
+
+       }
+       else {
+           g.setColor(Color.GRAY);
+           g.fill3DRect(x, y, width, height, false);
+           g.setColor(Color.LIGHT_GRAY);
+           g.fill3DRect(x + 3, y + 3, width - 6, height - 6, true);
+           g.setColor(Color.BLACK);
+           g.drawRect(x, y, width, height);
+
+           Font small = new Font("Calibri", Font.BOLD, UserImput.FontSize);
+           FontMetrics metricsy = g.getFontMetrics(small);
+           FontMetrics metricsx = g.getFontMetrics(small);
+           g.setColor(new Color(0, 0, 0));
+           g.setFont(small);
+           g.drawString(String.valueOf(Class[clasa] + " " + Letter[letter]), x + width / 2 - metricsx.stringWidth(String.valueOf(Class[clasa] + " " + Letter[letter])) / 2, y + height / 2 + metricsy.getHeight() / 4);
+       }
+
+    }
+
+    public static void drawCatalogTable(Graphics g, int StartX, int StartY, int Width, int Height){
+
+        int width = Width/(4);
+        int height = Height/(10);
+        Class[1] = "IX";
+        Class[2] = "X";
+        Class[3] = "XI";
+        Class[4] = "XII";
+        Letter[1] = "A";
+        Letter[2] = "B";
+        Letter[3] = "C";
+        Letter[4] = "D";
+        Letter[5] = "E";
+        Letter[6] = "F";
+        Letter[7] = "G";
+        Letter[8] = "H";
+        Letter[9] = "I";
+        for(int i = 1;i<=LetterNumber;i++){
+            for(int j = 1;j<=4;j++){
+                drawCatalogBox(g,StartX+(j-1)*width,StartY+(i-1)*height,width,height,i,j);
+            }
+        }
+    }
+
+    public static void drawCatalogCell(Graphics g, int x, int y, int width, int height, String Name){
+
+        g.setColor(Color.WHITE);
+        g.drawRect(x,y,width,height);
+        Font small;
+        if(Name=="Numele elevului"||Name == "Notele elevului"){
+             small = new Font("Calibri", Font.BOLD, UserImput.FontSize *10/30);
+        }
+        else {
+            small = new Font("Calibri", Font.PLAIN, UserImput.FontSize*10/30);
+        }
+        FontMetrics metricsy = g.getFontMetrics(small);
+        FontMetrics metricsx = g.getFontMetrics(small);
+        g.setFont(small);
+        g.drawString(String.valueOf(Name), x + width / 2 - metricsx.stringWidth(String.valueOf(Name)) / 2, y + height / 2 + metricsy.getHeight() / 4);
+    }
+
+    public static void drawCatalogExit(Graphics g, int x ,int y, int width, int height, String Name){
+
+        if (Menu.MousePressed == true && Menu.X_hovered>x&&Menu.X_hovered<x+width&&Menu.Y_hovered>y&&Menu.Y_hovered<y+height) {
+            if (GeoEduMenu.copyMousePressed != Menu.MousePressed && copyMousePressed == false) {
+                Setari.ButtonSound("button_click.wav");
+            }
+            g.setColor(new Color(55, 53, 53));
+            g.fillRoundRect(x, y, width, height, 15, 15);
+            g.setColor(new Color(220, 220, 220));
+            //g.drawRect(x, y, width, height);
+
+            Font small = new Font("Futura", Font.PLAIN, UserImput.FontSize / 2);
+            FontMetrics metricsy = g.getFontMetrics(small);
+            FontMetrics metricsx = g.getFontMetrics(small);
+            g.setColor(new Color(220, 220, 220));
+            g.setFont(small);
+            g.drawString(String.valueOf(Name), x + width / 2 - metricsx.stringWidth(String.valueOf(Name)) / 2, y + height / 2 + metricsy.getHeight() / 4);
+
+        } else if (Menu.X_hovered>x&&Menu.X_hovered<x+width&&Menu.Y_hovered>y&&Menu.Y_hovered<y+height) {
+
+
+            if(copyMousePressed == true){
+                for(int i=1;i<=NrStudents;i++){
+                    StudentName[i]=null;
+                    for(int j=0;j<=NrGrades;j++){
+                        Grades[i][j]=null;
+                    }
+                }
+                classChosen=false;
+            }
+
+            g.setColor(new Color(231, 198, 63));
+            g.fillRoundRect(x, y, width, height, 15, 15);
+            g.setColor(new Color(255, 231, 63));
+            //   g.drawRect(x, y, width, height);
+
+            Font small = new Font("Futura", Font.PLAIN, UserImput.FontSize / 2);
+            FontMetrics metricsy = g.getFontMetrics(small);
+            FontMetrics metricsx = g.getFontMetrics(small);
+            g.setColor(new Color(255, 231, 63));
+            g.setFont(small);
+            g.drawString(String.valueOf(Name), x + width / 2 - metricsx.stringWidth(String.valueOf(Name)) / 2, y + height / 2 + metricsy.getHeight() / 4);
+
+        } else {
+            g.setColor(new Color(255, 253, 253));
+            g.fillRoundRect(x, y, width, height, 15, 15);
+            g.setColor(new Color(0, 0, 0));
+            // g.drawRect(x, y, width, height);
+
+            Font small = new Font("Futura", Font.PLAIN, UserImput.FontSize / 2);
+            FontMetrics metricsy = g.getFontMetrics(small);
+            FontMetrics metricsx = g.getFontMetrics(small);
+            g.setColor(new Color(0, 0, 0));
+            g.setFont(small);
+            g.drawString(String.valueOf(Name), x + width / 2 - metricsx.stringWidth(String.valueOf(Name)) / 2, y + height / 2 + metricsy.getHeight() / 4);
+        }
+
+    }
+
+    public static void drawExit(Graphics g, int x ,int y, int width, int height, String Name){
+
+        if (Menu.MousePressed == true && Menu.X_hovered>x&&Menu.X_hovered<x+width&&Menu.Y_hovered>y&&Menu.Y_hovered<y+height) {
+            if (GeoEduMenu.copyMousePressed != Menu.MousePressed && copyMousePressed == false) {
+                Setari.ButtonSound("button_click.wav");
+            }
+            g.setColor(new Color(55, 53, 53));
+            g.fillRoundRect(x, y, width, height, 15, 15);
+            g.setColor(new Color(220, 220, 220));
+            //g.drawRect(x, y, width, height);
+
+            Font small = new Font("Futura", Font.PLAIN, UserImput.FontSize / 2);
+            FontMetrics metricsy = g.getFontMetrics(small);
+            FontMetrics metricsx = g.getFontMetrics(small);
+            g.setColor(new Color(220, 220, 220));
+            g.setFont(small);
+            g.drawString(String.valueOf(Name), x + width / 2 - metricsx.stringWidth(String.valueOf(Name)) / 2, y + height / 2 + metricsy.getHeight() / 4);
+
+        } else if (Menu.X_hovered>x&&Menu.X_hovered<x+width&&Menu.Y_hovered>y&&Menu.Y_hovered<y+height) {
+
+
+            if(copyMousePressed == true){
+                for(int i=1;i<=NrStudents;i++){
+                    StudentName[i]=null;
+                }
+                classChosen=false;
+                TestChosen = false;
+                GeoEduMenu.correctTest=false;
+            }
+
+            g.setColor(new Color(231, 198, 63));
+            g.fillRoundRect(x, y, width, height, 15, 15);
+            g.setColor(new Color(255, 231, 63));
+            //   g.drawRect(x, y, width, height);
+
+            Font small = new Font("Futura", Font.PLAIN, UserImput.FontSize / 2);
+            FontMetrics metricsy = g.getFontMetrics(small);
+            FontMetrics metricsx = g.getFontMetrics(small);
+            g.setColor(new Color(255, 231, 63));
+            g.setFont(small);
+            g.drawString(String.valueOf(Name), x + width / 2 - metricsx.stringWidth(String.valueOf(Name)) / 2, y + height / 2 + metricsy.getHeight() / 4);
+
+        } else {
+            g.setColor(new Color(255, 253, 253));
+            g.fillRoundRect(x, y, width, height, 15, 15);
+            g.setColor(new Color(0, 0, 0));
+            // g.drawRect(x, y, width, height);
+
+            Font small = new Font("Futura", Font.PLAIN, UserImput.FontSize / 2);
+            FontMetrics metricsy = g.getFontMetrics(small);
+            FontMetrics metricsx = g.getFontMetrics(small);
+            g.setColor(new Color(0, 0, 0));
+            g.setFont(small);
+            g.drawString(String.valueOf(Name), x + width / 2 - metricsx.stringWidth(String.valueOf(Name)) / 2, y + height / 2 + metricsy.getHeight() / 4);
+        }
+
+    }
+
+    public static void drawCatalog(Graphics g, int x, int y, int Width, int Height, String clasa){
+
+        int width = Width/5;
+        int height = Height/NrStudents;
+
+        for(int i=0;i<=NrStudents;i++){
+            if(i==0){
+                drawCatalogCell(g, x , y + i * height, width, height, "Numele elevului");
+                drawCatalogCell(g,x+width,y,4*width,height,"Notele elevului");
+            }
+            else {
+                drawCatalogCell(g,x,y+i*height,width,height,StudentName[i]);
+                for (int j = 0; j < NrGrades; j++) {
+
+                    if (Grades[i][j] != null)
+                        drawCatalogCell(g, x + (j + 1) * width, y + i * height, width, height, Grades[i][j].toString());
+                    else {
+                        drawCatalogCell(g, x + (j + 1) * width, y + i * height, width, height, "");
+                    }
+                }
+            }
+        }
 
     }
 
@@ -610,7 +938,8 @@ public class Catalog {
         if(correctTest == true){
 
             if(TestChosen == false){
-                drawCorrectTable(g,Menu.ScreenWidth/10,Menu.ScreenHeight/7,Menu.ScreenWidth*4/5,Menu.ScreenHeight*5/6);
+                drawCorrectTable(g,Menu.ScreenWidth/6,Menu.ScreenHeight/7,Menu.ScreenWidth*2/3,Menu.ScreenHeight*5/6);
+                drawExit(g,Menu.ScreenWidth*26/30,Menu.ScreenHeight*5/6,Menu.ScreenWidth/20,Menu.ScreenHeight/20,"Iesire");
             }
             else{
                 drawCorrectEditor(g);
@@ -618,6 +947,15 @@ public class Catalog {
 
         }
         else if (catalog == true) {
+
+            if(classChosen==true){
+                drawCatalog(g,Menu.ScreenWidth/6,Menu.ScreenHeight/7,Menu.ScreenWidth*2/3,Menu.ScreenHeight*45/60,currentClass);
+                drawCatalogExit(g,Menu.ScreenWidth*26/30,Menu.ScreenHeight*5/6,Menu.ScreenWidth/20,Menu.ScreenHeight/20,"Iesire");
+            }
+            else{
+                drawCatalogTable(g,Menu.ScreenWidth/6,Menu.ScreenHeight/7,Menu.ScreenWidth*2/3,Menu.ScreenHeight*5/6);
+                drawExit(g,Menu.ScreenWidth*26/30,Menu.ScreenHeight*5/6,Menu.ScreenWidth/20,Menu.ScreenHeight/20,"Iesire");
+            }
 
         }
         copyMousePressed = Menu.MousePressed;
@@ -627,7 +965,7 @@ public class Catalog {
         for(int i=1;i<=n;i++){
             try {
                 img[i] = ImageIO.read(new ByteArrayInputStream(image[i]));
-                img[i] = img[i].getScaledInstance(Menu.ScreenWidth/4, Menu.ScreenHeight/4,2);
+                img[i] = img[i].getScaledInstance(Menu.ScreenWidth/5, Menu.ScreenHeight/5,2);
             } catch (IOException e) {
                 e.printStackTrace();
             }catch(java.lang.NullPointerException e){
@@ -638,14 +976,56 @@ public class Catalog {
 
     }
 
-    public static void sendData(String studentID){
+    public static void sendData(){
 
+
+        Grade grade = null;
+        try {
+            System.out.println(Menu.Maner.getAnswerSheet(currentTestID,StudentID[currentStudent]));
+            grade = new Grade(Menu.Maner.getAnswerSheet(currentTestID,StudentID[currentStudent]), test.getAnswerKey(), UserImput.teacher, test.getNormalQuestionPercentage());
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        for(int i=1;i<=NrQuestions;i++){
+            grade.EvaluateAnswer(MPQuestions+i, (double) Marks[i]);
+        }
+        try {
+            Menu.Maner.submitGrade(grade);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void deleteData(){
+
+        test = null;
+        currentTestID = null;
+        essay.setText(null);
+        essay.setVisible(false);
+        scroll.setVisible(false);
+        mark.setText(null);
+        mark.setVisible(false);
+        for(int i=1;i<=NrQuestions;i++){
+            Questions[i] = null;
+        }
+        for(int i=0;i<NrStudents;i++){
+            for(int j=1;j<=NrQuestions;j++){
+                Answers[i][j]=null;
+            }
+            StudentID[i]=null;
+            StudentName[i]=null;
+        }
+        NrQuestions=1;
+        NrStudents=0;
 
     }
 
     public static void findCorrectioncontent(String testID){
 
-        Test test = null;
         byte Img[][] = new byte[101][];
 
         int ind = 0;
@@ -656,7 +1036,7 @@ public class Catalog {
             HashMap<Integer, Question> q = test.getContents();
             for(int i=0;i<student.size();i++){
                 StudentID[i]=student.get(i);
-                StudentName[i] = "<html>"+Menu.Maner.getStudent(StudentID[currentStudent]).getFirstName()+" "+Menu.Maner.getStudent(StudentID[currentStudent]).getLastName()+"<html>";
+                StudentName[i] =Menu.Maner.getStudent(StudentID[i]).getFirstName()+" "+Menu.Maner.getStudent(StudentID[i]).getLastName();
                 HashMap<Integer, String> answers = Menu.Maner.getAnswerSheet(testID,student.get(i)).getAnswers();
                 ind = 0;
                 for(int j=1;j<=answers.size();j++){
@@ -668,12 +1048,12 @@ public class Catalog {
            ind = 0;
             for(int i=1;i<=q.size();i++){
                 if(test.isMultipleAnswer(i)==false){
-                    Questions[++ind] = q.get(i).getQuestion();
+                    Questions[++ind] =  "<html>"+q.get(i).getQuestion()+ "<html>";
                     Img[ind] = q.get(i).getImage();
                 }
 
             }
-            NrStudents = student.size();
+            MPQuestions = q.size()-ind;
             readImages(ind,Img);
             NrQuestions = ind;
         } catch (IllegalAccessException e) {
@@ -726,10 +1106,44 @@ public class Catalog {
         }
     }
 
+    public static void findClass(int grade, String letter){
+
+        ArrayList<Student> cls = new ArrayList<>();
+        try {
+            cls = Menu.Maner.listClassbook(grade, letter);
+            cls.sort(new SortbyName());
+            System.out.println(cls.get(0));
+            NrStudents=cls.size();
+            for(int i=0;i<NrStudents;i++){
+                StudentName[i+1] = cls.get(i).getFirstName()+" "+cls.get(i).getLastName();
+                try {
+                    ArrayList<Grade> note = Menu.Maner.getCurrentGrades(cls.get(i), "Geo");
+                    for (int j = 0; j < note.size(); j++) {
+                        Grades[i+1][j] = note.get(j).getCurrentGrade();
+                    }
+                } catch (IllegalAccessException e){
+
+                }
+            }
+        } catch (IllegalAccessException e) {
+            //e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     public static void Run(){
 
         UserImput.initilaizeDimensions();
 
     }
+    static class SortbyName implements Comparator<Student>
+    {
 
+        @Override
+        public int compare(Student o1, Student o2) {
+            return o1.getFirstName().compareTo(o2.getFirstName());
+        }
+    }
 }

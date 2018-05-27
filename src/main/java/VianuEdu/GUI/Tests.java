@@ -101,7 +101,7 @@ public class Tests {
         for(int i=1;i<=n;i++){
             try {
                 img[i] = ImageIO.read(new ByteArrayInputStream(Image[i]));
-                img[i] = img[i].getScaledInstance(Menu.ScreenWidth/4, Menu.ScreenHeight/4,2);
+                img[i] = img[i].getScaledInstance(Menu.ScreenWidth/5, Menu.ScreenHeight/5,2);
             } catch (IOException e) {
                 e.printStackTrace();
             }catch(java.lang.NullPointerException e){
@@ -152,7 +152,7 @@ public class Tests {
     public static void drawImage(Graphics g){
 
         try {
-            g.drawImage(img[currentQuestion],(Menu.ScreenWidth-img[currentQuestion].getWidth(null))/2,Menu.ScreenHeight/4,null);
+            g.drawImage(img[currentQuestion],(Menu.ScreenWidth-img[currentQuestion].getWidth(null))/2,Menu.ScreenHeight*10/45,null);
         }
         catch (java.lang.NullPointerException e){
 
@@ -421,7 +421,7 @@ public class Tests {
                 ContentBrowser.showTest = false;
                 beginTest = false;
                 essay.setText(null);
-                System.out.println("nuuu");
+               ContentBrowser.getInfo();
                 for(int i=1; i<=NrQuestions;i++){
                     Question[i]=null;
                     RAnswers[i]=null;
