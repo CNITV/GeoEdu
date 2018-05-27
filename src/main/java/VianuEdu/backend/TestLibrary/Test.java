@@ -238,7 +238,7 @@ public class Test {
 
 		for (Question question : contents.values()) {
 			if (question.getQuestionType().equals("multiple-choice") || question.getQuestionType().equals("multiple-choice + image")) {
-				result.addAnswer(questionNumber, "[MULTIPLE_ANSWER] " + question.getAnswer().substring(0, 1));
+				result.addAnswer(questionNumber, "[MULTIPLE_ANSWER] " + question.getAnswer());
 			} else {
 				result.addAnswer(questionNumber, question.getAnswer());
 			}
