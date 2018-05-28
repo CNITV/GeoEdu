@@ -15,7 +15,7 @@ public class GeoEduMenu {
     public static int Rightpanel = ScreenWidth;
     public static int PanelWidth = ScreenWidth / 5;
     public static int PanelHeight = ScreenHeight;
-    private static int Font_size = 60;
+    private static int Font_size = 60*ScreenWidth/1920*(50+UserImput.size)/100;
     public static int currentClass;
     public static int Relativesize = Font_size;
     public static boolean[] classPressed = new boolean[10];
@@ -25,6 +25,7 @@ public class GeoEduMenu {
     public static boolean ArrowPressed = false;
     public static boolean correctTest = false;
     public static boolean editTest = false;
+    public static boolean profil = false;
     private static boolean Panels_Hidden = false;
     public static boolean copyMousePressed = false;
     public static String[] Button_name = new String[10];
@@ -391,6 +392,10 @@ public class GeoEduMenu {
             showClasses(g, i);
         } else if (hovered[i] == true) {
             if (MousePressed == false && copyMousePressed == true && i == 1 && Tests.beginTest==false) returnMenu();
+            else if(copyMousePressed==true && i == 4 && isTeacher==false){
+                profil = true;
+                Status.findInfo();
+            }
             AnimateFont();
             g.setColor(new Color(138, 114, 23));
             g.fillRect(x, y, Width, Height);
@@ -472,14 +477,13 @@ public class GeoEduMenu {
             Button_name[2] = "Exercitii";
             Button_name[3] = "Teste";
             Button_name[4] = "Profesor";
-            Button_name[5] = "Status";
-            Button_name[6] = "Setari";
+            Button_name[5] = "Setari";
         }
         else {
             Button_name[1] = "Meniu";
             Button_name[2] = "Exercitii";
             Button_name[3] = "Teste";
-            Button_name[4] = "Status";
+            Button_name[4] = "Profil";
             Button_name[5] = "Setari";
         }
     }
@@ -530,16 +534,15 @@ public class GeoEduMenu {
 
     public static void initializeDimensions() {
 
-        if(isTeacher == true)NrButtons = 6;
-        else NrButtons = 5;
+       NrButtons=5;
         PanelWidth = ScreenWidth / 5;
         PanelHeight = ScreenHeight;
         ButtonWidth = PanelWidth;
         ButtonHeight = PanelHeight / (NrButtons+1) * 4 / 5;
         ClassHeight = ButtonHeight / 2;
         ClassWidth = ButtonWidth * 2 / 3;
-        Font_size = ScreenWidth * 60 / 1920;
-        if (ScreenHeight * 60 / 1080 < Font_size) Font_size = ScreenHeight * 60 / 1080;
+        Font_size = 60*ScreenWidth/1920*(50+UserImput.size)/100;
+        if (ScreenHeight * 60 / 1080 < Font_size) Font_size = ScreenHeight * 60 / 1080*(50+UserImput.size)/100;
         Relativesize = Font_size * 5 / 4;
     }
 
@@ -625,6 +628,9 @@ public class GeoEduMenu {
         else if(correctTest==true){
             Catalog.Paint(g);
         }
+        else if(profil==true){
+            Status.Paint(g);
+        }
         else{
             GeoEduMenu.generateBackground(g);
             if (ContentBrowser.showTest == true) Tests.Paint(g);
@@ -655,6 +661,7 @@ public class GeoEduMenu {
         if(editTest==true){
             TestEditor.Run();
         }
+        if(profil==true)Status.Run();
         if(correctTest==true)Catalog.Run();
         if (Setari.SettingsOn == false) {
             mouseState();

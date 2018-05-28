@@ -20,6 +20,7 @@
 
 package VianuEdu.GUI;
 
+import javax.jws.soap.SOAPBinding;
 import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
@@ -31,6 +32,7 @@ public class Setari extends JPanel {
     private static boolean copy_pressed = false;
     public static boolean SettingsOn = false;
     private static int precentage = 50;
+    public static int precentage2 = 100;
     private static boolean copyMousePressed = false;
     private static boolean ExitPressed = false;
     private static boolean ExitHovered = false;
@@ -196,6 +198,74 @@ public class Setari extends JPanel {
 
     }
 
+    public static void drawFontBar(Graphics g, int percentage) {
+
+        int y = Menu.ScreenHeight / 4 + Menu.ScreenHeight / 3;
+
+        Font small = new Font("Futura", Font.PLAIN, GeoEduMenu.Relativesize / 4);
+        FontMetrics metricsy = g.getFontMetrics(small);
+        FontMetrics metricsx = g.getFontMetrics(small);
+        g.setColor(new Color(250, 250, 250));
+        g.setFont(small);
+        g.drawString(String.valueOf("Dimensiune font:"), Menu.ScreenWidth / 4 + Menu.ScreenWidth / 50, y);
+
+        small = new Font("Futura", Font.PLAIN, GeoEduMenu.Relativesize / 2);
+         metricsx = g.getFontMetrics(small);
+        int BarWidth = Menu.ScreenWidth / 3;
+        int BarHeight = Menu.ScreenHeight / 30;
+        int x = Menu.ScreenWidth / 2 - BarWidth / 2 + metricsx.stringWidth("Volum:") / 2;
+        y -= metricsy.getHeight() * 2 / 3;
+
+        g.setColor(new Color(250, 250, 250));
+        g.drawRect(x, y, BarWidth, BarHeight);
+
+        if (FindPercentage2(x, y, BarWidth, BarHeight) != -1 && Menu.MousePressed == true)
+            precentage2 = FindPercentage2(x, y, BarWidth, BarHeight);
+            UserImput.size=percentage/2;
+
+        g.setColor(new Color(255, 247, 213));
+        g.fillRect(x, y, BarWidth * percentage / 100, BarHeight);
+
+        small = new Font("Consolas", Font.PLAIN, GeoEduMenu.Relativesize / 2);
+        metricsy = g.getFontMetrics(small);
+        metricsx = g.getFontMetrics(small);
+        g.setColor(new Color(250, 250, 250));
+        g.setFont(small);
+        g.drawString(String.valueOf(percentage + " %"), x + BarWidth / 2 - metricsx.stringWidth(percentage + " %") / 2, y + BarHeight + metricsy.getHeight());
+        DrawEnd(g, x + BarWidth * percentage / 100, y, BarWidth / 50, BarHeight * 5 / 4);
+
+    }
+
+    public static int FindPercentage2(int x, int y, int Width, int height) {
+
+        int X = MouseInfo.getPointerInfo().getLocation().x - Menu.XFrame;
+        int Y = MouseInfo.getPointerInfo().getLocation().y - Menu.YFrame;
+
+        if (X >= x && X < x + Width) {
+            if (Y >= y + height / 2 && Y <= y + height * 2) {
+                if (Menu.MousePressed == true && Menu.MousePressed != copyMousePressed) ButtonSound("button_click.wav");
+                copyMousePressed = Menu.MousePressed;
+                return (X - x) * 100 / Width;
+
+            }
+        } else if (X < x) {
+            if (Y >= y + height / 2 && Y <= y + 2 * height) {
+                if (Menu.MousePressed == true && Menu.MousePressed != copyMousePressed) ButtonSound("button_click.wav");
+                copyMousePressed = Menu.MousePressed;
+                return 0;
+
+            }
+        } else if (X > x) {
+            if (Y >= y + height / 2 && Y <= y + 2 * height) {
+                if (Menu.MousePressed == true && Menu.MousePressed != copyMousePressed) ButtonSound("button_click.wav");
+                copyMousePressed = Menu.MousePressed;
+                return 100;
+
+            }
+        }
+        return -1;
+    }
+
     /**
      * This method translates the mouse position into the percentage of the volume in the volume bar
      *
@@ -298,6 +368,7 @@ public class Setari extends JPanel {
         g.drawRect(Menu.ScreenWidth / 4 + Menu.ScreenWidth / 100, Menu.ScreenHeight / 4 + metricsy.getHeight() + Menu.ScreenHeight / 100, PanelWidth - Menu.ScreenWidth / 50, PanelHeight - metricsy.getHeight() - Menu.ScreenHeight / 50);
 
         drawVolumeBar(g, precentage);
+        drawFontBar(g,precentage2);
         Exit_Pressed();
         DrawExit(g, Menu.ScreenWidth / 4 + PanelWidth * 29 / 30, Menu.ScreenHeight / 4, PanelWidth / 30, PanelWidth / 30);
     }
@@ -320,6 +391,7 @@ public class Setari extends JPanel {
             DrawSettings(g);
             Tests.essay.setVisible(false);
         }
+        UserImput.initilaizeDimensions();
     }
 }
 

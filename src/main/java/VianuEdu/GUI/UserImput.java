@@ -22,7 +22,8 @@ public class UserImput extends JPanel {
     public static int ScreenHeight = Menu.ScreenHeight;
     public static int ScreenWidth = Menu.ScreenWidth;
     public static int NrButtons = 2;
-    public static int FontSize = 60 * ScreenWidth / 1920;
+    public static int size = 50;
+    public static int FontSize = 60 * ScreenWidth / 1920*(size+50)/100;
     public static boolean Login = true;
     public static boolean showMessage = false;
     public static boolean Register = true;
@@ -611,8 +612,8 @@ public class UserImput extends JPanel {
 
         ScreenWidth = Menu.ScreenWidth;
         ScreenHeight = Menu.ScreenHeight;
-        FontSize = 60 * ScreenWidth / 1920;
-        if (60 * ScreenHeight / 1080 < FontSize) FontSize = 60 * ScreenHeight / 1080;
+        FontSize = 60 * ScreenWidth / 1920*(50+size)/100;
+        if (60 * ScreenHeight / 1080 < FontSize) FontSize = 60 * ScreenHeight / 1080*(50+size)/100;
     }
 
     public static void MouseState() {

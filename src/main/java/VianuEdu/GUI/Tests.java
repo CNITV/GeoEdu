@@ -10,7 +10,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.time.Clock;
-
+import java.util.Random;
 
 
 public class Tests {
@@ -32,6 +32,7 @@ public class Tests {
     public static boolean isCalculated = false;
     public static boolean ChoiceQuestion[] = new boolean[101];
     public static int CAnswer[] = new int[1001];
+    public static int rand[] = new int[101];
     public static int NrQuestions = 3;
     public static int copyScreenWidth = Menu.ScreenWidth;
     public static int currentQuestion = 1;
@@ -57,14 +58,6 @@ public class Tests {
         currentQuestion = 1;
         essay.setVisible(false);
         scroll.setVisible(false);
-        for(int i=0;i<= NrQuestions;i++){
-            CAnswer[i]=0;
-            ChoiceQuestion[i]=false;
-            RAnswers[i] = null;
-            SAnswers[i]=null;
-            Essays[i] = null;
-        }
-
         try {System.out.println("dddd");
             Test test;
             if(Menu.isTeacher==true){
@@ -72,6 +65,14 @@ public class Tests {
             }
             else {
                  test = Menu.Maner.getTest(Name);
+            }
+            NrQuestions = test.getContents().size();
+            for(int i=0;i<= NrQuestions;i++){
+                CAnswer[i]=0;
+                ChoiceQuestion[i]=false;
+                RAnswers[i] = null;
+                SAnswers[i]=null;
+                Essays[i] = null;
             }
             TestID = Name;
             TestName = test.getTestName();
@@ -88,6 +89,7 @@ public class Tests {
                 }
             }
             readImages(test.getContents().size());
+            randomise();
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -139,7 +141,7 @@ public class Tests {
         if (QuestionGenerated == false || Menu.ScreenWidth != copyScreenWidth) {
             label.setFont(f);
             label.setForeground(new Color(255, 255, 255));
-            essay.setText(Essays[currentQuestion]);
+            essay.setText(Essays[rand[currentQuestion]]);
             Window.frame.add(label);
             lb = labeltoImage(label);
             scaled=false;
@@ -152,7 +154,7 @@ public class Tests {
     public static void drawImage(Graphics g){
 
         try {
-            g.drawImage(img[currentQuestion],(Menu.ScreenWidth-img[currentQuestion].getWidth(null))/2,Menu.ScreenHeight*10/45,null);
+            g.drawImage(img[rand[currentQuestion]],(Menu.ScreenWidth-img[rand[currentQuestion]].getWidth(null))/2,Menu.ScreenHeight*10/45,null);
         }
         catch (java.lang.NullPointerException e){
 
@@ -170,7 +172,7 @@ public class Tests {
         int x = Menu.X_hovered;
         int y = Menu.Y_hovered;
         if (x > Menu.ScreenWidth / 3 && x < 2 * Menu.ScreenWidth / 3 && y > Menu.ScreenHeight / 2 + p * AnswerHeight && y < Menu.ScreenHeight / 2 + (p + 1) * AnswerHeight && Menu.MousePressed == true) { {
-            CAnswer[currentQuestion] = p;
+            CAnswer[rand[currentQuestion]] = p;
         }
             if (Menu.MousePressed == true && GeoEduMenu.copyMousePressed == false)
                 Setari.ButtonSound("button_click.wav");
@@ -178,7 +180,7 @@ public class Tests {
 
         g.setColor(new Color(10, 10, 10));
         g.fill3DRect(Menu.ScreenWidth / 3, Menu.ScreenHeight / 2 + p * AnswerHeight, AnswerWidth, AnswerHeight, false);
-        if (CAnswer[currentQuestion] == p) {
+        if (CAnswer[rand[currentQuestion]] == p) {
             g.setColor(color);
             g.fill3DRect(Menu.ScreenWidth / 3, Menu.ScreenHeight / 2 + p * AnswerHeight, AnswerHeight, AnswerHeight, true);
         } else {
@@ -419,6 +421,8 @@ public class Tests {
             if (GeoEduMenu.copyMousePressed == true) {
                 Test_finished = true;
                 ContentBrowser.showTest = false;
+                ContentBrowser.ContentName.clear();
+                ContentBrowser.ContentID.clear();
                 beginTest = false;
                 essay.setText(null);
                ContentBrowser.getInfo();
@@ -640,6 +644,29 @@ public class Tests {
         else scroll.setVisible(false);
     }
 
+    public static void randomise(){
+        int mp=1;
+        for(int i=1;i<=NrQuestions;i++){
+            rand[i] = i;
+            if(ChoiceQuestion[i]==true)mp=i+1;
+        }
+        int temp, ind;
+        Random random = new Random();
+        for(int i=mp-1;i>0; i--){
+            ind = random.nextInt(i+1);
+
+            if(ind>0&&ind<mp) {
+                temp = rand[i];
+                rand[i] = rand[ind];
+                rand[ind] = temp;
+            }
+
+        }
+        for(int i=1;i<=NrQuestions;i++){
+            System.out.println(rand[i]);
+        }
+    }
+
     public static void calculateResult(){
         int total =0;
         int correct = 0;
@@ -671,7 +698,7 @@ public class Tests {
 
     }
 
-    public static void drawContent(Graphics g, int currentQuestion, int nrAnswers) {
+    public static void drawContent(Graphics g , int nrAnswers) {
 
         if (beginTest == false&& endTest ==false) drawBeginScreen(g, TestName);
         else if(endTest ==true){
@@ -682,25 +709,25 @@ public class Tests {
             drawbackground(g);
             drawImage(g);
             try {
-                drawQuestion(g, Question[currentQuestion]);
+                drawQuestion(g, Question[rand[currentQuestion]]);
             }
             catch (java.lang.NullPointerException e){
 
             }
-            if(ChoiceQuestion[currentQuestion]==true) {
+            if(ChoiceQuestion[rand[currentQuestion]]==true) {
                 for (int i = 1; i <= nrAnswers; i++) {
-                    if (CAnswer[currentQuestion] != i) drawAnswer(g, Answers[currentQuestion][i], i);
+                    if (CAnswer[rand[currentQuestion]] != i) drawAnswer(g, Answers[rand[currentQuestion]][i], i);
                 }
-                if (CAnswer[currentQuestion] != 0) {
-                    drawAnswer(g, Answers[currentQuestion][CAnswer[currentQuestion]], CAnswer[currentQuestion]);
-                    SAnswers[currentQuestion] = Answers[currentQuestion][CAnswer[currentQuestion]];
+                if (CAnswer[rand[currentQuestion]] != 0) {
+                    drawAnswer(g, Answers[rand[currentQuestion]][CAnswer[rand[currentQuestion]]], CAnswer[rand[currentQuestion]]);
+                    SAnswers[rand[currentQuestion]] = Answers[rand[currentQuestion]][CAnswer[rand[currentQuestion]]];
                 }
                 essay.setVisible(false);
                 scroll.setVisible(false);
             }
             else {
                 drawEssay(g,Menu.ScreenWidth/3,Menu.ScreenHeight/2,Menu.ScreenWidth/3,Menu.ScreenHeight/3);
-                Essays[currentQuestion] = essay.getText();
+                Essays[rand[currentQuestion]] = essay.getText();
             }
             if(Setari.SettingsOn==true)essay.setVisible(false);
             if (currentQuestion < NrQuestions) drawNextButton(g);
@@ -717,10 +744,11 @@ public class Tests {
         AnswerSheet sheet = new AnswerSheet(UserImput.student,TestID,NrQuestions);
 
         for(int i=1;i<=NrQuestions;i++){
-            System.out.println("DAaa");
+
             if(ChoiceQuestion[i]==false)sheet.addAnswer(i,Essays[i]);
             else{
                 sheet.addMultipleChoiceAnswer(i,SAnswers[i]);
+                System.out.println(Question[i]+" "+SAnswers[i]+" "+CAnswer[i]);
             }
         }
 
@@ -745,12 +773,12 @@ public class Tests {
 
     public static void Paint(Graphics g) {
 
-        if(Test_finished==false) drawContent(g, currentQuestion, NrAnswers[currentQuestion]);
+        if(Test_finished==false) drawContent(g, NrAnswers[rand[currentQuestion]]);
     }
 
     public static void Run() {
 
-        updateQuestionNumber();
+        //updateQuestionNumber();
         UserImput.initilaizeDimensions();
         if (endTest == true && isCalculated==false) {
             calculateResult();

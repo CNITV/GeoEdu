@@ -225,6 +225,8 @@ public class StartMenu {
                 button_start = -NrButtons * ButtonHeight;
                 Menu.isTeacher = false;
                 UserImput.Login = true;
+                ContentBrowser.ContentName.clear();
+                ContentBrowser.ContentID.clear();
             }
             g.setColor(new Color(231, 198, 63));
             g.fillRoundRect(x, y, width, height, 15, 15);

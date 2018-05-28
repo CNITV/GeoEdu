@@ -91,21 +91,35 @@ public class ContentBrowser {
                             NumberContent = 0;
                             for (String TestID : ID) {
                                 test = Menu.Maner.getTest(TestID);
+                                boolean ok=false;
                               try{
 
                                   Menu.Maner.getAnswerSheet(TestID,UserImput.cookie);
-                                  Menu.Maner.getGrade(TestID,UserImput.cookie);
-
                               }catch(IllegalAccessException e){
-                                  ContentName.add(test.getTestName());
-                                  ContentID.add(TestID);
-                                  NumberContent++;
+                                 try{
+                                     Menu.Maner.getGrade(TestID,UserImput.cookie);
+                                     System.out.println("DDDDDDD");
+                                 }catch(IOException e1){
+                                     ContentName.add(test.getTestName());
+                                     ContentID.add(TestID);
+                                     NumberContent++;
+                                 }
+                                 catch (IllegalAccessException e1){
+                                     e1.printStackTrace();
+                                     ContentName.add(test.getTestName());
+                                     ContentID.add(TestID);
+                                     NumberContent++;
+                                 }catch(IllegalArgumentException e1){
+                                     ContentName.add(test.getTestName());
+                                     ContentID.add(TestID);
+                                     NumberContent++;
+                                 }
                               }
 
                             }
                         }
                     } catch (IOException e) {
-                        //e.printStackTrace();
+                        e.printStackTrace();
                     } catch (IllegalAccessException e) {
                          e.printStackTrace();
                     }
@@ -129,8 +143,8 @@ public class ContentBrowser {
         int width = ContentBrowserWidth / 9;
         int height = ContentBrowserHeight;
         if (x > xbar && x < xbar + width && y > ybar && y < ybar + height) {
-            g.setColor(new Color(200, 200, 200));
-            g.fillRect(xbar, ybar, width, height);
+           // g.setColor(new Color(200, 200, 200));
+           // g.fillRect(xbar, ybar, width, height);
         }
 
     }

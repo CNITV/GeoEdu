@@ -81,6 +81,7 @@ public class Menu extends JPanel implements ActionListener {
         Window.frame.add(Tests.scroll);
         Window.frame.add(Catalog.scroll);
         Window.frame.add(Catalog.mark);
+        Window.frame.add(Status.Npassword);
         TestEditor.initialiseTextboxes();
         addMouseListener(new Control());
         setFocusable(true);

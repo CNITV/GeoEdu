@@ -552,6 +552,7 @@ public class Catalog {
             if (copyMousePressed == false) Setari.ButtonSound("button_click.wav");
         } else if (xm > x && xm < x + width && ym > y && ym < y + height) {
             if (copyMousePressed == true) {
+                Marks[currentQuestion] = Integer.valueOf(mark.getText());
                NextQuestion = false;
                 sendData();
                currentStudent++;
@@ -613,6 +614,7 @@ public class Catalog {
             if (copyMousePressed == false) Setari.ButtonSound("button_click.wav");
         } else if (xm > x && xm < x + width && ym > y && ym < y + height) {
             if (copyMousePressed == true) {
+                Marks[currentQuestion] = Integer.valueOf(mark.getText());
                 NextQuestion = false;
                 sendData();
                 currentStudent=0;
@@ -818,6 +820,7 @@ public class Catalog {
                     }
                 }
                 classChosen=false;
+                NrStudents = 0;
             }
 
             g.setColor(new Color(231, 198, 63));
@@ -948,6 +951,8 @@ public class Catalog {
         }
         else if (catalog == true) {
 
+            mark.setVisible(false);
+            essay.setVisible(false);
             if(classChosen==true){
                 drawCatalog(g,Menu.ScreenWidth/6,Menu.ScreenHeight/7,Menu.ScreenWidth*2/3,Menu.ScreenHeight*45/60,currentClass);
                 drawCatalogExit(g,Menu.ScreenWidth*26/30,Menu.ScreenHeight*5/6,Menu.ScreenWidth/20,Menu.ScreenHeight/20,"Iesire");
@@ -989,7 +994,8 @@ public class Catalog {
             e.printStackTrace();
         }
         for(int i=1;i<=NrQuestions;i++){
-            grade.EvaluateAnswer(MPQuestions+i, (double) Marks[i]);
+            grade.EvaluateAnswer(MPQuestions+i, (double) Marks[i]*10);
+            System.out.println(Marks[i]);
         }
         try {
             Menu.Maner.submitGrade(grade);
