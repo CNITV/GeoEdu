@@ -233,6 +233,64 @@ public class DatabaseHandler {
 	}
 
 	/**
+	 * Changes the password of the provided Teacher object to the new one provided.
+	 *
+	 * @param student The Student for which to change the password.
+	 * @param newPassword The new password to change to.
+	 * @return The new Student object in the database.
+	 * @throws IOException Most likely thrown if the device doesn't have a connection.
+	 */
+	public Student changeStudentPassword(Student student, String newPassword) throws IOException {
+		OkHttpClient client = new OkHttpClient();
+
+		MediaType mediaType = MediaType.parse("text/plain");
+		RequestBody body = RequestBody.create(mediaType, newPassword);
+		Request request = new Request.Builder()
+				.url(serverURL + "/api/changeStudentPassword")
+				.post(body)
+				.addHeader("Authorization", "Basic " + Base64.getEncoder().encodeToString((student.getAccount().getUserName() + ":" + student.getAccount().getPassword()).getBytes()) )
+				.build();
+
+		Response response = client.newCall(request).execute();
+		if (response.code() == 401) {
+			throw new IllegalArgumentException("Invalid username and password combination! (Student might not exist?)");
+		}
+		response.close();
+
+		student.getAccount().changePassword(newPassword);
+		return student;
+	}
+
+	/**
+	 * Changes the password of the provided Teacher object to the new one provided.
+	 *
+	 * @param teacher The Teacher for which to change the password.
+	 * @param newPassword The new password to change to.
+	 * @return The new Teacher object in the database.
+	 * @throws IOException Most likely thrown if the device doesn't have a connection.
+	 */
+	public Teacher changeTeacherPassword(Teacher teacher, String newPassword) throws IOException {
+		OkHttpClient client = new OkHttpClient();
+
+		MediaType mediaType = MediaType.parse("text/plain");
+		RequestBody body = RequestBody.create(mediaType, newPassword);
+		Request request = new Request.Builder()
+				.url(serverURL + "/api/changeTeacherPassword")
+				.post(body)
+				.addHeader("Authorization", "Basic " + Base64.getEncoder().encodeToString((teacher.getAccount().getUserName() + ":" + teacher.getAccount().getPassword()).getBytes()) )
+				.build();
+
+		Response response = client.newCall(request).execute();
+		if (response.code() == 401) {
+			throw new IllegalArgumentException("Invalid username and password combination! (Teacher might not exist?)");
+		}
+		response.close();
+
+		teacher.getAccount().changePassword(newPassword);
+		return teacher;
+	}
+
+	/**
 	 * Gets the list of lessons for the current grade in which this method is called.
 	 * <p>
 	 * The ArrayList returned can later be used in order to download a specific lesson from the server.
