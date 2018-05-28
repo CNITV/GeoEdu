@@ -67,12 +67,20 @@ public class Catalog {
 
     public static void drawPanelButton(Graphics g, int x, int y, int width, int height, String Name) {
 
-        if (Menu.X_hovered > x && Menu.X_hovered < x + width && Menu.Y_hovered > y && Menu.Y_hovered < y + height && Menu.MousePressed == true) {
+        if (Menu.X_hovered > x && Menu.X_hovered < x + width && Menu.Y_hovered > y && Menu.Y_hovered < y + height && Menu.MousePressed ) {
 
             if (Name.equals("Teste Necorectate")) {
                 correctTest = true;
                 catalog = false;
                 if(copyMousePressed == false && TestChosen == false){
+                    for(int i=0;i<NrStudents;i++){
+                        StudentName[i]=null;
+                        StudentID[i]=null;
+                    }
+                    for(int i=0;i<=NrQuestions;i++){
+                        Marks[i]=0;
+                    }
+                    NrStudents=0;
                     findUncorrectedTests();
                 }
 
@@ -84,7 +92,7 @@ public class Catalog {
                 Setari.ButtonSound("button_click.wav");
             }
         }
-        if ((correctTest == true && Name.equals("Teste Necorectate")) || (catalog == true && Name.equals("Catalog"))) {
+        if ((correctTest  && Name.equals("Teste Necorectate")) || (catalog  && Name.equals("Catalog"))) {
             g.setColor(new Color(0, 0, 0));
             g.fill3DRect(x, y, width, height, true);
 
@@ -137,7 +145,7 @@ public class Catalog {
         FontMetrics metricsy = g.getFontMetrics(small);
         FontMetrics metricsx = g.getFontMetrics(small);
 
-        if (Menu.X_hovered > x && Menu.X_hovered < x + width && Menu.Y_hovered > y && Menu.Y_hovered < y + metricsy.getHeight() && Menu.MousePressed == true) {
+        if (Menu.X_hovered > x && Menu.X_hovered < x + width && Menu.Y_hovered > y && Menu.Y_hovered < y + metricsy.getHeight() && Menu.MousePressed ) {
             g.setColor(Color.DARK_GRAY);
             g.fill3DRect(x, y, width, metricsy.getHeight(), true);
             g.setColor(Color.WHITE);
@@ -150,7 +158,7 @@ public class Catalog {
         }
         else if (Menu.X_hovered > x && Menu.X_hovered < x + width && Menu.Y_hovered > y && Menu.Y_hovered < y + metricsy.getHeight()) {
 
-            if(copyMousePressed==true){
+            if(copyMousePressed){
                 Setari.ButtonSound("button_click.wav");
                 TestChosen = true;
                 currentTestID = uncorrectedTestsID[i][j].get(k);
@@ -316,7 +324,7 @@ public class Catalog {
             mark.setText(String.valueOf(Marks[currentQuestion]));
         }
         copyScreenWidth = Menu.ScreenWidth;
-        if (NextQuestion == true) g.drawImage(lb, label.getX(), label.getY(), null);
+        if (NextQuestion ) g.drawImage(lb, label.getX(), label.getY(), null);
     }
 
     public static void drawMark(Graphics g){
@@ -393,12 +401,12 @@ public class Catalog {
         int ButtonX = Menu.ScreenWidth * 2 / 3 + Menu.ScreenWidth / 20;
         int ButtonY = Menu.ScreenHeight * 2 / 3 - Menu.ScreenHeight / 40;
 
-        if (Menu.MousePressed == true && x > ButtonX - ButtonWidth / 2 && x < ButtonX + ButtonWidth * 2 + ButtonWidth / 10 && y > ButtonY - ButtonHeight / 4 && y < ButtonY + ButtonHeight * 3 / 2) {
+        if (Menu.MousePressed  && x > ButtonX - ButtonWidth / 2 && x < ButtonX + ButtonWidth * 2 + ButtonWidth / 10 && y > ButtonY - ButtonHeight / 4 && y < ButtonY + ButtonHeight * 3 / 2) {
             g.setColor(new Color(200, 200, 200));
             if (copyMousePressed == false) Setari.ButtonSound("button_click.wav");
         } else if (x > ButtonX - ButtonWidth / 2 && x < ButtonX + ButtonWidth * 2 + ButtonWidth / 10 && y > ButtonY - ButtonHeight / 4 && y < ButtonY + ButtonHeight * 3 / 2) {
             g.setColor(new Color(85, 64, 11));
-            if (copyMousePressed == true) {
+            if (copyMousePressed ) {
                Marks[currentQuestion] = Integer.valueOf(mark.getText());
                 currentQuestion++;
                 NextQuestion = false;
@@ -407,7 +415,7 @@ public class Catalog {
             g.setColor(Color.BLACK);
         }
         g.fill3DRect(ButtonX - ButtonWidth / 2, ButtonY - ButtonHeight / 4, ButtonWidth * 2 + ButtonHeight / 10, ButtonHeight * 3 / 2, true);
-        if (Menu.MousePressed == true && x > ButtonX - ButtonWidth / 2 && x < ButtonX + ButtonWidth * 2 + ButtonWidth / 10 && y > ButtonY - ButtonHeight / 4 && y < ButtonY + ButtonHeight * 3 / 2) {
+        if (Menu.MousePressed  && x > ButtonX - ButtonWidth / 2 && x < ButtonX + ButtonWidth * 2 + ButtonWidth / 10 && y > ButtonY - ButtonHeight / 4 && y < ButtonY + ButtonHeight * 3 / 2) {
             g.setColor(new Color(10, 10, 10));
         } else if (x > ButtonX - ButtonWidth / 2 && x < ButtonX + ButtonWidth * 2 + ButtonWidth / 10 && y > ButtonY - ButtonHeight / 4 && y < ButtonY + ButtonHeight * 3 / 2) {
             g.setColor(new Color(251, 214, 71));
@@ -431,12 +439,12 @@ public class Catalog {
         int ButtonX = Menu.ScreenWidth - Menu.ScreenWidth * 2 / 3 - Menu.ScreenWidth / 14;
         int ButtonY = Menu.ScreenHeight * 2 / 3 - Menu.ScreenHeight / 40;
 
-        if (Menu.MousePressed == true && x > ButtonX - ButtonWidth / 2 && x < ButtonX + ButtonWidth * 2 + ButtonWidth / 10 && y > ButtonY - ButtonHeight / 4 && y < ButtonY + ButtonHeight * 3 / 2) {
+        if (Menu.MousePressed  && x > ButtonX - ButtonWidth / 2 && x < ButtonX + ButtonWidth * 2 + ButtonWidth / 10 && y > ButtonY - ButtonHeight / 4 && y < ButtonY + ButtonHeight * 3 / 2) {
             g.setColor(new Color(200, 200, 200));
             if (copyMousePressed == false) Setari.ButtonSound("button_click.wav");
         } else if (x > ButtonX - ButtonWidth / 2 && x < ButtonX + ButtonWidth * 2 + ButtonWidth / 10 && y > ButtonY - ButtonHeight / 4 && y < ButtonY + ButtonHeight * 3 / 2) {
             g.setColor(new Color(85, 64, 11));
-            if (copyMousePressed == true) {
+            if (copyMousePressed ) {
                Marks[currentQuestion] = Integer.valueOf(mark.getText());
                 currentQuestion--;
                 NextQuestion = false;
@@ -445,7 +453,7 @@ public class Catalog {
             g.setColor(Color.BLACK);
         }
         g.fill3DRect(ButtonX - ButtonWidth / 2, ButtonY - ButtonHeight / 4, ButtonWidth * 2 + ButtonHeight / 10, ButtonHeight * 3 / 2, true);
-        if (Menu.MousePressed == true && x > ButtonX - ButtonWidth / 2 && x < ButtonX + ButtonWidth * 2 + ButtonWidth / 10 && y > ButtonY - ButtonHeight / 4 && y < ButtonY + ButtonHeight * 3 / 2) {
+        if (Menu.MousePressed  && x > ButtonX - ButtonWidth / 2 && x < ButtonX + ButtonWidth * 2 + ButtonWidth / 10 && y > ButtonY - ButtonHeight / 4 && y < ButtonY + ButtonHeight * 3 / 2) {
             g.setColor(new Color(10, 10, 10));
         } else if (x > ButtonX - ButtonWidth / 2 && x < ButtonX + ButtonWidth * 2 + ButtonWidth / 10 && y > ButtonY - ButtonHeight / 4 && y < ButtonY + ButtonHeight * 3 / 2) {
             g.setColor(new Color(251, 214, 71));
@@ -480,7 +488,7 @@ public class Catalog {
         int ym = Menu.Y_hovered;
 
 
-        if (xm > x && xm < x + width && ym > y && ym < y + height && Menu.MousePressed == true) {
+        if (xm > x && xm < x + width && ym > y && ym < y + height && Menu.MousePressed ) {
 
             if (copyMousePressed == false){
 
@@ -490,7 +498,7 @@ public class Catalog {
         } else if (xm > x && xm < x + width && ym > y && ym < y + height) {
 
 
-            if (copyMousePressed == true) {
+            if (copyMousePressed ) {
                 System.out.println("daaaa");
                 Marks[currentQuestion] = Integer.valueOf(mark.getText());
                 currentQuestion = Name;
@@ -547,11 +555,11 @@ public class Catalog {
         int ym = Menu.Y_hovered;
 
 
-        if (xm > x && xm < x + width && ym > y && ym < y + height && Menu.MousePressed == true) {
+        if (xm > x && xm < x + width && ym > y && ym < y + height && Menu.MousePressed ) {
 
             if (copyMousePressed == false) Setari.ButtonSound("button_click.wav");
         } else if (xm > x && xm < x + width && ym > y && ym < y + height) {
-            if (copyMousePressed == true) {
+            if (copyMousePressed ) {
                 Marks[currentQuestion] = Integer.valueOf(mark.getText());
                NextQuestion = false;
                 sendData();
@@ -560,7 +568,7 @@ public class Catalog {
                for(int i=1;i<=NrQuestions;i++)Marks[i]=0;
             }
         }
-        if (xm > x && xm < x + width && ym > y && ym < y + height && Menu.MousePressed == true) {
+        if (xm > x && xm < x + width && ym > y && ym < y + height && Menu.MousePressed ) {
             g.setColor(new Color(60, 60, 60));
             g.fill3DRect(x, y, width, height, true);
             g.setColor(Color.LIGHT_GRAY);
@@ -609,11 +617,11 @@ public class Catalog {
         int ym = Menu.Y_hovered;
 
 
-        if (xm > x && xm < x + width && ym > y && ym < y + height && Menu.MousePressed == true) {
+        if (xm > x && xm < x + width && ym > y && ym < y + height && Menu.MousePressed ) {
 
             if (copyMousePressed == false) Setari.ButtonSound("button_click.wav");
         } else if (xm > x && xm < x + width && ym > y && ym < y + height) {
-            if (copyMousePressed == true) {
+            if (copyMousePressed ) {
                 Marks[currentQuestion] = Integer.valueOf(mark.getText());
                 NextQuestion = false;
                 sendData();
@@ -625,7 +633,7 @@ public class Catalog {
                 for(int i=1;i<=NrQuestions;i++)Marks[i]=0;
             }
         }
-        if (xm > x && xm < x + width && ym > y && ym < y + height && Menu.MousePressed == true) {
+        if (xm > x && xm < x + width && ym > y && ym < y + height && Menu.MousePressed ) {
             g.setColor(new Color(60, 60, 60));
             g.fill3DRect(x, y, width, height, true);
             g.setColor(Color.LIGHT_GRAY);
@@ -710,7 +718,7 @@ public class Catalog {
        }
        else if(Menu.X_hovered>x&&Menu.X_hovered<x+width&&Menu.Y_hovered>y&&Menu.Y_hovered<y+height){
 
-           if(copyMousePressed==true){
+           if(copyMousePressed){
                Setari.ButtonSound("button_click.wav");
                classChosen = true;
                currentClass = Class[clasa]+" "+Letter[letter];
@@ -793,7 +801,7 @@ public class Catalog {
 
     public static void drawCatalogExit(Graphics g, int x ,int y, int width, int height, String Name){
 
-        if (Menu.MousePressed == true && Menu.X_hovered>x&&Menu.X_hovered<x+width&&Menu.Y_hovered>y&&Menu.Y_hovered<y+height) {
+        if (Menu.MousePressed  && Menu.X_hovered>x&&Menu.X_hovered<x+width&&Menu.Y_hovered>y&&Menu.Y_hovered<y+height) {
             if (GeoEduMenu.copyMousePressed != Menu.MousePressed && copyMousePressed == false) {
                 Setari.ButtonSound("button_click.wav");
             }
@@ -812,7 +820,7 @@ public class Catalog {
         } else if (Menu.X_hovered>x&&Menu.X_hovered<x+width&&Menu.Y_hovered>y&&Menu.Y_hovered<y+height) {
 
 
-            if(copyMousePressed == true){
+            if(copyMousePressed ){
                 for(int i=1;i<=NrStudents;i++){
                     StudentName[i]=null;
                     for(int j=0;j<=NrGrades;j++){
@@ -853,7 +861,7 @@ public class Catalog {
 
     public static void drawExit(Graphics g, int x ,int y, int width, int height, String Name){
 
-        if (Menu.MousePressed == true && Menu.X_hovered>x&&Menu.X_hovered<x+width&&Menu.Y_hovered>y&&Menu.Y_hovered<y+height) {
+        if (Menu.MousePressed  && Menu.X_hovered>x&&Menu.X_hovered<x+width&&Menu.Y_hovered>y&&Menu.Y_hovered<y+height) {
             if (GeoEduMenu.copyMousePressed != Menu.MousePressed && copyMousePressed == false) {
                 Setari.ButtonSound("button_click.wav");
             }
@@ -872,7 +880,7 @@ public class Catalog {
         } else if (Menu.X_hovered>x&&Menu.X_hovered<x+width&&Menu.Y_hovered>y&&Menu.Y_hovered<y+height) {
 
 
-            if(copyMousePressed == true){
+            if(copyMousePressed ){
                 for(int i=1;i<=NrStudents;i++){
                     StudentName[i]=null;
                 }
@@ -938,7 +946,7 @@ public class Catalog {
 
         drawBackground(g);
         generatePanelButtons(g);
-        if(correctTest == true){
+        if(correctTest ){
 
             if(TestChosen == false){
                 drawCorrectTable(g,Menu.ScreenWidth/6,Menu.ScreenHeight/7,Menu.ScreenWidth*2/3,Menu.ScreenHeight*5/6);
@@ -949,11 +957,11 @@ public class Catalog {
             }
 
         }
-        else if (catalog == true) {
+        else if (catalog ) {
 
             mark.setVisible(false);
             essay.setVisible(false);
-            if(classChosen==true){
+            if(classChosen){
                 drawCatalog(g,Menu.ScreenWidth/6,Menu.ScreenHeight/7,Menu.ScreenWidth*2/3,Menu.ScreenHeight*45/60,currentClass);
                 drawCatalogExit(g,Menu.ScreenWidth*26/30,Menu.ScreenHeight*5/6,Menu.ScreenWidth/20,Menu.ScreenHeight/20,"Iesire");
             }
