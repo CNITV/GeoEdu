@@ -6,6 +6,12 @@ apply plugin: 'application'
 
 mainClassName = "VianuEdu.GUI.Window"
 
+jar {
+    manifest {
+        attributes('Main-Class': 'VianuEdu.GUI.Window')
+    }
+}
+
 sourceCompatibility = 1.8
 
 repositories {
