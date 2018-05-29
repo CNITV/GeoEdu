@@ -41,7 +41,7 @@ public class StartMenu {
     public static void importImages() {
 
         try {
-            background = ImageIO.read(new File(loader.getResource("gui_assets/StartBackground.jpg").getFile()));
+            background = ImageIO.read(loader.getResourceAsStream("gui_assets/StartBackground.jpg"));
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -66,8 +66,6 @@ public class UserImput extends JPanel {
         BoxName[7] = "Esti Profesor?";
         PName[2] = "Parola:";
         PName[3] = "Confirma Parola:";
-        username.setText("TotallyTeacher");
-        password.setText("totallynotastudent");
 
     }
 
@@ -96,7 +94,7 @@ public class UserImput extends JPanel {
     public static void ImportImages() {
 
         try {
-            background = ImageIO.read(new File(loader.getResource("gui_assets/StartBackground.jpg").getFile()));
+            background = ImageIO.read(loader.getResourceAsStream("gui_assets/StartBackground.jpg"));
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -27,7 +27,8 @@ public class Catalog {
     public static String StudentID[] = new String[101];
     public static String StudentName[] = new String[101];
     public static String currentTestID;
-    public static String currentClass;
+    public static int currentClass;
+    public static int currentLetter;
     public static Image img[] = new Image[101];
     public static BufferedImage lb;
     public static int Marks[] = new int[101];
@@ -35,7 +36,7 @@ public class Catalog {
     public static int LetterNumber = 9;
     public static int NrQuestions;
     public static int MPQuestions;
-    public static int NrStudents=1;
+    public static int NrStudents=-1;
     public static int NrGrades = 4;
     public static int copyScreenWidth = Menu.ScreenWidth;
     public static int currentQuestion = 1;
@@ -73,20 +74,20 @@ public class Catalog {
                 correctTest = true;
                 catalog = false;
                 if(copyMousePressed == false && TestChosen == false){
-                    for(int i=0;i<NrStudents;i++){
-                        StudentName[i]=null;
-                        StudentID[i]=null;
-                    }
+
                     for(int i=0;i<=NrQuestions;i++){
                         Marks[i]=0;
                     }
-                    NrStudents=0;
+
                     findUncorrectedTests();
                 }
 
             } else if (Name.equals("Catalog")) {
                 correctTest = false;
                 catalog = true;
+                if(currentClass!=0&&currentLetter!=0){
+                    findClass(currentClass,Letter[currentLetter]);
+                }
             }
             if (copyMousePressed == false) {
                 Setari.ButtonSound("button_click.wav");
@@ -721,7 +722,8 @@ public class Catalog {
            if(copyMousePressed){
                Setari.ButtonSound("button_click.wav");
                classChosen = true;
-               currentClass = Class[clasa]+" "+Letter[letter];
+               currentClass = clasa;
+               currentLetter = letter;
                findClass(clasa+8,Letter[letter]);
            }
 
@@ -828,7 +830,7 @@ public class Catalog {
                     }
                 }
                 classChosen=false;
-                NrStudents = 0;
+                NrStudents = -1;
             }
 
             g.setColor(new Color(231, 198, 63));
@@ -920,8 +922,13 @@ public class Catalog {
     public static void drawCatalog(Graphics g, int x, int y, int Width, int Height, String clasa){
 
         int width = Width/5;
-        int height = Height/NrStudents;
-
+        int height;
+        if (NrStudents > 0) {
+            height = Height/NrStudents;
+        } else {
+            height = Menu.ScreenHeight/10;
+        }
+        GeoEduMenu.drawLoadingScreen=false;
         for(int i=0;i<=NrStudents;i++){
             if(i==0){
                 drawCatalogCell(g, x , y + i * height, width, height, "Numele elevului");
@@ -962,7 +969,7 @@ public class Catalog {
             mark.setVisible(false);
             essay.setVisible(false);
             if(classChosen){
-                drawCatalog(g,Menu.ScreenWidth/6,Menu.ScreenHeight/7,Menu.ScreenWidth*2/3,Menu.ScreenHeight*45/60,currentClass);
+                drawCatalog(g,Menu.ScreenWidth/6,Menu.ScreenHeight/7,Menu.ScreenWidth*2/3,Menu.ScreenHeight*45/60,String.valueOf(Class[currentClass]+" "+Letter[currentLetter]));
                 drawCatalogExit(g,Menu.ScreenWidth*26/30,Menu.ScreenHeight*5/6,Menu.ScreenWidth/20,Menu.ScreenHeight/20,"Iesire");
             }
             else{
@@ -1034,7 +1041,7 @@ public class Catalog {
             StudentName[i]=null;
         }
         NrQuestions=1;
-        NrStudents=0;
+        NrStudents=-1;
 
     }
 

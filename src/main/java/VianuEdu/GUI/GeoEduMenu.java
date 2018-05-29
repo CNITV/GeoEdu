@@ -24,6 +24,7 @@ public class GeoEduMenu {
     public static boolean[] hovered = new boolean[10];
     public static boolean ArrowPressed = false;
     public static boolean correctTest = false;
+    public static boolean drawLoadingScreen=false;
     public static boolean editTest = false;
     public static boolean profil = false;
     private static boolean Panels_Hidden = false;
@@ -65,7 +66,7 @@ public class GeoEduMenu {
     public static void generateImages() {
 
         try {
-            Arrow_unpressed = ImageIO.read(new File(loader.getResource("gui_assets/notPressedDownArrowLeft.png").getFile()));
+            Arrow_unpressed = ImageIO.read(loader.getResourceAsStream("gui_assets/notPressedDownArrowLeft.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -76,7 +77,7 @@ public class GeoEduMenu {
         Arrow_unpressed = Arrow_unpressed.getScaledInstance(newWidth, newHeight, Image.SCALE_DEFAULT);
         ;
         try {
-            Arrow_Pressed = ImageIO.read(new File(loader.getResource("gui_assets/PressedDownArrowLeft.png").getFile()));
+            Arrow_Pressed = ImageIO.read(loader.getResourceAsStream("gui_assets/pressedDownArrowLeft.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -85,7 +86,7 @@ public class GeoEduMenu {
         Arrow_Pressed = Arrow_Pressed.getScaledInstance(newWidth, newHeight, Image.SCALE_DEFAULT);
         ;
         try {
-            TurnedArrow_Pressed = ImageIO.read(new File(loader.getResource("gui_assets/PressedDownArrowRight.png").getFile()));
+            TurnedArrow_Pressed = ImageIO.read(loader.getResourceAsStream("gui_assets/pressedDownArrowRight.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -93,7 +94,7 @@ public class GeoEduMenu {
         newHeight = TurnedArrow_Pressed.getHeight(null) * ScreenHeight / 1080;
         TurnedArrow_Pressed = TurnedArrow_Pressed.getScaledInstance(newWidth, newHeight, Image.SCALE_DEFAULT);
         try {
-            TurnedArrow_Unpressed = ImageIO.read(new File(loader.getResource("gui_assets/notPressedDownArrowRight.png").getFile()));
+            TurnedArrow_Unpressed = ImageIO.read(loader.getResourceAsStream("gui_assets/notPressedDownArrowRight.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -101,7 +102,7 @@ public class GeoEduMenu {
         newHeight = TurnedArrow_Unpressed.getHeight(null) * ScreenHeight / 1080;
         TurnedArrow_Unpressed = TurnedArrow_Unpressed.getScaledInstance(newWidth, newHeight, Image.SCALE_DEFAULT);
         try {
-            Background = ImageIO.read(new File(loader.getResource("gui_assets/Background.jpg").getFile()));
+            Background = ImageIO.read(loader.getResourceAsStream("gui_assets/Background.jpg"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -613,6 +614,25 @@ public class GeoEduMenu {
         }
     }
 
+    public static void drawLoadingBox(Graphics g){
+
+
+        g.setColor(new Color(255,255,255,50));
+        g.fillRect(0,0,Menu.ScreenWidth,Menu.ScreenHeight);
+        g.setColor(Color.BLACK);
+        g.fill3DRect(Menu.ScreenWidth/3,Menu.ScreenHeight/3,Menu.ScreenWidth/3,Menu.ScreenHeight/3,false);
+        g.setColor(Color.WHITE);
+        g.drawRect(Menu.ScreenWidth/3,Menu.ScreenHeight/3,Menu.ScreenWidth/3,Menu.ScreenHeight/3);
+
+        Font small = new Font("Futura", Font.PLAIN, Relativesize);
+        FontMetrics metricsy = g.getFontMetrics(small);
+        FontMetrics metricsx = g.getFontMetrics(small);
+        g.setColor(new Color(255, 213, 38));
+        g.setFont(small);
+        g.drawString(String.valueOf("Se incarca..."),  Menu.ScreenWidth / 2 - metricsx.stringWidth(String.valueOf("Se incarca...")) / 2,  Menu.ScreenHeight / 2 + metricsy.getHeight() / 4);
+
+    }
+
     /**
      * This method calls all other Graphics methods
      *
@@ -639,6 +659,7 @@ public class GeoEduMenu {
             ContentBrowser.Paint(g);
             Setari.Settings(g);
         }
+        if(drawLoadingScreen==true)drawLoadingBox(g);
     }
 
     public static void returnMenu() {

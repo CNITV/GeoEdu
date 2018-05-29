@@ -24,6 +24,7 @@ import javax.jws.soap.SOAPBinding;
 import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 
@@ -73,7 +74,7 @@ public class Setari extends JPanel {
     public static void ButtonSound(String name) {
         AudioInputStream audioInputStream = null;
         try {
-            audioInputStream = AudioSystem.getAudioInputStream(new File(String.valueOf(new File(loader.getResource("gui_assets/" + name).getFile()))));
+            audioInputStream = AudioSystem.getAudioInputStream(new BufferedInputStream(loader.getResourceAsStream("gui_assets/" + name)));
         } catch (UnsupportedAudioFileException e) {
             e.printStackTrace();
         } catch (IOException e) {
