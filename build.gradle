@@ -1,7 +1,7 @@
 group 'CNITV'
 version 'v1.0'
 
-build {
+buildscript {
     repositories {
         maven {
             url "https://plugins.gradle.org/m2/"
