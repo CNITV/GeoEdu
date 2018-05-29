@@ -208,8 +208,8 @@ public class ContentBrowser {
     public static void drawContent(Graphics g, ArrayList<String> ID, ArrayList<String> content, int NrContent) {
 
 
-        for (int i = 0; i < NrContent; i++) {
-            makeButton(g, BrowserX, ContentStart * Menu.ScreenHeight / 1080 + i * ContentBrowserHeight / 6, ContentBrowserWidth, ContentBrowserHeight / 6, ID.get(i), content.get(i), i);
+        for (int i = 0; i <  NrContent; i++) {
+            makeButton(g, BrowserX, ContentStart * Menu.ScreenHeight / 1080 + (i+1) * ContentBrowserHeight / 6, ContentBrowserWidth, ContentBrowserHeight / 6, ID.get(i), content.get(i), i);
         }
 
     }

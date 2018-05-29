@@ -10,6 +10,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.time.Clock;
+import java.util.Date;
 import java.util.Random;
 
 
@@ -31,6 +32,7 @@ public class Tests {
     public static boolean Test_finished;
     public static boolean isCalculated = false;
     public static boolean ChoiceQuestion[] = new boolean[101];
+    public static long Testlenght = 50;
     public static int CAnswer[] = new int[1001];
     public static int rand[] = new int[101];
     public static int NrQuestions = 3;
@@ -66,6 +68,8 @@ public class Tests {
             else {
                  test = Menu.Maner.getTest(Name);
             }
+            Date current = new Date();
+            Testlenght = (test.getEndTime().getTime()-current.getTime())/60000;
             NrQuestions = test.getContents().size();
             for(int i=0;i<= NrQuestions;i++){
                 CAnswer[i]=0;
@@ -586,7 +590,7 @@ public class Tests {
     public static void drawTimer(Graphics g) {
 
         int second = 60 - ((int) (clock.millis() - beginTime) / 1000) % 60;
-        int minute = 49 - ((int) (clock.millis() - beginTime) / 1000 / 60) % 60;
+        int minute = (int)Testlenght-1 - ((int) (clock.millis() - beginTime) / 1000 / 60) % 60;
         if (second == 60) {
             minute++;
             second = 0;
