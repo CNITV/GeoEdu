@@ -581,7 +581,7 @@ public class Tests {
         g.setFont(small);
         g.drawString(String.valueOf(Name), Menu.ScreenWidth / 2 - metricsx.stringWidth(String.valueOf(Name)) / 2, Menu.ScreenHeight / 3 + metricsy.getHeight() / 4);
 
-        Name = "Testul dureaza 50 de minute. Succes!";
+        Name = "Testul dureaza " + Testlenght + " de minute. Succes!";
         g.drawString(String.valueOf(Name), Menu.ScreenWidth / 2 - metricsx.stringWidth(String.valueOf(Name)) / 2, Menu.ScreenHeight / 3 + metricsy.getHeight() * 3 / 2);
         drawStartButton(g, Menu.ScreenWidth * 5 / 12, Menu.ScreenHeight * 3 / 4, Menu.ScreenWidth / 6, Menu.ScreenHeight / 12, "Incepe testul");
 
