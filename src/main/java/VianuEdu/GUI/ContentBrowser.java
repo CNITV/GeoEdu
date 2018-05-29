@@ -209,7 +209,7 @@ public class ContentBrowser {
 
 
         for (int i = 0; i <  NrContent; i++) {
-            makeButton(g, BrowserX, ContentStart * Menu.ScreenHeight / 1080 + (i+1) * ContentBrowserHeight / 6, ContentBrowserWidth, ContentBrowserHeight / 6, ID.get(i), content.get(i), i);
+            makeButton(g, BrowserX, ContentStart * Menu.ScreenHeight / 1080 + (i) * ContentBrowserHeight / 6, ContentBrowserWidth, ContentBrowserHeight / 6, ID.get(i), content.get(i), i);
         }
 
     }
@@ -226,7 +226,7 @@ public class ContentBrowser {
         g.fillRect(BrowserX, BrowserY, ContentBrowserWidth, ContentBrowserHeight);
         findContent(g);
         g.setColor(new Color(10, 10, 10));
-        g.fillRect(GeoEduMenu.Rightpanel, 0, GeoEduMenu.PanelWidth, Menu.ScreenHeight / 4);
+        g.fillRect(GeoEduMenu.Rightpanel, 0, GeoEduMenu.PanelWidth, ContentStart);
         g.fillRect(GeoEduMenu.Rightpanel, Menu.ScreenHeight * 3 / 4, GeoEduMenu.PanelWidth, Menu.ScreenHeight / 4);
         g.setColor(new Color(255, 255, 255));
         g.drawRect(BrowserX, BrowserY, ContentBrowserWidth, ContentBrowserHeight);
