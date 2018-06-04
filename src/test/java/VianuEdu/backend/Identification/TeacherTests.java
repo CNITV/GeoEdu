@@ -29,9 +29,7 @@ public class TeacherTests {
 	@Test
 	public void toStringShouldReturnJSON() {
 
-		Account testAccount = new Account("ucsene_the_student_slayer", "SpaghettiBrokenCode22");
-
-		Teacher testTeacher = new Teacher("Acob", "Ucsene", "F", "Info", 11, "G", testAccount);
+		Teacher testTeacher = new Teacher();
 
 		String JSONString = "{\n" +
 				"  \"firstName\": \"Acob\",\n" +

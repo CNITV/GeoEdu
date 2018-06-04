@@ -44,7 +44,7 @@ public class Teacher {
 
 	/**
 	 * Creates a generic teacher object that will be used to attach to test answer keys.
-	 *
+	 * <p>
 	 * I'm sorry for the teachers that might recognize themselves upon finding this little fragment of code, but alas,
 	 * I had no ideas for names, quite frankly.
 	 */
@@ -61,11 +61,13 @@ public class Teacher {
 	/**
 	 * Constructs and initialises a Teacher object.
 	 *
-	 * @param firstName The first name of the teacher. Must not be empty.
-	 * @param lastName  The last name of the teacher. Must not be empty.
-	 * @param gender    The gender of the teacher. Must be either male (M) or female (F).
-	 * @param course    The course the teacher offers. Must be supported by VianuEdu. Currently only geography, physics, informatics and mathematics are supported. (Written as, "Geo", "Phi", "Info" and "Math")
-	 * @param account   The account of the teacher.
+	 * @param firstName   The first name of the teacher. Must not be empty.
+	 * @param lastName    The last name of the teacher. Must not be empty.
+	 * @param gender      The gender of the teacher. Must be either male (M) or female (F).
+	 * @param course      The course the teacher offers. Must be supported by VianuEdu. Currently only geography, physics, informatics and mathematics are supported. (Written as, "Geo", "Phi", "Info" and "Math")
+	 * @param grade		  The grade in which the teacher teaches courses.
+	 * @param gradeLetter The letter of the grade in which the teacher teaches courses.
+	 * @param account     The account of the teacher.
 	 */
 	public Teacher(String firstName, String lastName, String gender, String course, Integer grade, String gradeLetter, Account account) {
 		if (firstName.equals("")) {

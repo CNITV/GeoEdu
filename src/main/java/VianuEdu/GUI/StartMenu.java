@@ -303,7 +303,7 @@ public class StartMenu {
      * This is the main Graphics method and it calls all other methods in order
      *
      * @param g is the Graphics component
-     * @auhtor Sabin Anton
+     * @author Sabin Anton
      */
 
     public static void Paint(Graphics g) {

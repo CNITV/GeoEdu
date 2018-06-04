@@ -227,6 +227,7 @@ public class GeoEduMenu {
      * @param Width  is the width of the button
      * @param Height is the height of the button
      * @param clasa  is the grade that the button will show
+     * @param button is the position of the button in the button area
      * @author Sabin Anton
      */
 
