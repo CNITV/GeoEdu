@@ -60,7 +60,7 @@ public class Status {
 
             if(copyMousePressed==true){
                 Setari.ButtonSound("button_click.wav");
-              changePassword = true;
+                changePassword = true;
             }
 
             g.setColor(new Color(241,207,98));
@@ -98,8 +98,9 @@ public class Status {
     public static void drawExit(Graphics g, int x ,int y, int width, int height, String Name){
 
         if (Menu.MousePressed == true && Menu.X_hovered>x&&Menu.X_hovered<x+width&&Menu.Y_hovered>y&&Menu.Y_hovered<y+height) {
-            if (GeoEduMenu.copyMousePressed != Menu.MousePressed && copyMousePressed == false) {
+            if (copyMousePressed != Menu.MousePressed && copyMousePressed == false) {
                 Setari.ButtonSound("button_click.wav");
+
             }
             g.setColor(new Color(55, 53, 53));
             g.fillRoundRect(x, y, width, height, 15, 15);
@@ -119,6 +120,8 @@ public class Status {
             if(copyMousePressed == true){
                 for(int i=1;i<=5;i++)Mark[i]=null;
                 GeoEduMenu.profil=false;
+                Npassword.setVisible(false);
+                changePassword=false;
             }
 
             g.setColor(new Color(231, 198, 63));
@@ -195,7 +198,7 @@ public class Status {
                 }catch (IllegalArgumentException e){
                     e.printStackTrace();
                 }catch(java.lang.NullPointerException e){
-                   e.printStackTrace();
+                    e.printStackTrace();
                 }
 
             }
@@ -285,6 +288,7 @@ public class Status {
         drawBackGround(g);
         if(changePassword==true){
             drawPasswordBox(g, Menu.ScreenWidth/3,Menu.ScreenHeight/3,Menu.ScreenWidth/3,Menu.ScreenHeight/3);
+            drawExit(g,Menu.ScreenWidth*5/6,Menu.ScreenHeight*5/6,Menu.ScreenWidth/16,Menu.ScreenHeight/16,"Iesire");
         }
         else {
             drawProfileInfo(g, Menu.ScreenWidth / 10, Menu.ScreenHeight / 10, Menu.ScreenWidth * 4 / 5, Menu.ScreenHeight * 2 / 5);

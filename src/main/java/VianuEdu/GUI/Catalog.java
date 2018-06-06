@@ -54,7 +54,7 @@ public class Catalog {
     public static JTextField mark = new JTextField();
     public static JScrollPane scroll = new JScrollPane(essay);
     public static Test test = null;
-    
+
     public static void drawBackground(Graphics g) {
 
         g.drawImage(UserImput.background, (Menu.ScreenWidth - UserImput.background.getWidth(null)) / 2, (Menu.ScreenHeight - UserImput.background.getHeight(null)) / 2, null);
@@ -73,18 +73,20 @@ public class Catalog {
             if (Name.equals("Teste Necorectate")) {
                 correctTest = true;
                 catalog = false;
+                currentClass=0;
+                currentLetter=0;
+                classChosen=false;
                 if(copyMousePressed == false && TestChosen == false){
-
                     for(int i=0;i<=NrQuestions;i++){
                         Marks[i]=0;
                     }
-
-                    findUncorrectedTests();
                 }
-
+                findUncorrectedTests();
             } else if (Name.equals("Catalog")) {
                 correctTest = false;
                 catalog = true;
+                essay.setVisible(false);
+                scroll.setVisible(false);
                 if(currentClass!=0&&currentLetter!=0){
                     findClass(currentClass,Letter[currentLetter]);
                 }
@@ -165,7 +167,7 @@ public class Catalog {
                 currentTestID = uncorrectedTestsID[i][j].get(k);
                 findCorrectioncontent(currentTestID);
             }
-             small = new Font("Calibri", Font.BOLD, size);
+            small = new Font("Calibri", Font.BOLD, size);
             FontMetrics metricsy1 = g.getFontMetrics(small);
             FontMetrics metricsx1 = g.getFontMetrics(small);
             g.setColor(new Color(255,214,71));
@@ -239,26 +241,26 @@ public class Catalog {
 
     public static void drawCorrectTable(Graphics g, int StartX, int StartY, int Width, int Height){
 
-            int width = Width/(5);
-            int height = Height/(11);
-            Class[1] = "Clasa a 9-a";
-            Class[2] = "Clasa a 10-a";
-            Class[3] = "Clasa a 11-a";
-            Class[4] = "Clasa a 12-a";
-            Letter[1] = "A";
-            Letter[2] = "B";
-            Letter[3] = "C";
-            Letter[4] = "D";
-            Letter[5] = "E";
-            Letter[6] = "F";
-            Letter[7] = "G";
-            Letter[8] = "H";
-            Letter[9] = "I";
-            for(int i = 0;i<=LetterNumber;i++){
-                for(int j = 0;j<=4;j++){
-                    drawBox(g,StartX+j*width,StartY+i*height,width,height,i,j);
-                }
+        int width = Width/(5);
+        int height = Height/(11);
+        Class[1] = "Clasa a 9-a";
+        Class[2] = "Clasa a 10-a";
+        Class[3] = "Clasa a 11-a";
+        Class[4] = "Clasa a 12-a";
+        Letter[1] = "A";
+        Letter[2] = "B";
+        Letter[3] = "C";
+        Letter[4] = "D";
+        Letter[5] = "E";
+        Letter[6] = "F";
+        Letter[7] = "G";
+        Letter[8] = "H";
+        Letter[9] = "I";
+        for(int i = 0;i<=LetterNumber;i++){
+            for(int j = 0;j<=4;j++){
+                drawBox(g,StartX+j*width,StartY+i*height,width,height,i,j);
             }
+        }
     }
 
     public static void drawStudentBox(Graphics g, int x, int y, int width, int height, String Name, int st){
@@ -295,7 +297,7 @@ public class Catalog {
         int BoxHeight = height/NrStudents;
         if(BoxHeight>Menu.ScreenHeight/16)BoxHeight = Menu.ScreenHeight/16;
         for(int i=0;i<NrStudents;i++){
-                drawStudentBox(g,x,y+i*BoxHeight,width,BoxHeight,StudentName[i],i);
+            drawStudentBox(g,x,y+i*BoxHeight,width,BoxHeight,StudentName[i],i);
         }
     }
 
@@ -408,7 +410,7 @@ public class Catalog {
         } else if (x > ButtonX - ButtonWidth / 2 && x < ButtonX + ButtonWidth * 2 + ButtonWidth / 10 && y > ButtonY - ButtonHeight / 4 && y < ButtonY + ButtonHeight * 3 / 2) {
             g.setColor(new Color(85, 64, 11));
             if (copyMousePressed ) {
-               Marks[currentQuestion] = Integer.valueOf(mark.getText());
+                Marks[currentQuestion] = Integer.valueOf(mark.getText());
                 currentQuestion++;
                 NextQuestion = false;
             }
@@ -446,7 +448,7 @@ public class Catalog {
         } else if (x > ButtonX - ButtonWidth / 2 && x < ButtonX + ButtonWidth * 2 + ButtonWidth / 10 && y > ButtonY - ButtonHeight / 4 && y < ButtonY + ButtonHeight * 3 / 2) {
             g.setColor(new Color(85, 64, 11));
             if (copyMousePressed ) {
-               Marks[currentQuestion] = Integer.valueOf(mark.getText());
+                Marks[currentQuestion] = Integer.valueOf(mark.getText());
                 currentQuestion--;
                 NextQuestion = false;
             }
@@ -562,11 +564,11 @@ public class Catalog {
         } else if (xm > x && xm < x + width && ym > y && ym < y + height) {
             if (copyMousePressed ) {
                 Marks[currentQuestion] = Integer.valueOf(mark.getText());
-               NextQuestion = false;
+                NextQuestion = false;
                 sendData();
-               currentStudent++;
-               currentQuestion = 1;
-               for(int i=1;i<=NrQuestions;i++)Marks[i]=0;
+                currentStudent++;
+                currentQuestion = 1;
+                for(int i=1;i<=NrQuestions;i++)Marks[i]=0;
             }
         }
         if (xm > x && xm < x + width && ym > y && ym < y + height && Menu.MousePressed ) {
@@ -699,64 +701,64 @@ public class Catalog {
 
     public static void drawCatalogBox(Graphics g, int x, int y, int width, int height, int letter, int clasa){
 
-       if(Menu.X_hovered>x&&Menu.X_hovered<x+width&&Menu.Y_hovered>y&&Menu.Y_hovered<y+height &&Menu.MousePressed){
+        if(Menu.X_hovered>x&&Menu.X_hovered<x+width&&Menu.Y_hovered>y&&Menu.Y_hovered<y+height &&Menu.MousePressed){
 
-           g.setColor(Color.BLACK);
-           g.fill3DRect(x,y,width,height,true);
-           g.setColor(Color.BLACK);
-           g.fill3DRect(x+3,y+3,width-6,height-6,true);
-           g.setColor(Color.WHITE);
-           g.drawRect(x,y,width,height);
+            g.setColor(Color.BLACK);
+            g.fill3DRect(x,y,width,height,true);
+            g.setColor(Color.BLACK);
+            g.fill3DRect(x+3,y+3,width-6,height-6,true);
+            g.setColor(Color.WHITE);
+            g.drawRect(x,y,width,height);
 
-           Font small = new Font("Calibri", Font.BOLD, UserImput.FontSize );
-           FontMetrics metricsy = g.getFontMetrics(small);
-           FontMetrics metricsx = g.getFontMetrics(small);
-           g.setColor(Color.WHITE);
-           g.setFont(small);
-           g.drawString(String.valueOf(Class[clasa]+" "+Letter[letter]), x + width / 2 - metricsx.stringWidth(String.valueOf(Class[clasa]+" "+Letter[letter])) / 2, y + height / 2 + metricsy.getHeight() / 4);
+            Font small = new Font("Calibri", Font.BOLD, UserImput.FontSize );
+            FontMetrics metricsy = g.getFontMetrics(small);
+            FontMetrics metricsx = g.getFontMetrics(small);
+            g.setColor(Color.WHITE);
+            g.setFont(small);
+            g.drawString(String.valueOf(Class[clasa]+" "+Letter[letter]), x + width / 2 - metricsx.stringWidth(String.valueOf(Class[clasa]+" "+Letter[letter])) / 2, y + height / 2 + metricsy.getHeight() / 4);
 
 
-       }
-       else if(Menu.X_hovered>x&&Menu.X_hovered<x+width&&Menu.Y_hovered>y&&Menu.Y_hovered<y+height){
+        }
+        else if(Menu.X_hovered>x&&Menu.X_hovered<x+width&&Menu.Y_hovered>y&&Menu.Y_hovered<y+height){
 
-           if(copyMousePressed){
-               Setari.ButtonSound("button_click.wav");
-               classChosen = true;
-               currentClass = clasa;
-               currentLetter = letter;
-               findClass(clasa+8,Letter[letter]);
-           }
+            if(copyMousePressed){
+                Setari.ButtonSound("button_click.wav");
+                classChosen = true;
+                currentClass = clasa;
+                currentLetter = letter;
+                findClass(clasa+8,Letter[letter]);
+            }
 
-           g.setColor(new Color(241,207,98));
-           g.fill3DRect(x,y,width,height,false);
-           g.setColor(new Color(241,207,98));
-           g.fill3DRect(x+3,y+3,width-6,height-6,true);
-           g.setColor(Color.BLACK);
-           g.drawRect(x,y,width,height);
+            g.setColor(new Color(241,207,98));
+            g.fill3DRect(x,y,width,height,false);
+            g.setColor(new Color(241,207,98));
+            g.fill3DRect(x+3,y+3,width-6,height-6,true);
+            g.setColor(Color.BLACK);
+            g.drawRect(x,y,width,height);
 
-           Font small = new Font("Calibri", Font.BOLD, UserImput.FontSize );
-           FontMetrics metricsy = g.getFontMetrics(small);
-           FontMetrics metricsx = g.getFontMetrics(small);
-           g.setColor(new Color(0, 0, 0));
-           g.setFont(small);
-           g.drawString(String.valueOf(Class[clasa]+" "+Letter[letter]), x + width / 2 - metricsx.stringWidth(String.valueOf(Class[clasa]+" "+Letter[letter])) / 2, y + height / 2 + metricsy.getHeight() / 4);
+            Font small = new Font("Calibri", Font.BOLD, UserImput.FontSize );
+            FontMetrics metricsy = g.getFontMetrics(small);
+            FontMetrics metricsx = g.getFontMetrics(small);
+            g.setColor(new Color(0, 0, 0));
+            g.setFont(small);
+            g.drawString(String.valueOf(Class[clasa]+" "+Letter[letter]), x + width / 2 - metricsx.stringWidth(String.valueOf(Class[clasa]+" "+Letter[letter])) / 2, y + height / 2 + metricsy.getHeight() / 4);
 
-       }
-       else {
-           g.setColor(Color.GRAY);
-           g.fill3DRect(x, y, width, height, false);
-           g.setColor(Color.LIGHT_GRAY);
-           g.fill3DRect(x + 3, y + 3, width - 6, height - 6, true);
-           g.setColor(Color.BLACK);
-           g.drawRect(x, y, width, height);
+        }
+        else {
+            g.setColor(Color.GRAY);
+            g.fill3DRect(x, y, width, height, false);
+            g.setColor(Color.LIGHT_GRAY);
+            g.fill3DRect(x + 3, y + 3, width - 6, height - 6, true);
+            g.setColor(Color.BLACK);
+            g.drawRect(x, y, width, height);
 
-           Font small = new Font("Calibri", Font.BOLD, UserImput.FontSize);
-           FontMetrics metricsy = g.getFontMetrics(small);
-           FontMetrics metricsx = g.getFontMetrics(small);
-           g.setColor(new Color(0, 0, 0));
-           g.setFont(small);
-           g.drawString(String.valueOf(Class[clasa] + " " + Letter[letter]), x + width / 2 - metricsx.stringWidth(String.valueOf(Class[clasa] + " " + Letter[letter])) / 2, y + height / 2 + metricsy.getHeight() / 4);
-       }
+            Font small = new Font("Calibri", Font.BOLD, UserImput.FontSize);
+            FontMetrics metricsy = g.getFontMetrics(small);
+            FontMetrics metricsx = g.getFontMetrics(small);
+            g.setColor(new Color(0, 0, 0));
+            g.setFont(small);
+            g.drawString(String.valueOf(Class[clasa] + " " + Letter[letter]), x + width / 2 - metricsx.stringWidth(String.valueOf(Class[clasa] + " " + Letter[letter])) / 2, y + height / 2 + metricsy.getHeight() / 4);
+        }
 
     }
 
@@ -790,7 +792,7 @@ public class Catalog {
         g.drawRect(x,y,width,height);
         Font small;
         if(Name=="Numele elevului"||Name == "Notele elevului"){
-             small = new Font("Calibri", Font.BOLD, UserImput.FontSize *10/30);
+            small = new Font("Calibri", Font.BOLD, UserImput.FontSize *10/30);
         }
         else {
             small = new Font("Calibri", Font.PLAIN, UserImput.FontSize*10/30);
@@ -1062,11 +1064,11 @@ public class Catalog {
                 ind = 0;
                 for(int j=1;j<=answers.size();j++){
 
-                       if(test.isMultipleAnswer(j)==false)Answers[i][++ind] = answers.get(j);
+                    if(test.isMultipleAnswer(j)==false)Answers[i][++ind] = answers.get(j);
 
                 }
             }
-           ind = 0;
+            ind = 0;
             for(int i=1;i<=q.size();i++){
                 if(test.isMultipleAnswer(i)==false){
                     Questions[++ind] =  "<html>"+q.get(i).getQuestion()+ "<html>";
@@ -1099,6 +1101,7 @@ public class Catalog {
         ArrayList<String> testID = new ArrayList<>();
         try {
             testID = Menu.Maner.getUncorrectedTests(UserImput.teacher,"Geo");
+            NrStudents=testID.size()-1;
             for(int i=0;i<testID.size();i++){
                 try {
                     String TestID = testID.get(i).split(" ")[0];
