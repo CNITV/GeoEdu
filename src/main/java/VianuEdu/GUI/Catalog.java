@@ -1083,6 +1083,7 @@ public class Catalog {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+            NrQuestions=1;
         }
 
 
