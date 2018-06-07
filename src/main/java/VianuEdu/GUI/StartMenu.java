@@ -225,6 +225,8 @@ public class StartMenu {
                 button_start = -NrButtons * ButtonHeight;
                 Menu.isTeacher = false;
                 UserImput.Login = true;
+                UserImput.student=null;
+                UserImput.teacher=null;
                 ContentBrowser.ContentName.clear();
                 ContentBrowser.ContentID.clear();
             }

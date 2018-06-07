@@ -14,6 +14,7 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 
+import static VianuEdu.GUI.StartMenu.Username;
 import static VianuEdu.GUI.StartMenu.clock;
 
 
@@ -187,12 +188,18 @@ public class UserImput extends JPanel {
             PASSWORD = String.valueOf(password.getPassword());
 
             Login = false;
-            if (USERNAME.length() < 1 || PASSWORD.length() < 1) Login = true;
+            if (USERNAME.length() < 1 || PASSWORD.length() < 1) {
+                showMessage = true;
+                startMessage = clock.millis();
+                dialogText = "ID utilizator sau parola incorecta!";
+                Login = true;
+            }
             else {
                 try {
                     cookie = Menu.Maner.studentLogin(new Account(USERNAME, PASSWORD));
 
                     student = Menu.Maner.getStudent(cookie);
+
                     Menu.isTeacher = false;
                 } catch (IOException e) {
                     //e.printStackTrace();
@@ -205,13 +212,21 @@ public class UserImput extends JPanel {
                         Menu.isTeacher = true;
 
                     } catch (IOException e1) {
-                        //continue
+                        Login=true;
+                        startMessage = clock.millis();
+                        dialogText = "Nu s-a putut conecta la server!";
                     } catch (IllegalAccessException e1) {
                         Login = true;
+                        startMessage = clock.millis();
+                        dialogText = "ID utilizator sau parola incorecta!";
+                        USERNAME=null;
+                        PASSWORD=null;
+                        StartMenu.Username=null;
+
                     }
                 }
                 try {
-                    StartMenu.Username = student.getFirstName() + " " + student.getLastName();
+                    StartMenu.Username = student.getFirstName() + " " + student.getLastName();System.out.println(StartMenu.Username);
 
 
                 } catch (java.lang.NullPointerException e) {
@@ -226,10 +241,11 @@ public class UserImput extends JPanel {
                 }
 
                 if (cookie2.length() < 9 && cookie.length() < 9) {
-                    showMessage = true;
-                    startMessage = clock.millis();System.out.println("este");
-                    dialogText = "ID utilizator sau parola incorecta!";
+
                     Login = true;
+                    showMessage = true;
+                    startMessage = clock.millis();
+                    dialogText = "ID utilizator sau parola incorecta!";
                 }
             }
         } else {
@@ -283,6 +299,8 @@ public class UserImput extends JPanel {
 
         if (((Menu.MousePressed == false && copyMousePressed2 == true && Submithovered == true) || Menu.ENTER == true) && Login == true) {
 
+            USERNAME=null;
+            PASSWORD=null;
             checkData(g);
             Menu.ENTER = false;
         }
