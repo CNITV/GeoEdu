@@ -931,13 +931,13 @@ public class Catalog {
             height = Menu.ScreenHeight/10;
         }
         GeoEduMenu.drawLoadingScreen=false;
-        for(int i=0;i<=NrStudents;i++){
+        for(int i=0;i<NrStudents;i++){
             if(i==0){
                 drawCatalogCell(g, x , y + i * height, width, height, "Numele elevului");
                 drawCatalogCell(g,x+width,y,4*width,height,"Notele elevului");
             }
             else {
-                drawCatalogCell(g,x,y+i*height,width,height,StudentName[i]);
+                drawCatalogCell(g,x,y+i*height,width,height,StudentName[i+1]);
                 for (int j = 0; j < NrGrades; j++) {
 
                     if (Grades[i][j] != null)
@@ -1102,7 +1102,7 @@ public class Catalog {
         ArrayList<String> testID = new ArrayList<>();
         try {
             testID = Menu.Maner.getUncorrectedTests(UserImput.teacher,"Geo");
-            NrStudents=testID.size()-1;
+            NrStudents=testID.size();
             for(int i=0;i<testID.size();i++){
                 try {
                     String TestID = testID.get(i).split(" ")[0];
@@ -1144,7 +1144,7 @@ public class Catalog {
                 try {
                     ArrayList<Grade> note = Menu.Maner.getCurrentGrades(cls.get(i), "Geo");
                     for (int j = 0; j < note.size(); j++) {
-                        Grades[i+1][j] = note.get(j).getCurrentGrade();
+                        Grades[i][j] = note.get(j).getCurrentGrade();
                     }
                 } catch (IllegalAccessException e){
 
