@@ -22,6 +22,7 @@ package VianuEdu.backend.DatabaseHandling;
 
 import VianuEdu.backend.Identification.Student;
 import VianuEdu.backend.Identification.Teacher;
+import VianuEdu.backend.LessonLibrary.Lesson;
 import VianuEdu.backend.TestLibrary.AnswerSheet;
 import VianuEdu.backend.TestLibrary.Grade;
 import VianuEdu.backend.TestLibrary.Test;
@@ -92,6 +93,11 @@ public class JSONManager {
 	public static Test fromJSONToTest(String jsonString) {
 		Gson json = new GsonBuilder().setPrettyPrinting().create();
 		return json.fromJson(jsonString, Test.class);
+	}
+
+	public static Lesson fromJSONToLesson(String jsonString) {
+		Gson json = new GsonBuilder().setPrettyPrinting().create();
+		return json.fromJson(jsonString, Lesson.class);
 	}
 
 	/**

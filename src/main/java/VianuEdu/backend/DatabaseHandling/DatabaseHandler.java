@@ -24,6 +24,7 @@ package VianuEdu.backend.DatabaseHandling;
 import VianuEdu.backend.Identification.Account;
 import VianuEdu.backend.Identification.Student;
 import VianuEdu.backend.Identification.Teacher;
+import VianuEdu.backend.LessonLibrary.Lesson;
 import VianuEdu.backend.TestLibrary.AnswerSheet;
 import VianuEdu.backend.TestLibrary.Grade;
 import VianuEdu.backend.TestLibrary.Test;
@@ -31,7 +32,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import okhttp3.*;
 
-import java.io.File;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -76,6 +76,19 @@ public class DatabaseHandler {
 			e.printStackTrace();
 		}
 		this.serverURL = properties.getProperty("serverURL");
+	}
+
+	private JsonObject sanitizeObject(Response response) throws IOException {
+		JsonObject object;
+		if (response.body() != null) {
+			object = new JsonParser().parse(response.body().string()).getAsJsonObject();
+		} else {
+			throw new NullPointerException("Response body came out null! Try again!");
+		}
+		response.close();
+
+		object.remove("_id");
+		return object;
 	}
 
 	/**
@@ -182,16 +195,7 @@ public class DatabaseHandler {
 			throw new IllegalAccessException("Cookie invalid! (Possibly wrong ID)");
 		}
 
-		JsonObject object;
-		if (response.body() != null) {
-			object = new JsonParser().parse(response.body().string()).getAsJsonObject();
-		} else {
-			throw new NullPointerException("Response body came out null! Try again!");
-		}
-
-		response.close();
-
-		object.remove("_id");
+		JsonObject object = sanitizeObject(response);
 
 		return JSONManager.fromJSONToStudent(object.toString());
 	}
@@ -218,16 +222,7 @@ public class DatabaseHandler {
 			throw new IllegalAccessException("Cookie invalid! (Possibly wrong ID)");
 		}
 
-		JsonObject object;
-		if (response.body() != null) {
-			object = new JsonParser().parse(response.body().string()).getAsJsonObject();
-		} else {
-			throw new NullPointerException("Response body came out null! Try again!");
-		}
-
-		response.close();
-
-		object.remove("_id");
+		JsonObject object = sanitizeObject(response);
 
 		return JSONManager.fromJSONtoTeacher(object.toString());
 	}
@@ -235,7 +230,7 @@ public class DatabaseHandler {
 	/**
 	 * Changes the password of the provided Teacher object to the new one provided.
 	 *
-	 * @param student The Student for which to change the password.
+	 * @param student     The Student for which to change the password.
 	 * @param newPassword The new password to change to.
 	 * @return The new Student object in the database.
 	 * @throws IOException Most likely thrown if the device doesn't have a connection.
@@ -248,7 +243,7 @@ public class DatabaseHandler {
 		Request request = new Request.Builder()
 				.url(serverURL + "/api/changeStudentPassword")
 				.post(body)
-				.addHeader("Authorization", "Basic " + Base64.getEncoder().encodeToString((student.getAccount().getUserName() + ":" + student.getAccount().getPassword()).getBytes()) )
+				.addHeader("Authorization", "Basic " + Base64.getEncoder().encodeToString((student.getAccount().getUserName() + ":" + student.getAccount().getPassword()).getBytes()))
 				.build();
 
 		Response response = client.newCall(request).execute();
@@ -264,7 +259,7 @@ public class DatabaseHandler {
 	/**
 	 * Changes the password of the provided Teacher object to the new one provided.
 	 *
-	 * @param teacher The Teacher for which to change the password.
+	 * @param teacher     The Teacher for which to change the password.
 	 * @param newPassword The new password to change to.
 	 * @return The new Teacher object in the database.
 	 * @throws IOException Most likely thrown if the device doesn't have a connection.
@@ -277,7 +272,7 @@ public class DatabaseHandler {
 		Request request = new Request.Builder()
 				.url(serverURL + "/api/changeTeacherPassword")
 				.post(body)
-				.addHeader("Authorization", "Basic " + Base64.getEncoder().encodeToString((teacher.getAccount().getUserName() + ":" + teacher.getAccount().getPassword()).getBytes()) )
+				.addHeader("Authorization", "Basic " + Base64.getEncoder().encodeToString((teacher.getAccount().getUserName() + ":" + teacher.getAccount().getPassword()).getBytes()))
 				.build();
 
 		Response response = client.newCall(request).execute();
@@ -329,59 +324,40 @@ public class DatabaseHandler {
 	/**
 	 * Uploads a lesson provided by a teacher.
 	 *
-	 * @param grade   The grade for which this lesson should be uploaded.
 	 * @param subject The subject for which this lesson should be uploaded.
-	 * @param file    The lesson to upload.
-	 * @param teacher The teacher who is uploading this file.
-	 * @return True if lesson has been uploaded successfully, false if otherwise.
+	 * @param lesson  The lesson to be uploaded.
 	 * @throws IOException Most likely thrown if the device doesn't have a connection.
 	 */
-	public boolean uploadLesson(String subject, Integer grade, File file, Teacher teacher) throws IOException {
-		String fileType;
-		if (file.getName().length() < 4) {
-			fileType = file.getName();
-		} else {
-			fileType = file.getName().substring(file.getName().length() - 4);
-		}
-
-		if (!fileType.equals(".png")) {
-			throw new IllegalArgumentException("File is not a PNG!");
-		}
-
+	public void uploadLesson(String subject, Lesson lesson, Teacher teacher) throws IOException {
 		OkHttpClient client = new OkHttpClient();
 
-		MediaType mediaType = MediaType.parse("image/png");
-		RequestBody body = RequestBody.create(mediaType, file);
+		MediaType mediaType = MediaType.parse("application/json");
+		RequestBody body = RequestBody.create(mediaType, lesson.toString());
+
 		Request request = new Request.Builder()
-				.url(serverURL + "/api/uploadLesson/" + subject + "/" + grade)
+				.url(serverURL + "/api/uploadLesson/" + subject + "/" + lesson.getGrade())
 				.post(body)
-				.addHeader("content-type", "image/png")
-				.addHeader("filename", file.getName())
 				.addHeader("authorization", "Basic " + Base64.getEncoder().encodeToString((teacher.getAccount().getUserName() + ":" + teacher.getAccount().getPassword()).getBytes()))
 				.build();
 
 		Response response = client.newCall(request).execute();
-		boolean isSuccessful = response.code() == 200;
-		response.close();
 
-		return isSuccessful;
+		response.close();
 	}
 
 	/**
 	 * Downloads a lesson from the server.
-	 * <p>
-	 * This currently returns a byte-slice until we can figure out a way to save the lessons in a non-invasive manner.
 	 *
-	 * @param grade    The grade for which the lesson exists.
-	 * @param filename The name of the lesson.
-	 * @param subject  The subject for which the lesson exists.
+	 * @param grade   The grade for which the lesson exists.
+	 * @param title   The name of the lesson.
+	 * @param subject The subject for which the lesson exists.
 	 * @return A byte-slice containing the lesson that has been downloaded.
 	 * @throws IOException Most likely thrown if the device doesn't have a connection, or if the lesson doesn't exist.
 	 */
-	public byte[] downloadLesson(String subject, Integer grade, String filename) throws IOException {
+	public Lesson getLesson(String subject, Integer grade, String title) throws IOException {
 		OkHttpClient client = new OkHttpClient();
 		Request request = new Request.Builder()
-				.url(serverURL + "/lessons/" + subject + "/" + grade + "/" + filename + ".png")
+				.url(serverURL + "/lessons/" + subject + "/" + grade + "/" + title)
 				.get()
 				.build();
 		Response response = client.newCall(request).execute();
@@ -389,15 +365,9 @@ public class DatabaseHandler {
 			throw new IOException("404 file not found");
 		}
 
-		byte[] result;
-		if (response.body() != null) {
-			result = response.body().bytes();
-		} else {
-			throw new NullPointerException("Response body came out null! Try again!");
-		}
-		response.close();
+		JsonObject object = sanitizeObject(response);
 
-		return result;
+		return JSONManager.fromJSONToLesson(object.toString());
 	}
 
 	/**
@@ -485,15 +455,7 @@ public class DatabaseHandler {
 			throw new IllegalAccessException("Test not yet available!");
 		}
 
-		JsonObject object;
-		if (response.body() != null) {
-			object = new JsonParser().parse(response.body().string()).getAsJsonObject();
-		} else {
-			throw new NullPointerException("Response body came out null! Try again!");
-		}
-		response.close();
-
-		object.remove("_id");
+		JsonObject object = sanitizeObject(response);
 
 		return JSONManager.fromJSONToTest(object.toString());
 	}
@@ -721,15 +683,7 @@ public class DatabaseHandler {
 		}
 
 
-		JsonObject object;
-		if (response.body() != null) {
-			object = new JsonParser().parse(response.body().string()).getAsJsonObject();
-		} else {
-			throw new NullPointerException("Response body came out null! Try again!");
-		}
-		response.close();
-
-		object.remove("_id");
+		JsonObject object = sanitizeObject(response);
 
 		return JSONManager.fromJSONToAnswerSheet(object.toString());
 	}
@@ -737,9 +691,9 @@ public class DatabaseHandler {
 	/**
 	 * Submits an answer sheet to the database.
 	 *
-	 * @param student The student who is uploading the database.
+	 * @param student     The student who is uploading the database.
 	 * @param answerSheet The answer sheet to upload.
-	 * @throws IOException Most likely thrown if the device doesn't have a connection.
+	 * @throws IOException            Most likely thrown if the device doesn't have a connection.
 	 * @throws IllegalAccessException Thrown if answer sheet has already been uploaded for test.
 	 */
 	public void submitAnswerSheet(Student student, AnswerSheet answerSheet) throws IOException, IllegalAccessException {
@@ -853,15 +807,7 @@ public class DatabaseHandler {
 			throw new IllegalAccessException("404 grade not found!");
 		}
 
-		JsonObject object;
-		if (response.body() != null) {
-			object = new JsonParser().parse(response.body().string()).getAsJsonObject();
-		} else {
-			throw new NullPointerException("Response body came out null! Try again!");
-		}
-		response.close();
-
-		object.remove("_id");
+		JsonObject object = sanitizeObject(response);
 
 		return JSONManager.fromJSONToGrade(object.toString());
 	}
