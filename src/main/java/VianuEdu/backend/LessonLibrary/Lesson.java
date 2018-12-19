@@ -8,7 +8,7 @@ import java.util.ArrayList;
 public class Lesson {
 	private String title;
 	private String author;
-	private String subject;
+	private String course;
 	private int grade;
 	private String gradeLetter;
 	private ArrayList<byte[]> pages;
@@ -21,7 +21,7 @@ public class Lesson {
 		}
 		this.title = title;
 		this.author = author.getFirstName() + " " + author.getLastName();
-		this.subject = author.getCourse();
+		this.course = author.getCourse();
 		this.grade = grade;
 		this.gradeLetter = gradeLetter;
 		this.pages = pages;
@@ -30,7 +30,7 @@ public class Lesson {
 	public Lesson(String title, Teacher author, int grade, String gradeLetter) {
 		this.title = title;
 		this.author = author.getFirstName() + " " + author.getLastName();
-		this.subject = author.getCourse();
+		this.course = author.getCourse();
 		this.grade = grade;
 		this.gradeLetter = gradeLetter;
 		this.pages = new ArrayList<>();
@@ -52,13 +52,13 @@ public class Lesson {
 		this.author = author.getFirstName() + " " + author.getLastName();
 	}
 
-	public String getSubject() {
-		return subject;
+	public String getCourse() {
+		return course;
 	}
 
-	public void setSubject(String course) {
+	public void setCourse(String course) {
 		if (!(course.equals("Geo") || course.equals("Phi") || course.equals("Info") || course.equals("Math"))) {
-			throw new IllegalArgumentException("Lesson must be part of a VianuEdu-compatible subject!");
+			throw new IllegalArgumentException("Lesson must be part of a VianuEdu-compatible course!");
 		}
 	}
 

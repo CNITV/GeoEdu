@@ -348,16 +348,15 @@ public class DatabaseHandler {
 	/**
 	 * Downloads a lesson from the server.
 	 *
-	 * @param grade   The grade for which the lesson exists.
-	 * @param title   The name of the lesson.
 	 * @param subject The subject for which the lesson exists.
-	 * @return A byte-slice containing the lesson that has been downloaded.
+	 * @param ID The ID of the lesson to be downloaded.
+	 * @return A Lesson object.
 	 * @throws IOException Most likely thrown if the device doesn't have a connection, or if the lesson doesn't exist.
 	 */
-	public Lesson getLesson(String subject, Integer grade, String title) throws IOException {
+	public Lesson getLesson(String subject, String ID) throws IOException {
 		OkHttpClient client = new OkHttpClient();
 		Request request = new Request.Builder()
-				.url(serverURL + "/lessons/" + subject + "/" + grade + "/" + title)
+				.url(serverURL + "/lessons/" + subject + "/" + ID)
 				.get()
 				.build();
 		Response response = client.newCall(request).execute();
