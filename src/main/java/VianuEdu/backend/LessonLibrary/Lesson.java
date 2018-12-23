@@ -10,29 +10,24 @@ public class Lesson {
 	private String author;
 	private String course;
 	private int grade;
-	private String gradeLetter;
 	private ArrayList<byte[]> pages;
 
-	public Lesson(String title, Teacher author, int grade, String gradeLetter, ArrayList<byte[]> pages) {
+	public Lesson(String title, Teacher author, int grade, ArrayList<byte[]> pages) {
 		if (!(grade > 0 && grade <= 12)) {
 			throw new IllegalArgumentException("Lesson must be between 1st and 12th grade!");
-		} else if (!"ABCDEFGHIJKLMNOPQRSTUVWXYZ".contains(gradeLetter) || !(gradeLetter.length() == 1)) {
-			throw new IllegalArgumentException("The grade letter must be one letter long, between A and Z!");
 		}
 		this.title = title;
 		this.author = author.getFirstName() + " " + author.getLastName();
 		this.course = author.getCourse();
 		this.grade = grade;
-		this.gradeLetter = gradeLetter;
 		this.pages = pages;
 	}
 
-	public Lesson(String title, Teacher author, int grade, String gradeLetter) {
+	public Lesson(String title, Teacher author, int grade) {
 		this.title = title;
 		this.author = author.getFirstName() + " " + author.getLastName();
 		this.course = author.getCourse();
 		this.grade = grade;
-		this.gradeLetter = gradeLetter;
 		this.pages = new ArrayList<>();
 	}
 
@@ -71,17 +66,6 @@ public class Lesson {
 			throw new IllegalArgumentException("Lesson must be between 1st and 12th grade!");
 		}
 		this.grade = grade;
-	}
-
-	public String getGradeLetter() {
-		return gradeLetter;
-	}
-
-	public void setGradeLetter(String gradeLetter) {
-		if (!"ABCDEFGHIJKLMNOPQRSTUVWXYZ".contains(gradeLetter) || !(gradeLetter.length() == 1)) {
-			throw new IllegalArgumentException("The grade letter must be one letter long, between A and Z!");
-		}
-		this.gradeLetter = gradeLetter;
 	}
 
 	public void addPage(byte[] page) {
