@@ -107,7 +107,7 @@ public class Tests {
         for(int i=1;i<=n;i++){
             try {
                 img[i] = ImageIO.read(new ByteArrayInputStream(Image[i]));
-                img[i] = img[i].getScaledInstance(Menu.ScreenWidth/5, Menu.ScreenHeight/5,2);
+                img[i] = img[i].getScaledInstance(2*Menu.ScreenWidth/8, (Menu.ScreenHeight/2 - Menu.ScreenHeight/5 - (label.getY()+label.getHeight())),2);
             } catch (IOException e) {
                 e.printStackTrace();
             }catch(java.lang.NullPointerException e){
@@ -158,7 +158,7 @@ public class Tests {
     public static void drawImage(Graphics g){
 
         try {
-            g.drawImage(img[rand[currentQuestion]],(Menu.ScreenWidth-img[rand[currentQuestion]].getWidth(null))/2,Menu.ScreenHeight*10/45,null);
+            g.drawImage(img[rand[currentQuestion]],(Menu.ScreenWidth-img[rand[currentQuestion]].getWidth(null))/2,(label.getY()+label.getHeight())*4/5,null);
         }
         catch (java.lang.NullPointerException e){
 
@@ -175,7 +175,7 @@ public class Tests {
 
         int x = Menu.X_hovered;
         int y = Menu.Y_hovered;
-        if (x > Menu.ScreenWidth / 3 && x < 2 * Menu.ScreenWidth / 3 && y > Menu.ScreenHeight / 2 + p * AnswerHeight && y < Menu.ScreenHeight / 2 + (p + 1) * AnswerHeight && Menu.MousePressed == true) { {
+        if (x > Menu.ScreenWidth / 3 && x < 2 * Menu.ScreenWidth / 3 && y > Menu.ScreenHeight * 7 / 12 + p * AnswerHeight && y < Menu.ScreenHeight * 7 / 12 + (p + 1) * AnswerHeight && Menu.MousePressed == true) { {
             CAnswer[rand[currentQuestion]] = p;
         }
             if (Menu.MousePressed == true && GeoEduMenu.copyMousePressed == false)
@@ -183,16 +183,16 @@ public class Tests {
         }
 
         g.setColor(new Color(10, 10, 10));
-        g.fill3DRect(Menu.ScreenWidth / 3, Menu.ScreenHeight / 2 + p * AnswerHeight, AnswerWidth, AnswerHeight, false);
+        g.fill3DRect(Menu.ScreenWidth / 3, Menu.ScreenHeight * 7 / 12 + p * AnswerHeight, AnswerWidth, AnswerHeight, false);
         if (CAnswer[rand[currentQuestion]] == p) {
             g.setColor(color);
-            g.fill3DRect(Menu.ScreenWidth / 3, Menu.ScreenHeight / 2 + p * AnswerHeight, AnswerHeight, AnswerHeight, true);
+            g.fill3DRect(Menu.ScreenWidth / 3, Menu.ScreenHeight * 7 / 12 + p * AnswerHeight, AnswerHeight, AnswerHeight, true);
         } else {
             g.setColor(Color.WHITE);
-            g.fill3DRect(Menu.ScreenWidth / 3, Menu.ScreenHeight / 2 + p * AnswerHeight, AnswerHeight, AnswerHeight, true);
+            g.fill3DRect(Menu.ScreenWidth / 3, Menu.ScreenHeight * 7 / 12 + p * AnswerHeight, AnswerHeight, AnswerHeight, true);
         }
 
-        g.drawRect(Menu.ScreenWidth / 3, Menu.ScreenHeight / 2 + p * AnswerHeight, AnswerWidth, AnswerHeight);
+        g.drawRect(Menu.ScreenWidth / 3, Menu.ScreenHeight * 7 / 12 + p * AnswerHeight, AnswerWidth, AnswerHeight);
         g.setColor(Color.BLACK);
 
         Font small = new Font("Calibri", Font.PLAIN, UserImput.FontSize / 3);
@@ -200,11 +200,11 @@ public class Tests {
         FontMetrics metricsx = g.getFontMetrics(small);
         g.setColor(new Color(220, 220, 220));
         g.setFont(small);
-        g.drawString(String.valueOf(answers), Menu.ScreenWidth / 3 + AnswerHeight + AnswerHeight / 4, Menu.ScreenHeight / 2 + (p + 1) * AnswerHeight - AnswerHeight / 4);
+        g.drawString(String.valueOf(answers), Menu.ScreenWidth / 3 + AnswerHeight + AnswerHeight / 4, Menu.ScreenHeight * 7 / 12 + (p + 1) * AnswerHeight - AnswerHeight / 4);
         g.setColor(new Color(0, 0, 0));
         Font small2 = new Font("Calibri", Font.PLAIN, UserImput.FontSize / 2);
         g.setFont(small2);
-        g.drawString(String.valueOf((char) ('A' + p - 1)), Menu.ScreenWidth / 3 + (AnswerHeight - metricsx.stringWidth(String.valueOf((char) ('A' + p - 1)))) / 2, Menu.ScreenHeight / 2 + (p + 1) * AnswerHeight - metricsy.stringWidth(String.valueOf((char) ('A' + p - 1))) / 4 - AnswerHeight / 4);
+        g.drawString(String.valueOf((char) ('A' + p - 1)), Menu.ScreenWidth / 3 + (AnswerHeight - metricsx.stringWidth(String.valueOf((char) ('A' + p - 1)))) / 2, Menu.ScreenHeight * 7 / 12 + (p + 1) * AnswerHeight - metricsy.stringWidth(String.valueOf((char) ('A' + p - 1))) / 4 - AnswerHeight / 4);
 
     }
 
@@ -786,7 +786,7 @@ public class Tests {
         UserImput.initilaizeDimensions();
         if (endTest == true && isCalculated==false) {
             calculateResult();
-            if(Menu.isTeacher==false)sendData();
+            if(!Menu.isTeacher)sendData();
             isCalculated = true;
         }
     }

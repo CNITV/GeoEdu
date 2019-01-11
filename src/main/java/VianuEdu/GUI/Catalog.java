@@ -29,6 +29,7 @@ public class Catalog {
     public static String currentTestID;
     public static int currentClass;
     public static int currentLetter;
+    public static int NrStudents2 = 0;
     public static Image img[] = new Image[101];
     public static BufferedImage lb;
     public static int Marks[] = new int[101];
@@ -294,9 +295,9 @@ public class Catalog {
         g.fill3DRect(x,y,width,height,true);
         g.setColor(Color.WHITE);
         g.drawRect(x,y,width,height);
-        int BoxHeight = height/NrStudents;
+        int BoxHeight = height/2;
         if(BoxHeight>Menu.ScreenHeight/16)BoxHeight = Menu.ScreenHeight/16;
-        for(int i=0;i<NrStudents;i++){
+        for(int i=0;i<NrStudents2;i++){
             drawStudentBox(g,x,y+i*BoxHeight,width,BoxHeight,StudentName[i],i);
         }
     }
@@ -689,7 +690,7 @@ public class Catalog {
         drawEssay(g,Menu.ScreenWidth/3,Menu.ScreenHeight*3/5,Menu.ScreenWidth/3,Menu.ScreenHeight/4);
         if(currentQuestion>1)drawPreviousButton(g);
         if(currentQuestion<NrQuestions)drawNextButton(g);
-        if(currentQuestion==NrQuestions && currentStudent<NrStudents-1){
+        if(currentQuestion==NrQuestions && currentStudent<NrStudents2-1){
             drawNextStudent(g,Menu.ScreenWidth*3/4,Menu.ScreenHeight*2/3,Menu.ScreenWidth/12,Menu.ScreenHeight/15,"Incarca punctaje");
         }
         if(currentQuestion==NrQuestions){
@@ -888,6 +889,7 @@ public class Catalog {
                 for(int i=1;i<=NrStudents;i++){
                     StudentName[i]=null;
                 }
+
                 classChosen=false;
                 TestChosen = false;
                 GeoEduMenu.correctTest=false;
@@ -926,27 +928,23 @@ public class Catalog {
         int width = Width/5;
         int height;
         if (NrStudents > 0) {
-            height = Height/NrStudents;
+            height = Height/(NrStudents+1);
         } else {
             height = Menu.ScreenHeight/10;
         }
         GeoEduMenu.drawLoadingScreen=false;
-        for(int i=0;i<NrStudents;i++){
-            if(i==0){
-                drawCatalogCell(g, x , y + i * height, width, height, "Numele elevului");
-                drawCatalogCell(g,x+width,y,4*width,height,"Notele elevului");
-            }
-            else {
-                drawCatalogCell(g,x,y+i*height,width,height,StudentName[i+1]);
+        drawCatalogCell(g, x , y , width, height, "Numele elevului");
+        drawCatalogCell(g,x+width,y,4*width,height,"Notele elevului");
+        for(int i=1;i<=NrStudents;i++){
+                drawCatalogCell(g,x,y+i*height,width,height,StudentName[i]);
                 for (int j = 0; j < NrGrades; j++) {
 
-                    if (Grades[i][j] != null)
-                        drawCatalogCell(g, x + (j + 1) * width, y + i * height, width, height, Grades[i][j].toString());
+                    if (Grades[i-1][j] != null)
+                        drawCatalogCell(g, x + (j + 1) * width, y + i * height, width, height, Grades[i-1][j].toString());
                     else {
                         drawCatalogCell(g, x + (j + 1) * width, y + i * height, width, height, "");
                     }
                 }
-            }
         }
 
     }
@@ -1016,9 +1014,7 @@ public class Catalog {
         }
         try {
             Menu.Maner.submitGrade(grade);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
+        } catch (IOException | IllegalAccessException | java.lang.NullPointerException e) {
             e.printStackTrace();
         }
     }
@@ -1035,7 +1031,7 @@ public class Catalog {
         for(int i=1;i<=NrQuestions;i++){
             Questions[i] = null;
         }
-        for(int i=0;i<NrStudents;i++){
+        for(int i=0;i<NrStudents2;i++){
             for(int j=1;j<=NrQuestions;j++){
                 Answers[i][j]=null;
             }
@@ -1043,7 +1039,7 @@ public class Catalog {
             StudentName[i]=null;
         }
         NrQuestions=1;
-        NrStudents=-1;
+        NrStudents2=-1;
 
     }
 
@@ -1055,7 +1051,8 @@ public class Catalog {
         try {
             test = Menu.Maner.viewTest(testID, UserImput.teacher);
             ArrayList<String> student = Menu.Maner.getAnswerSheetsForTest(testID);
-
+            NrStudents2 = student.size();
+            System.out.println(NrStudents2 + "numar de elevi 1");
             HashMap<Integer, Question> q = test.getContents();
             for(int i=0;i<student.size();i++){
                 StudentID[i]=student.get(i);
@@ -1102,7 +1099,7 @@ public class Catalog {
         ArrayList<String> testID = new ArrayList<>();
         try {
             testID = Menu.Maner.getUncorrectedTests(UserImput.teacher,"Geo");
-            NrStudents=testID.size();
+            System.out.println(testID.size() + "nr elevi");
             for(int i=0;i<testID.size();i++){
                 try {
                     String TestID = testID.get(i).split(" ")[0];

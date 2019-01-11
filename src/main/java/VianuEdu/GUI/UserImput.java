@@ -262,11 +262,11 @@ public class UserImput extends JPanel {
 
                 int grade = 0;
                 String letter = String.valueOf(clasa.charAt(clasa.length() - 1));
-                for (int i = clasa.length() - 1; i >= 0; i--) {
+                for (int i = 0; i <clasa.length(); i++) {
                     if (clasa.charAt(i) >= '0' && clasa.charAt(i) <= '9') {
                         grade = grade * 10 + clasa.charAt(i) - '0';
                     }
-                }
+                }System.out.println(grade);
                 String password = new String(Pbox[2].getPassword());
 
                 Student elev2 = new Student(Tbox[1].getText(), Tbox[3].getText(), Tbox[2].getText(), Tbox[5].getText(), grade, letter, "active", new Account(Tbox[6].getText(), password));

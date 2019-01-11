@@ -24,6 +24,7 @@ public class GeoEduMenu {
     public static boolean[] hovered = new boolean[10];
     public static boolean ArrowPressed = false;
     public static boolean correctTest = false;
+    public static boolean uploadLesson = false;
     public static boolean drawLoadingScreen=false;
     public static boolean editTest = false;
     public static boolean profil = false;
@@ -55,7 +56,7 @@ public class GeoEduMenu {
     public static long lastStep = clock.millis() - 1;
     public static long firstStep = clock.millis();
 
-    static ClassLoader loader = Menu.class.getClassLoader();
+    private static ClassLoader loader = Menu.class.getClassLoader();
 
     /**
      * This method imports all the images needed in the program
@@ -254,6 +255,14 @@ public class GeoEduMenu {
                     cls = "Corecteaza un test";
                 }
             }
+            else if(isTeacher && button == 2){
+                if(clasa == 9){
+                    cls = "Adauga o lectie";
+                }
+                else if(clasa == 10){
+                    cls = "Planifica o lectie";
+                }
+            }
             else {
                 cls = "Clasa a " + clasa + "-a";
             }
@@ -273,6 +282,10 @@ public class GeoEduMenu {
                 correctTest = true;Catalog.findUncorrectedTests();
 
             }
+            else if(MousePressed != copyMousePressed && MousePressed == false && isTeacher == true && button == 2 && clasa == 9){
+                uploadLesson = true;
+
+            }
             g.setColor(new Color(164, 148, 110));
             g.fillRect(x, y, Width, Height);
             g.setColor(new Color(231, 198, 63));
@@ -287,6 +300,14 @@ public class GeoEduMenu {
                 }
                 else if(clasa == 10){
                     cls = "Corecteaza un test";
+                }
+            }
+            else if(isTeacher && button == 2){
+                if(clasa == 9){
+                    cls = "Adauga o lectie";
+                }
+                else if(clasa == 10){
+                    cls = "Planifica o lectie";
                 }
             }
             else {
@@ -316,6 +337,14 @@ public class GeoEduMenu {
                     cls = "Corecteaza un test";
                 }
             }
+            else if(isTeacher && button == 2){
+                if(clasa == 9){
+                    cls = "Adauga o lectie";
+                }
+                else if(clasa == 10){
+                    cls = "Planifica o lectie";
+                }
+            }
             else {
                 cls = "Clasa a " + clasa + "-a";
             }
@@ -341,7 +370,8 @@ public class GeoEduMenu {
 
         if(isTeacher == true){
             if (x <= 4 && x >= 2 && currentPressed == x) {
-                if(x==4)classNumber = 2;
+                if(x == 4 )classNumber = 2;
+                else if(x == 2) classNumber = 1;
                 else classNumber = 4;
                 for (int i = 0; i < classNumber; i++) {
                     makeClassButton(g, Leftpanel + PanelWidth, x * ButtonHeight + i * ClassHeight, ClassWidth, ClassHeight, i + 9, x);
@@ -350,11 +380,6 @@ public class GeoEduMenu {
         }
         else {
             classNumber = 4;
-            if (x == 2 && currentPressed == x) {
-                for (int i = 0; i < classNumber; i++) {
-                    makeClassButton(g, Leftpanel + PanelWidth, x * ButtonHeight + i * ClassHeight, ClassWidth, ClassHeight, i + 9, x);
-                }
-            }
         }
     }
 
@@ -476,14 +501,14 @@ public class GeoEduMenu {
 
         if(isTeacher == true){
             Button_name[1] = "Meniu";
-            Button_name[2] = "Exercitii";
+            Button_name[2] = "Lectii";
             Button_name[3] = "Teste";
             Button_name[4] = "Profesor";
             Button_name[5] = "Setari";
         }
         else {
             Button_name[1] = "Meniu";
-            Button_name[2] = "Exercitii";
+            Button_name[2] = "Lectii";
             Button_name[3] = "Teste";
             Button_name[4] = "Profil";
             Button_name[5] = "Setari";
@@ -651,6 +676,12 @@ public class GeoEduMenu {
         }
         else if(profil==true){
             Status.Paint(g);
+        }
+        else if(uploadLesson){
+            LessonEditor.Paint(g);
+        }
+        else if(ContentBrowser.showLesson){
+            Lessons.Paint(g);
         }
         else{
             GeoEduMenu.generateBackground(g);

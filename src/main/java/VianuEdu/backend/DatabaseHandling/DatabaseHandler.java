@@ -356,7 +356,7 @@ public class DatabaseHandler {
 	public Lesson getLesson(String subject, String ID) throws IOException {
 		OkHttpClient client = new OkHttpClient();
 		Request request = new Request.Builder()
-				.url(serverURL + "/getLesson/" + subject + "/" + ID)
+				.url(serverURL + "/api/getLesson/" + subject + "/" + ID)
 				.get()
 				.build();
 		Response response = client.newCall(request).execute();

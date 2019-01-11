@@ -72,6 +72,10 @@ public class Lesson {
 		pages.add(page);
 	}
 
+	public ArrayList<byte[]> getContent(){
+	    return pages;
+    }
+
 	public void swapPage(int firstIndex, int secondIndex) {
 		if (firstIndex < 0 || firstIndex > pages.size()) {
 			throw new IllegalArgumentException("First index out of bounds! Index must be between 0 and the number of pages!");

@@ -438,7 +438,7 @@ public class TestEditor {
             NrBox.setVisible(true);
             if (NrBox.getText().length() > 0) NumarVariante = Integer.valueOf(NrBox.getText());
             if (NumarVariante > 10) NumarVariante = 10;
-            if (NumarVariante < 3) NumarVariante = 3;
+            if (NumarVariante < 1) NumarVariante = 1;
             drawVariants(g, Menu.ScreenWidth / 3, Menu.ScreenHeight * 3 / 5, Menu.ScreenWidth / 3, Menu.ScreenHeight / 4, NumarVariante);
         } else {
             NrBox.setVisible(false);
@@ -505,7 +505,7 @@ public class TestEditor {
 
     public static void drawVariants(Graphics g, int x, int y, int width, int height, int Nr) {
 
-        if(loadedTest==false&&copiedTest == false)NrVar[currentQuestion] = NumarVariante;
+        //if(loadedTest==false&&copiedTest == false)NrVar[currentQuestion] = NumarVariante;
         if (NumarVariante < 6) {
             for (int i = 1; i <= NumarVariante; i++) {
                 drawCell(g, Menu.ScreenWidth / 3, Menu.ScreenHeight * 3 / 5 + (i - 1) * Menu.ScreenHeight / 20, Menu.ScreenWidth / 3, Menu.ScreenHeight / 20, i);
@@ -552,11 +552,13 @@ public class TestEditor {
             if (copyMousePressed == false) {
                 Setari.ButtonSound("button_click.wav");
                 Questions[currentQuestion] = Qbox.getText();
+                NrVar[currentQuestion] = NumarVariante;
                 for (int i = 1; i <= 10; i++) {
                     Answers[currentQuestion][i] = Abox[i].getText();
                 }
             }
             currentQuestion = Name;
+            NumarVariante = NrVar[Name];
         } else if (xm > x && xm < x + width && ym > y && ym < y + height) {
             if (copyMousePressed == true) {
                 if (Name == currentQuestion) {
@@ -566,6 +568,7 @@ public class TestEditor {
 
                     Qbox.setText(Questions[currentQuestion]);
                     NrBox.setText(String.valueOf(NrVar[currentQuestion]));
+                    NumarVariante = NrVar[Name];
                 }
             }
         }
@@ -641,6 +644,7 @@ public class TestEditor {
             if (copyMousePressed == false) {
                 Setari.ButtonSound("button_click.wav");
                 Questions[currentQuestion] = Qbox.getText();
+                NrVar[currentQuestion] = NumarVariante;
                 for (int i = 1; i <= 10; i++) {
                     Answers[currentQuestion][i] = Abox[i].getText();
                 }
@@ -688,6 +692,7 @@ public class TestEditor {
             if (copyMousePressed == false) {
                 Setari.ButtonSound("button_click.wav");
                 Questions[currentQuestion] = Qbox.getText();
+                NrVar[currentQuestion] = NumarVariante;
                 for (int i = 1; i <= 10; i++) {
                     Answers[currentQuestion][i] = Abox[i].getText();
                 }

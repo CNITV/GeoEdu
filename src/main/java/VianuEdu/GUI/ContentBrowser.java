@@ -1,9 +1,11 @@
 package VianuEdu.GUI;
 
 import VianuEdu.backend.TestLibrary.AnswerSheet;
+import VianuEdu.backend.TestLibrary.Grade;
 
 import java.awt.*;
 import java.io.IOException;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 
 public class ContentBrowser {
@@ -19,12 +21,12 @@ public class ContentBrowser {
     public static boolean Chovered[] = new boolean[101];
     public static boolean Cpressed[] = new boolean[101];
     public static boolean Test = false;
-    public static boolean Exercises = false;
+    public static boolean lessons = false;
     public static boolean dTest = false;
-    public static boolean dExercises = false;
+    public static boolean dLessons = false;
     public static boolean Search = false;
     public static boolean showTest = false;
-    public static boolean showExercise = false;
+    public static boolean showLesson = false;
     public static ArrayList<String> ContentName = new ArrayList<>();
     public static ArrayList<String> ContentID = new ArrayList<>();
 
@@ -43,9 +45,10 @@ public class ContentBrowser {
 
 
         int p = 0;
-        Exercises = Test = false;
-        if (GeoEduMenu.currentPressed == 2) {
-            Exercises = true;
+        lessons = Test = false;
+        if (GeoEduMenu.currentPressed == 2 && !Menu.isTeacher) {
+            lessons = true;
+            p = UserImput.student.getGrade();
         } else if (GeoEduMenu.currentPressed == 3) {
             Test = true;
             if(Menu.isTeacher==true){
@@ -64,8 +67,8 @@ public class ContentBrowser {
                             NumberContent = 0;
                             ContentName.clear();
                             ContentID.clear();
-
                             for(int i=0;i<ID.size();i++) {
+                                System.out.println(ID.get(i));
                                 String id = ID.get(i).split(" ")[0];
                                 String clasa = ID.get(i).split(" ")[2];
                                 VianuEdu.backend.TestLibrary.Test test = null;
@@ -91,45 +94,53 @@ public class ContentBrowser {
                             NumberContent = 0;
                             for (String TestID : ID) {
                                 test = Menu.Maner.getTest(TestID);
-                                boolean ok=false;
-                              try{
+                                boolean ok = false;
 
-                                  Menu.Maner.getAnswerSheet(TestID,UserImput.cookie);
-                              }catch(IllegalAccessException e){
-                                 try{
-                                     Menu.Maner.getGrade(TestID,UserImput.cookie);
-                                     System.out.println("DDDDDDD");
-                                 }catch(IOException e1){
-                                     ContentName.add(test.getTestName());
-                                     ContentID.add(TestID);
-                                     NumberContent++;
-                                 }
-                                 catch (IllegalAccessException e1){
-                                     e1.printStackTrace();
-                                     ContentName.add(test.getTestName());
-                                     ContentID.add(TestID);
-                                     NumberContent++;
-                                 }catch(IllegalArgumentException e1){
-                                     ContentName.add(test.getTestName());
-                                     ContentID.add(TestID);
-                                     NumberContent++;
-                                 }
+                                try {
+                                     Menu.Maner.getAnswerSheet(TestID, UserImput.cookie);
+
+                                }catch(java.lang.IllegalAccessException e){
+                                    ContentName.add(test.getTestName());
+                                    ContentID.add(TestID);
+                                    NumberContent++;
+                                    try {
+                                        Menu.Maner.getGrade(TestID, UserImput.cookie);
+                                    }catch(java.lang.IllegalAccessException e1){
+
+                                    }
+                                }
+                            }
                               }
 
-                            }
-                        }
+
+
                     } catch (IOException e) {
                         e.printStackTrace();
                     } catch (IllegalAccessException e) {
                          e.printStackTrace();
                     }
-                    dExercises = false;
+                    dLessons = false;
                     dTest = true;
                 }
 
-            } else if (Exercises == true && Class[p] >= 9 && Menu.MousePressed == true) {
-                dExercises = true;
+            } else if (lessons == true && p >= 9 && Menu.MousePressed == true && Menu.isTeacher == false) {
+
+                dLessons = true;
                 dTest = false;
+                NumberContent = 0;
+                ContentName.clear();
+                ContentID.clear();
+                System.out.println("lectie");
+                try {
+                    ArrayList<String> lessons = Menu.Maner.listLessons("Geo", p);
+                    NumberContent = lessons.size();
+                    for(int i=0; i<lessons.size();i++){
+                        ContentName.add(Menu.Maner.getLesson("Geo",lessons.get(i)).getTitle());
+                        ContentID.add(lessons.get(i));
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -154,11 +165,18 @@ public class ContentBrowser {
         int xhovered = Menu.X_hovered;
         int yhovered = Menu.Y_hovered;
         if (xhovered > x && xhovered < x + width && yhovered > y && yhovered < y + height && Menu.MousePressed == true) {
-
-            if (Chovered[i] == true&& showTest == false) {
-                Setari.ButtonSound("button_click.wav");
-                Tests.findTest(currentClass, ID);
-                showExercise = false;
+            if(dTest) {
+                if (Chovered[i] == true && showTest == false) {
+                    Setari.ButtonSound("button_click.wav");
+                    Tests.findTest(currentClass, ID);
+                    showLesson = false;
+                }
+            }else if(dLessons){
+                if (Chovered[i] == true && showLesson == false) {
+                    Setari.ButtonSound("button_click.wav");
+                    Lessons.findLesson(UserImput.student.getGrade(), ID);
+                    showTest= false;
+                }
             }
             Cpressed[i] = true;
             Chovered[i] = false;
@@ -217,7 +235,7 @@ public class ContentBrowser {
     public static void findContent(Graphics g) {
 
         getInfo();
-        if (dTest == true) drawContent(g, ContentID, ContentName, ContentID.size());
+        drawContent(g, ContentID, ContentName, ContentID.size());
     }
 
     public static void drawBrowser(Graphics g) {
@@ -251,6 +269,7 @@ public class ContentBrowser {
 
         initialiseDimensions();
         if (showTest == true) Tests.Run();
+        else if(showLesson)Lessons.Run();
     }
 
 
